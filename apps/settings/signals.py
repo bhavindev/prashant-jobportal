@@ -8,14 +8,14 @@ from django.dispatch import receiver
 from apps.lang.models import Languages
 from apps.settings.models import *
 
+
+
 @receiver(post_migrate)
 def create_languages(sender, **kwargs):
     table_name = Languages._meta.db_table
-    with connection.cursor() as cursor:
-        cursor.execute(f"SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}');")
-        table_exists = cursor.fetchone()[0]
 
-    if not table_exists:
+    # Use Django introspection instead of raw SQL
+    if table_name not in connection.introspection.table_names():
         print(f"Table {table_name} does not exist. Skipping Languages creation.")
         return
 
@@ -25,6 +25,24 @@ def create_languages(sender, **kwargs):
 
     for language in default_languages:
         Languages.objects.get_or_create(name=language["name"], defaults=language)
+
+# @receiver(post_migrate)
+# def create_languages(sender, **kwargs):
+#     table_name = Languages._meta.db_table
+#     with connection.cursor() as cursor:
+#         cursor.execute(f"SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = '{table_name}');")
+#         table_exists = cursor.fetchone()[0]
+
+#     if not table_exists:
+#         print(f"Table {table_name} does not exist. Skipping Languages creation.")
+#         return
+
+#     default_languages = [
+#         {"name": "English", "code": "en", "is_default": True},
+#     ]
+
+#     for language in default_languages:
+#         Languages.objects.get_or_create(name=language["name"], defaults=language)
         
         
 @receiver(post_migrate)
