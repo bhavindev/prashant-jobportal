@@ -53,17 +53,7 @@ def create_website_setting(sender, **kwargs):
     # Check if the websiteSetting table exists
     settings_table_name = websiteSetting._meta.db_table
 
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [settings_table_name])
-        settings_table_exists = cursor.fetchone()[0]
-
-    if not settings_table_exists:
+    if settings_table_name not in connection.introspection.table_names():
         print(f"Table {settings_table_name} does not exist. Skipping websiteSetting creation.")
         return
 
@@ -138,17 +128,7 @@ def create_header_footer(sender, **kwargs):
     # Check if the HeaderFooter table exists
     header_footer_table_name = HeaderFooter._meta.db_table
 
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [header_footer_table_name])
-        header_footer_table_exists = cursor.fetchone()[0]
-
-    if not header_footer_table_exists:
+    if header_footer_table_name not in connection.introspection.table_names():
         print(f"Table {header_footer_table_name} does not exist. Skipping HeaderFooter creation.")
         return
 
