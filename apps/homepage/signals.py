@@ -297,26 +297,7 @@ def create_fun_facts(sender, **kwargs):
     fun_fact_table_name = funFactSection._meta.db_table
     fun_fact_title_table_name = funFactSectionTitle._meta.db_table
 
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [fun_fact_table_name])
-        fun_fact_table_exists = cursor.fetchone()[0]
-
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [fun_fact_title_table_name])
-        fun_fact_title_table_exists = cursor.fetchone()[0]
-
-    if not fun_fact_table_exists or not fun_fact_title_table_exists:
+    if fun_fact_table_name not in connection.introspection.table_names() or fun_fact_title_table_name not in connection.introspection.table_names():
         print(f"Fun fact or fun fact title tables do not exist. Skipping creation.")
         return
 
@@ -368,26 +349,7 @@ def create_testimonials(sender, **kwargs):
     testimonial_table_name = testimonialsSection._meta.db_table
     testimonial_title_table_name = testimonialSectionTitle._meta.db_table
 
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [testimonial_table_name])
-        testimonial_table_exists = cursor.fetchone()[0]
-
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [testimonial_title_table_name])
-        testimonial_title_table_exists = cursor.fetchone()[0]
-
-    if not testimonial_table_exists or not testimonial_title_table_exists:
+    if testimonial_table_name not in connection.introspection.table_names() or testimonial_title_table_name not in connection.introspection.table_names():
         print(f"Testimonial or testimonial title tables do not exist. Skipping creation.")
         return
 
@@ -495,17 +457,7 @@ def create_blog_section_title(sender, **kwargs):
 
     blog_title_table_name = blogSectionTitle._meta.db_table
 
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [blog_title_table_name])
-        blog_title_table_exists = cursor.fetchone()[0]
-
-    if not blog_title_table_exists:
+    if blog_title_table_name not in connection.introspection.table_names():
         print(f"Table {blog_title_table_name} does not exist. Skipping blogSectionTitle creation.")
         return
 

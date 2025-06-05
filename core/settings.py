@@ -162,7 +162,7 @@ else:
     DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'NAME': BASE_DIR/'db.sqlite3',
             }
     }
     # import dj_database_url
@@ -239,4 +239,4 @@ ENABLE_ARABIC_SIGNALS = False
 ENABLE_BANGLA_SIGNALS = False
 
 # Configure Django for Heroku.
-django_on_heroku.settings(locals())
+django_on_heroku.settings(locals(), databases=False)
