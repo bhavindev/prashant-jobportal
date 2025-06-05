@@ -1,0 +1,19 @@
+-r base.txt
+django
+twilio
+Pillow
+razorpay
+sslcommerz-lib
+openai==0.28.0
+paypalrestsdk==1.5.0
+requests
+instamojo-wrapper
+stripe
+django-ckeditor==6.3.2
+django_user_agents
+django-imagekit
+urllib3==1.25.11
+whitenoise==6.5.0
+unidecode
+django-recaptcha
+psycopg2-binary

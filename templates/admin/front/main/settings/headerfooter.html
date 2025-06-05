@@ -1,0 +1,220 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+
+<div class="page-body dark-only">
+    <div class="container-fluid">
+      <div class="page-title">
+        <div class="row">
+          <div class="col-sm-6">
+            <h3>Header Footer Settings</h3>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+              <li class="breadcrumb-item">Settings</li>
+              <li class="breadcrumb-item active">Header Footer</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+      {% include "admin/components/lang.html" %}
+      <div class="row project-cards">
+        <div class="container">
+          {% if form.errors %}
+                      <div class="alert alert-danger">
+                        <strong>Error:</strong>
+                        <ul>
+                          {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                              <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% endif %}   
+                    {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %} 
+                    <form method="post" action="" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      {{ form.media }}
+          
+          <div class="card">
+            <div class="card-body">
+              <h5 class="mb-3 mt-4">Footer Layout</h5>
+              <div class="row mt-4">
+                <div class="col-md-12">
+                  {{ form.footer_layout }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="mb-3 mt-4">Footer Top</h5>
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <label for="{{ form.footer_col1_subtitle.id_for_label }}">Subtitle</label>
+                  {{ form.footer_col1_subtitle }}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.footer_col1_title.id_for_label }}">Title</label>
+                  {{ form.footer_col1_title }}
+                </div>
+              </div>
+  
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <label for="{{ form.footer_col1_button.id_for_label }}">Button Text</label>
+                  {{ form.footer_col1_button }}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.footer_col1_button_url.id_for_label }}">Button Url</label>
+                  {{ form.footer_col1_button_url }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="mb-3 mt-4">Social Links</h5>
+              <div class="row mt-4">
+                <div class="col-md-4">
+                  <label for="{{ form.facebook.id_for_label }}"><i class="fa fa-facebook-square"></i> Facebook </label>
+                  {{ form.facebook }}
+                </div>
+                <div class="col-md-4">
+                  <label for="{{ form.instagram.id_for_label }}"><i class="fa fa-instagram"></i> Instagram </label>
+                  {{ form.instagram }}
+                </div>
+                <div class="col-md-4">
+                  <label for="{{ form.twitter.id_for_label }}"><i class="fa fa-twitter"></i> Twitter </label>
+                  {{ form.twitter }}
+                </div>
+              </div>
+  
+              <div class="row mt-4">
+                <div class="col-md-4">
+                  <label for="{{ form.linkedin.id_for_label }}"><i class="fa fa-linkedin-square"></i> Linked In </label>
+                  {{ form.linkedin }}
+                </div>
+                <div class="col-md-4">
+                  <label for="{{ form.youtube.id_for_label }}"><i class="fa fa-youtube"></i> YouTube </label>
+                  {{ form.youtube }}
+                </div>
+                <div class="col-md-4">
+                  <label for="{{ form.pinterest.id_for_label }}"><i class="fa fa-pinterest"></i> Pinterest </label>
+                  {{ form.pinterest }}
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="card">
+            <div class="card-body">
+              <h5 class="mb-3 mt-4">Footer Bottom</h5>
+              <div class="row mt-4">
+                <div class="col-md-12">
+                  <label for="{{ form.footer_small_text.id_for_label }}">Small Text (Under Logo)</label>
+                  {{ form.footer_small_text }}
+                </div>
+                <div class="col-md-12 mb-2">
+                  <label for="{{ form.project_list_title.id_for_label }}">First Column Title</label>
+                  {{ form.project_list_title }}
+                </div>
+                <div class="col-md-12 mb-2">
+                  <label for="{{ form.project_list_title.id_for_label }}">First Column Content Choice</label>
+                  {{ form.what_to_show }}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.footer_col2_title1.id_for_label }}">Second Column Title</label>
+                  {{ form.footer_col2_title1 }}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.footer_col2_title2.id_for_label }}">Third Column Title</label>
+                  {{ form.footer_col2_title2 }}
+                </div>
+              </div>
+  
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <label for="{{ form.footer_col2_description1.id_for_label }}">Description ( Use &lt;ul&gt; &lt;li&gt; tags )</label>
+                  <br>
+                  <div class="form-control ckf">{{ form.footer_col2_description1 }}</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.footer_col2_description2.id_for_label }}">Description ( Use &lt;ul&gt; &lt;li&gt; tags )</label>
+                  <br>
+                  <div class="form-control ckf">{{ form.footer_col2_description2 }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="mb-3 mt-4">Subscribe Form</h5>
+              <div class="row mt-4">
+                <div class="col-md-6 mb-2">
+                  <label for="{{ form.subscribe_form_title.id_for_label }}">Subscribe Form Title</label>
+                  {{ form.subscribe_form_title }}
+                </div>
+                <div class="col-md-6 mb-2">
+                  <label for="{{ form.subscribe_form_description.id_for_label }}">Subscribe Form Description</label>
+                  {{ form.subscribe_form_description }}
+                </div>
+                <div class="col-md-6 mb-2">
+                  <label for="{{ form.subscribe_form_placeholder.id_for_label }}">Subscribe Form Placeholder</label>
+                  {{ form.subscribe_form_placeholder }}
+                </div>
+                <div class="col-md-6 mb-2">
+                  <label for="{{ form.subscribe_form_button.id_for_label }}">Subscribe Form Button Text</label>
+                  {{ form.subscribe_form_button }}
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="card">
+            <div class="card-body">
+              <h5 class="mb-3 mt-4">Footer Copyright</h5>
+              <div class="row mt-4">
+                <div class="col-md-12">
+                  <label for="{{ form.footer_copyright.id_for_label }}">Copyright Text</label>
+                  {{ form.footer_copyright }}
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <label for="{{ form.policy_page_title.id_for_label }}">Privacy Policy Page Title</label>
+                  {{ form.policy_page_title }}
+                </div>
+                <div class="col-md-6">
+                  <label for="{{ form.terms_page_title.id_for_label }}">Terms Page Title</label>
+                  {{ form.terms_page_title }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="mt-2 mb-4 btn btn-primary">Save</button>
+        </form>
+        </div>
+      </div>
+    </div>
+    <!-- Container-fluid Ends-->
+  </div>
+  
+
+{% endblock content %}

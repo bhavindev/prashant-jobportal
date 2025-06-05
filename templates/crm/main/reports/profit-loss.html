@@ -1,0 +1,352 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ settings.name }}{% endblock title %}
+{% block content %}
+<style>
+   .btn-group-sm>.btn-icon.btn,
+   .btn-icon.btn-sm {
+   font-size: 1.2rem !important;
+   height: calc(1.625rem + 2px);
+   width: calc(1.625rem + 2px);
+   }
+   @media (min-width: 992px) {
+   .card-datatable.table-responsive {
+   overflow-x: hidden;
+   }
+   }
+   .dt-buttons.btn-group.flex-wrap {
+   margin-top: -32px;
+   }
+   <style>
+      @media print {
+          .print-button {
+              display: none;
+          }
+      }
+  </style>
+</style>
+<!-- Content wrapper -->
+<div class="content-wrapper">
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+   <div class="row align-items-center">
+      <div class="col-md-6">
+         <h4 class="fw-bold py-3 mb-3">
+            <span class="text-muted fw-light">CRM /</span> Reports / Profit & Loss
+         </h4>
+      </div>
+   </div>
+   <!--Table Card-->
+   <div class="mb-5">
+      <div class="dropdown float-end">
+         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+         This Year
+         </button>
+         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="#" onclick="showContent('thisyear')">This Year</a></li>
+            <li><a class="dropdown-item" href="#" onclick="showContent('thismonth')">This Month</a></li>
+            <li><a class="dropdown-item" href="#" onclick="showContent('prevyear')">Previous Year</a></li>
+            <li><a class="dropdown-item" href="#" onclick="showContent('alltime')">All Time</a></li>
+         </ul>
+      </div>
+   </div>
+   <!-- This year report -->
+   <div id="thisyear">
+      <div class="row mt-5">
+         <div class="col-md-7 mb-3">
+            <div class="card">
+               <div class="card-body">
+                  <table class="table table-striped">
+                     <tbody>
+                        <tr>
+                           <td>Total Revenue</td>
+                           <td>{{settings.currency_symbol}} {{current_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Expenses</td>
+                           <td>{{settings.currency_symbol}} {{current_year_expense}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Discounts</td>
+                           <td>{{settings.currency_symbol}} {{current_year_discount_amount}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Taxes</td>
+                           <td>{{settings.currency_symbol}} {{current_year_tax_amount}}</td>
+                        </tr>
+                        <tr>
+                           <td>Other Fees</td>
+                           <td>{{settings.currency_symbol}} {{current_year_other_fees_amount}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-5">
+            <div class="card">
+               <div class="card-body">
+                  <table class="table table-striped">
+                     <tbody>
+                        <tr>
+                           <td>Previous Year's Revenue</td>
+                           <td>{{settings.currency_symbol}} {{previous_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Current Year's Revenue </td>
+                           <td>{{settings.currency_symbol}} {{current_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Current Month's Revenue</td>
+                           <td>{{settings.currency_symbol}} {{current_month}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 mt-3">
+            <div class="card">
+               <div class="card-body">
+                  <h3>Gross profit: {{settings.currency_symbol}} {{gross_profit_this_year}}</h3>
+                  <p>(Revenue-Expenses)</p>
+                  <h3 class="mt-3">Net profit: {{settings.currency_symbol}} {{net_profit_this_year}}</h3>
+                  <p>(Gross profit-(Total Discounts+Total Taxes+Total Other Fees))</p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <a href="{% url "thisYearProfitLossPrint" %}" class="btn btn-primary mt-4 print-button"><i class="bx bx-printer"></i> &nbsp;Print</a>
+   </div>
+
+   <!-- This month report -->
+   <div id="thismonth" style="display: none;">
+      <div class="row  mt-5">
+         <div class="col-md-7 mb-3">
+            <div class="card">
+               <div class="card-body">
+                  <table class="table table-striped">
+                     <tbody>
+                        <tr>
+                           <td>Total Revenue</td>
+                           <td>{{settings.currency_symbol}} {{current_month}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Expenses</td>
+                           <td>{{settings.currency_symbol}} {{current_month_expense}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Discounts</td>
+                           <td>{{settings.currency_symbol}} {{current_month_discount_amount}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Taxes</td>
+                           <td>{{settings.currency_symbol}} {{current_month_tax_amount}}</td>
+                        </tr>
+                        <tr>
+                           <td>Other Fees</td>
+                           <td>{{settings.currency_symbol}} {{current_month_other_fees_amount}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-5">
+            <div class="card">
+               <div class="card-body">
+                  <table class="table table-striped">
+                     <tbody>
+                        <tr>
+                           <td>Previous Year's Revenue</td>
+                           <td>{{settings.currency_symbol}} {{previous_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Current Year's Revenue </td>
+                           <td>{{settings.currency_symbol}} {{current_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Current Month's Revenue</td>
+                           <td>{{settings.currency_symbol}} {{current_month}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 mt-3">
+            <div class="card">
+               <div class="card-body">
+                  <h3>Gross profit: {{settings.currency_symbol}} {{gross_profit_this_month}}</h3>
+                  <p>(Revenue-Expenses)</p>
+                  <h3 class="mt-3">Net profit: {{settings.currency_symbol}} {{net_profit_this_month}}</h3>
+                  <p>(Gross profit-(Total Discounts+Total Taxes+Total Other Fees))</p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <a href="{% url "thisMonthProfitLossPrint" %}" class="btn btn-primary mt-4 print-button"><i class="bx bx-printer"></i> &nbsp;Print</a>
+   </div>
+
+   <!-- Previous year report -->
+   <div id="prevyear" style="display: none;">
+      <div class="row  mt-5">
+         <div class="col-md-7 mb-3">
+            <div class="card">
+               <div class="card-body">
+                  <table class="table table-striped">
+                     <tbody>
+                        <tr>
+                           <td>Total Revenue</td>
+                           <td>{{settings.currency_symbol}} {{previous_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Expenses</td>
+                           <td>{{settings.currency_symbol}} {{previous_year_expense}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Discounts</td>
+                           <td>{{settings.currency_symbol}} {{previous_year_discount_amount}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Taxes</td>
+                           <td>{{settings.currency_symbol}} {{previous_year_tax_amount}}</td>
+                        </tr>
+                        <tr>
+                           <td>Other Fees</td>
+                           <td>{{settings.currency_symbol}} {{previous_year_other_fees_amount}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-5">
+            <div class="card">
+               <div class="card-body">
+                  <table class="table table-striped">
+                     <tbody>
+                        <tr>
+                           <td>Previous Year's Revenue</td>
+                           <td>{{settings.currency_symbol}} {{previous_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Current Year's Revenue </td>
+                           <td>{{settings.currency_symbol}} {{current_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Current Month's Revenue</td>
+                           <td>{{settings.currency_symbol}} {{current_month}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 mt-3">
+            <div class="card">
+               <div class="card-body">
+                  <h3>Gross profit: {{settings.currency_symbol}} {{gross_profit_previous_year}}</h3>
+                  <p>(Revenue-Expenses)</p>
+                  <h3 class="mt-3">Net profit: {{settings.currency_symbol}} {{net_profit_previous_year}}</h3>
+                  <p>(Gross profit-(Total Discounts+Total Taxes+Total Other Fees))</p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <a href="{% url "previousYearProfitLossPrint" %}" class="btn btn-primary mt-4 print-button"><i class="bx bx-printer"></i> &nbsp;Print</a>
+   </div>
+
+   <!-- All time report -->
+   <div id="alltime" style="display: none;">
+      <div class="row  mt-5">
+         <div class="col-md-7 mb-3">
+            <div class="card">
+               <div class="card-body">
+                  <table class="table table-striped">
+                     <tbody>
+                        <tr>
+                           <td>Total Revenue</td>
+                           <td>{{settings.currency_symbol}} {{total_revenue}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Expenses</td>
+                           <td>{{settings.currency_symbol}} {{total_expense}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Discounts</td>
+                           <td>{{settings.currency_symbol}} {{total_discount}}</td>
+                        </tr>
+                        <tr>
+                           <td>Total Taxes</td>
+                           <td>{{settings.currency_symbol}} {{total_tax}}</td>
+                        </tr>
+                        <tr>
+                           <td>Other Fees</td>
+                           <td>{{settings.currency_symbol}} {{total_other_fees}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-5">
+            <div class="card">
+               <div class="card-body">
+                  <table class="table table-striped">
+                     <tbody>
+                        <tr>
+                           <td>Previous Year's Revenue</td>
+                           <td>{{settings.currency_symbol}} {{previous_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Current Year's Revenue </td>
+                           <td>{{settings.currency_symbol}} {{current_year}}</td>
+                        </tr>
+                        <tr>
+                           <td>Current Month's Revenue</td>
+                           <td>{{settings.currency_symbol}} {{current_month}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 mt-3">
+            <div class="card">
+               <div class="card-body">
+                  <h3>Gross profit: {{settings.currency_symbol}} {{gross_profit}}</h3>
+                  <p>(Revenue-Expenses)</p>
+                  <h3 class="mt-3">Net profit: {{settings.currency_symbol}} {{net_profit}}</h3>
+                  <p>(Gross profit-(Total Discounts+Total Taxes+Total Other Fees))</p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <a href="{% url "allTimeProfitLossPrint" %}" class="btn btn-primary mt-4 print-button"><i class="bx bx-printer"></i> &nbsp;Print</a>
+   </div>
+   <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+<script>
+   const timePeriods = {
+      thisyear: "This Year",
+      thismonth: "This Month",
+      prevyear: "Previous Year",
+      alltime: "All Time"
+   };
+   function showContent(period) {
+       // Hide all content blocks
+       document.getElementById('thisyear').style.display = 'none';
+       document.getElementById('thismonth').style.display = 'none';
+       document.getElementById('prevyear').style.display = 'none';
+       document.getElementById('alltime').style.display = 'none';
+   
+       // Show the selected content block
+       document.getElementById(period).style.display = 'block';
+   
+       // Update the dropdown button text
+       document.getElementById('dropdownMenuButton').textContent = timePeriods[period];
+   }
+</script>
+{% endblock content %}

@@ -1,0 +1,128 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ settings.name }}{% endblock title %}
+{% block content %}
+<style>
+   .btn-group-sm>.btn-icon.btn,
+   .btn-icon.btn-sm {
+   font-size: 1.2rem !important;
+   height: calc(1.625rem + 2px);
+   width: calc(1.625rem + 2px);
+   }
+   @media (min-width: 992px) {
+   .card-datatable.table-responsive {
+   overflow-x: hidden;
+   }
+   }
+   .dt-buttons.btn-group.flex-wrap {
+   margin-top: -32px;
+   }
+
+      div#DataTables_Table_0_length {
+         margin-top: 10px;
+     }
+  
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+   color: #8b8b8b !important;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+   border-radius: 4px !important;
+   background: #00000017 !important;
+}
+  </style>
+  
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+
+  <!-- Include DataTables CSS, if not already included -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+   <div class="row align-items-center">
+      <div class="col-md-6">
+         <h4 class="fw-bold py-3 mb-3">
+            <span class="text-muted fw-light">CRM /</span> Reports / Activity logs
+         </h4>
+      </div>
+   </div>
+   <!--Table Card-->
+   <!-- This year report -->
+   <div>
+      
+      <div class="card mt-4">
+         <div class="card-datatable table-responsive">
+             <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                 <div class="card-header flex-column flex-md-row">
+                     <div class="head-label">
+                         <h5 class="card-title mb-0">Activity Logs</h5>
+                     </div>
+                 </div>
+                 <div class="container mb-4">
+                  <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed display" style="width:100%">
+                     <thead>
+                        <tr>
+                            <th style="width: 0px;" >#</th>
+                            <th style="width: 150px;">Date & Time</th>
+                            <th style="width: 100px;">User</th>
+                            <th style="width: 200px;">Content</th>
+                            <th style="width: 300px;">Change Message</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                         {% for action in recent_actions %}
+                         <tr class="odd">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ action.action_time }}</td>
+                            <td>{{ action.user }}</td>
+                            <td>{{ action.content_type }}</td>
+                            <td>{{ action.change_message }}</td>
+                         </tr>
+                         {% endfor %}
+                         <!-- ... more table rows ... -->
+                     </tbody>
+                 </table>
+             </div>
+             </div>
+         </div> 
+     </div><!--Table Card-->
+
+   </div>
+
+
+
+   <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+<script>
+   $(document).ready(function() {
+      $('.datatables-basic').DataTable({
+          pageLength: 25,
+          lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+          search: true,
+          dom: '<"top"Bfi>rt<"bottom"lip><"clear">',
+          buttons: [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              {
+                  extend: 'pdfHtml5',
+                  orientation: 'portrait', // You can change this to 'portrait' if needed
+                  pageSize: 'A4', // You can adjust the page size as needed
+              },
+              'print'
+          ]
+      });
+  });  
+</script>
+
+{% endblock content %}

@@ -1,0 +1,958 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}{{project.title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+   .bg-primary.p30.rounded-top {
+   padding-top: 50px;
+   }
+   .circular-progress, .payment-progress {
+   position: relative;
+   height: 150px;
+   width: 150px;
+   border-radius: 50%;
+   background: conic-gradient(#7d2ae8 3.6deg, #ededed 0deg);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin:auto;
+   margin-top:-48px;
+   margin-bottom:20px;
+   }
+   .dark-style .circular-progress::before  {
+   content: "";
+   position: absolute;
+   height: 130px;
+   width: 130px;
+   border-radius: 50%;
+   background-color: #2b2c40 !important;
+   }
+   .dark-style .payment-progress::before{
+   content: "";
+   position: absolute;
+   height: 130px;
+   width: 130px;
+   border-radius: 50%;
+   background-color: #2b2c40 !important;
+   }
+   .circular-progress::before, .payment-progress::before {
+      content: "";
+      position: absolute;
+      height: 130px;
+      width: 130px;
+      border-radius: 50%;
+      background-color: #ffffff !important;
+   }
+   .payment-progress::before {
+      content: "";
+      position: absolute;
+      height: 130px;
+      width: 130px;
+      border-radius: 50%;
+      background-color: #ffffff !important;
+   }
+   .progress-value, .payment-progress-value{
+   position: relative;
+   font-size: 25px;
+   font-weight: 600;
+   }
+   .text{
+   font-size: 30px;
+   font-weight: 500;
+   color: #606060;
+   }
+   @media only screen and (max-width: 767px) {
+   .mobile_margin{
+   margin-bottom:20px;
+   display:block !important;
+   }
+   }
+   .mobile_margin{
+   display:none;
+   }
+   a.nav-link {
+   cursor: pointer;
+   }
+   .btn-group-sm>.btn-icon.btn,
+   .btn-icon.btn-sm {
+   font-size: 1.2rem !important;
+   height: calc(1.625rem + 2px);
+   width: calc(1.625rem + 2px);
+   }
+   @media (min-width: 992px) {
+   .card-datatable.table-responsive {
+   overflow-x: hidden;
+   }
+   }
+   .dark-style .choices__input {
+    background-color: #2B2C40 !important;
+    color: white !important;
+    }
+    .choices__input {
+    background-color: #ffffff !important;
+    color: #10101c !important;
+    }
+    .dark-style .choices__inner {
+    background-color: transparent;
+    border: 1px solid #373955 !important;
+    }
+    .dark-style  .is-open .choices__list--dropdown, .is-open .choices__list[aria-expanded] {
+    border-color: #2a2a2a !important;
+    }
+    .is-open .choices__list--dropdown, .is-open .choices__list[aria-expanded] {
+    border-color: #dbdbdb !important;
+    }
+    .dark-style .is-open .choices__list--dropdown, .is-open .choices__list[aria-expanded] {
+    border-color: #42414b !important;
+    }
+    .dark-style  .choices__list {
+    background: none;
+    }
+    .choices__list {
+    background: white;
+    }
+    .dark-style .choices__list--dropdown, .choices__list[aria-expanded] {
+    background-color: #2b2a41 !important;
+    }
+    .dark-style  .choices__list--dropdown .choices__item--selectable.is-highlighted, .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+    background-color: #3e3e3e !important;
+    }
+    .dark-style .choices__list--dropdown .choices__item--selectable.is-highlighted, .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+    background-color: #523c9b !important;
+    }
+    .choices__list--dropdown .choices__item--selectable.is-highlighted, .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+    background-color: #dbdbdb !important;
+    color: black;
+    }
+    label.switch.switch-lg {
+    margin-right: 50px !important;
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<div class="container-fluid">
+<div class="row">
+   <div class="col-md-12">
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+               {{ message }}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+         {% endfor %}
+      {% endif %}
+      {% if form.errors %}
+         <div class="alert alert-danger mt-3">
+            {% for field in form %}
+               {% if field.errors %}
+               {{ field.label }}: {{ field.errors }}
+               {% endif %}
+            {% endfor %}
+         </div>
+      {% endif %}  
+      <div class="project-title-section">
+         <div class="page-title no-bg clearfix mb5 no-border">
+            <div>
+               <h1 class="pl0 mt-4">
+                  <span title="Open">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid icon">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                     </svg>
+                  </span>
+                  {{project.title}}
+               </h1>
+            </div>
+         </div>
+         <ul id="project-tabs" data-bs-toggle="ajax-tab" class="nav nav-tabs rounded classic mb20 scrollable-tabs mb-3" role="tablist">
+            <li class="nav-item" role="presentation">
+               <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#project-overview-section" aria-selected="true" role="tab">Overview</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#project-edit-section" aria-selected="false" role="tab">Edit Info</a>
+             </li>
+            <li class="nav-item" role="presentation">
+               <a class="nav-link" data-bs-toggle="tab" data-bs-target="#project-task-section" aria-selected="false" role="tab">Tasks</a>
+            </li>
+            <li class="nav-item" role="presentation">
+               <a class="nav-link" data-bs-toggle="tab" data-bs-target="#project-ticket-section" aria-selected="false" role="tab">Tickets</a>
+            </li>
+            <li class="nav-item" role="presentation">
+               <a class="nav-link" data-bs-toggle="tab" data-bs-target="#project-invoice-section" aria-selected="false" role="tab">Invoices</a>
+            </li>
+            <li class="nav-item" role="presentation">
+               <a class="nav-link" data-bs-toggle="tab" data-bs-target="#project-payment-section" aria-selected="false" role="tab">Payments</a>
+            </li>
+            <li class="nav-item" role="presentation">
+               <a class="nav-link" data-bs-toggle="tab" data-bs-target="#project-files-section" aria-selected="false" role="tab">Files</a>
+            </li>
+         </ul>
+         <!-- Tab Content -->
+         <div class="tab-content">
+            <!-- Overview Tab -->
+            <div role="tabpanel" class="tab-pane fade show active mb-5" id="project-overview-section">
+               <div class="clearfix">
+                  <div class="mb-5">
+                     <div class="row">
+                        <div class="col-md-8 col-sm-12">
+                           <div class="row">
+                              <div class="col-md-6 col-sm-12">
+                                 <div class="card">
+                                    <div class="bg-primary p30 rounded-top">
+                                       <br>
+                                    </div>
+                                    <div class="clearfix text-center mb-1">
+                                       <div class="mt-50 chart-circle">
+                                          <div class="circular-progress">
+                                             <span class="progress-value">0%</span>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+                                       <li class="list-group-item border-top">
+                                          Start date: {{ project.start_date }}       
+                                       </li>
+                                       <li class="list-group-item border-top">
+                                          Deadline: {{ project.deadline }}       
+                                       </li>
+                                       <li class="list-group-item border-top">
+                                          Price: {{ project.price }} {{settings.currency_name}}           
+                                       </li>
+                                       <li class="list-group-item border-top">
+                                          Status: <span class="badge {% if project.label == 'completed' %}bg-success{% elif project.label == 'canceled' %}bg-danger{% elif project.label == 'important' %}bg-warning{% elif project.label == 'pending' %}bg-info{% else %}bg-primary{% endif %}">{{ project.get_label_display }}  </span>         
+                                       </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                              <div class="mobile_margin"></div>
+                              <div class="col-md-6 col-sm-12">
+                                 <div class="card">
+                                    <div class="bg-primary p30 rounded-top">
+                                       <br>
+                                    </div>
+                                    <div class="clearfix text-center mb-1">
+                                       <div class="mt-50 chart-circle">
+                                          <div class="payment-progress">
+                                             <span class="payment-progress-value">0% </span>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+                                       <li class="list-group-item border-top">
+                                          Total Invoiced: {{total_invoiced}} {{settings.currency_name}}     
+                                       </li>
+                                       <li class="list-group-item border-top">
+                                          Total Paid: {{total_payments}}.0 {{settings.currency_name}}    
+                                       </li>
+                                       <li class="list-group-item border-top">
+                                          Total Due: {{total_due}} {{settings.currency_name}}            
+                                       </li>
+                                       <li class="list-group-item border-top">
+                                          You paid {{ percentage_paid }}% of total           
+                                       </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     {% if project.description %}
+                     <div class="col-md-8 mt-4 col-sm-12">
+                        <div class="card">
+                           <div class="card-header">
+                              <h6 class="float-start">Description</h6>
+                           </div>
+                           <div class="card-body">
+                              <div style="margin-top:-20px;">
+                                 {{project.description}} 
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     {% endif %}
+                     {% if project.team.all %}
+                     <div class="col-md-8 mt-4 col-sm-12">
+                        <div class="card">
+                           <div class="card-header">
+                              <h6 class="float-start">Team</h6>
+                           </div>
+                           <div class="card-body">
+                              <div style="margin-top:-20px;">
+                                 {% for member in project.team.all %}
+                                 <div class="d-flex align-items-center">
+                                    <div style="margin-right: 20px;">
+                                       <!-- User Image -->
+                                       <img src="{{ member.userprofile.getUserImage }}" alt="User Image" class="rounded-circle" style="width: 50px; height: 50px; display: block;">
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                       <!-- User Name -->
+                                       <h5 class="mb-1">{{ member.userprofile.name }}</h5>
+                                       <!-- User Email -->
+                                       <p class="text-muted">{{ member.userprofile.email }}</p>
+                                    </div>
+                                 </div>
+                                 {% endfor %}
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     {% endif %}
+                  </div>
+                  <div style="margin-top:100px; margin-bottom:50px;"></div>
+               </div>
+            </div>
+            <!-- Info edit Tab -->
+            <div role="tabpanel" class="tab-pane fade" id="project-edit-section">
+                <div class="clearfix">
+                   <div class="row project-overview-for-client">
+                      <div class="tab">
+
+                        <div class="row mb-3">
+                           <div class="col-md-6"></div>
+                           <div class="col-md-6 d-flex justify-content-end">
+                               <form action="" method="post">
+                                 {% csrf_token %}
+                                   <input type="hidden" name="mark_complete">
+                                   <button class="btn btn-primary"><i class='bx bxs-check-circle'></i> &nbsp;Mark as completed</button>
+                               </form>
+                           </div>
+                       </div>
+                                            
+                    <form action="" method="post" class="mb-5" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="project-edit">
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3">
+                               <div class="card">
+                                  <div class="card-body">
+                                     <label for="{{ form.title.id_for_label }}" class="form-label">Title <span class="text-danger">*</span></label>
+                                     {{ form.title }}
+                                  </div>
+                               </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <label for="{{ form.progress.id_for_label }}" class="form-label">Progress ( between 1 - 100 )<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            {{ form.progress }}
+                                            <div class="input-group-append">
+                                            <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3">
+                               <div class="card">
+                                  <div class="card-body">
+                                     <label for="{{ form.project_type.id_for_label }}" class="form-label">Project Type <span class="text-danger">*</span></label>
+                                     {{ form.project_type }}
+                                  </div>
+                               </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                               <div class="card">
+                                  <div class="card-body">
+                                     <label for="{{ form.client.id_for_label }}" class="form-label">Client <span class="text-danger">*</span></label>
+                                     {{ form.client }}
+                                  </div>
+                               </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12 mb-3">
+                               <div class="card">
+                                  <div class="card-body">
+                                     <label for="{{ form.team.id_for_label }}" class="form-label">Team</label>
+                                     {{ form.team }}
+                                  </div>
+                               </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12 mb-3">
+                               <div class="card">
+                                  <div class="card-body">
+                                     <label for="{{ form.description.id_for_label }}" class="form-label">Description <span class="text-danger">*</span></label>
+                                     {{ form.description }}
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                         <div class="row mb-3">
+                            <div class="col-md-6 mb-3">
+                               <div class="card">
+                                  <div class="card-body">
+                                     <label for="{{ form.start_date.id_for_label }}" class="form-label">Start Date <span class="text-danger">*</span></label>
+                                     {{ form.start_date }}
+                                  </div>
+                               </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                               <div class="card">
+                                  <div class="card-body">
+                                     <label for="{{ form.deadline.id_for_label }}" class="form-label">Deadline <span class="text-danger">*</span></label>
+                                     {{ form.deadline }}
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                         <div class="row mb-3">
+                            <div class="col-md-6 mb-3">
+                               <div class="card">
+                                  <div class="card-body">
+                                     <label for="{{ form.price.id_for_label }}" class="form-label">Price <span class="text-danger">*</span></label>
+                                     {{ form.price }}
+                                  </div>
+                               </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                               <div class="card">
+                                  <div class="card-body">
+                                     <label for="{{ form.label.id_for_label }}" class="form-label">Status</label>
+                                     {{ form.label }}
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+
+                         <div class="row mb-3">
+                            <div class="col-md-12">
+                               <div class="card">
+                                  <div class="card-body">
+                                     {% if project.get_project_files %}
+                                     <label>Uploaded Files</label>
+                                     <ul class="list-group mb-3">
+                                        {% for file in project.get_project_files %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                           <div class="file-list">
+                                              <a href="{{ file.upload_file.url }}" target="_blank">File {{forloop.counter}}</a>
+                                           </div>
+                                           <div>
+                                              <label for="delete_files_{{ file.id }}">Delete</label>
+                                              <input type="checkbox" name="delete_files" value="{{ file.id }}" id="delete_files_{{ file.id }}">
+                                           </div>
+                                        </li>
+                                        {% endfor %}
+                                     </ul>
+                                     {% endif %}
+                                     <label>Add Files:</label>
+                                     <input type="file" name="files" class="form-control" id="files" multiple>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                         <button class="btn btn-primary mb-3" type="submit">Save</button>
+                      </form>
+
+
+                         <!--Table Card-->
+                      </div>
+                      <!--Info Edit End-->
+                   </div>
+                </div>
+             </div>
+            <!-- Task Tab -->
+            <div role="tabpanel" class="tab-pane fade" id="project-task-section">
+               <div class="clearfix">
+                  <div class="row project-overview-for-client">
+                     <div class="tab">
+                        <div class="card">
+                           <div class="card-datatable table-responsive">
+                              <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                 <div class="card-header flex-column flex-md-row">
+                                    <div class="head-label">
+                                       <h5 class="card-title mb-0">All Tasks Related to <b>"{{project.title}}"</b></h5>
+                                    </div>
+                                    <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                                       <div class="dt-buttons btn-group flex-wrap">
+                                          <a class="btn btn-secondary create-new btn-primary" href="#" tabindex="0" aria-controls="DataTables_Table_0" type="button" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                                             <span><i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Task</span></span>
+                                          </a>
+                                       </div>
+                                     </div>
+                                 </div>
+                              </div>
+                              <div class="container mb-4">
+                                 <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                                    <thead>
+                                    <tr>
+                                    <th style="width: 0px;" >Id</th>
+                                     <th style="width: 130px;" >Title</th>
+                                     <th style="width: 80px;">Status</th>
+                                     <th style="width: 150px;">Start Date</th>
+                                     <th style="width: 130px;" class="dtr-hidden">Deadline</th>
+                                     <th style="width: 100px;" >Actions</th>                           
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for task in tasks %}
+                                        <tr class="odd">
+                                            <td>{{ forloop.counter }}</td>
+                                            <td><a href="{% url 'crmTaskEdit' id=task.id %}">{{ task.title }}</a></td>
+                                            <td>
+                                                {% if task.status == 'to_do' %}
+                                                    <span class="badge bg-primary">{{ task.get_status_display }}</span>
+                                                {% elif task.status == 'in_progress' %}
+                                                    <span class="badge bg-warning">{{ task.get_status_display }}</span>
+                                                {% elif task.status == 'done' %}
+                                                    <span class="badge bg-success">{{ task.get_status_display }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ task.start_date }}</td>
+                                            <td>{{ task.deadline }}</td>
+                                            <td class="dtr-hidden" style="">
+                                                <a href="{% url 'taskmarkDone' id=task.id %}" class="btn btn-sm btn-icon item-edit">
+                                                    <i class="bx bxs-check-circle"></i>
+                                                </a>
+                                                <a href="{% url 'crmTaskEdit' id=task.id %}" class="btn btn-sm btn-icon item-edit">
+                                                    <i class="bx bxs-edit"></i>
+                                                </a>
+                                                <button class="btn btn-sm btn-icon invoice-delete" data-slug="{{ task.id }}" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal{{ task.id }}">
+                                                    <i class='bx bxs-x-circle'></i>
+                                                  </button>                                   
+                                                  <div class="modal fade" id="deleteConfirmationModal{{ task.id }}" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+                                                      <div class="modal-dialog">
+                                                          <div class="modal-content">
+                                                              <div class="modal-header">
+                                                                  <h5 class="modal-title" id="deleteConfirmationModalLabel{{ task.id }}">Confirm Deletion</h5>
+                                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                              </div>
+                                                              <div class="modal-body">
+                                                                  Are you sure you want to delete this?
+                                                              </div>
+                                                              <div class="modal-footer">
+                                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                  <a type="button" href="{% url 'crmTaskDelete' id=task.id %}" class="btn btn-danger" id="confirmDelete">Delete</a>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+            
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <!-- ... more table rows ... -->
+                                  </tbody>
+                                  
+                                </table>
+                              </div>
+                           </div>
+                        </div>
+                        <!--Table Card-->
+                     </div>
+                     <!--Task End-->
+                  </div>
+               </div>
+            </div>
+            <!-- Tickets Tab -->
+            <div role="tabpanel" class="tab-pane fade" id="project-ticket-section">
+               <div class="clearfix">
+                  <div class="row project-overview-for-client">
+                     <div class="tab">
+                        <div class="card">
+                           <div class="card-datatable table-responsive">
+                              <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                 <div class="card-header flex-column flex-md-row">
+                                    <div class="head-label">
+                                       <h5 class="card-title mb-0">All Tickets Related to <b>"{{project.title}}"</b></h5>
+                                    </div>
+                                    <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                                       <div class="dt-buttons btn-group flex-wrap">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="container mb-4">
+                                 <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                                    <thead>
+                                       <tr>
+                                          <th style="width: 0px;">#</th>
+                                          <th style="width: 130px;">Title</th>
+                                          <th style="width: 150px;">Project</th>
+                                          <th style="width: 150px;">Status</th>
+                                          <th style="width: 130px;">Priority</th>
+                                          <th style="width: 200px;">Create Date</th>
+                                          <th style="width: 90px;" class="dtr-hidden">Actions</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                       {% for ticket in tickets %}
+                                       <tr class="odd">
+                                          <td>{{ ticket.id}}</td>
+                                          <td><span class="emp_name text-truncate"><a href="{% url 'userticketView' id=ticket.id %}">{{ ticket.title }}</a></span></td>
+                                          <td  class="">{{ ticket.project }}</td>
+                                          <td><span class="badge bg-{{ticket.statusBadge}}">{{ ticket.get_status_display }}</span></td>
+                                          <td><span class="badge bg-{{ticket.priorityBadge}}">{{ ticket.get_priority_display }}</span></td>
+                                          <td>{{ ticket.created_at }}</td>
+                                          <td class="dtr-hidden" style="">
+                                             <a href="{% url 'userticketView' id=ticket.id %}" class="btn btn-sm btn-icon item-edit">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                   <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                   <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                </svg>
+                                             </a>
+                                          </td>
+                                       </tr>
+                                       {% endfor %}
+                                       <!-- ... more table rows ... -->
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                        </div>
+                        <!--Table Card-->
+                     </div>
+                     <!--Ticket End-->
+                  </div>
+               </div>
+            </div>
+            <!-- Invoices Tab -->
+            <div role="tabpanel" class="tab-pane fade" id="project-invoice-section">
+               <div class="clearfix">
+                  <div class="row project-overview-for-client">
+                     <div class="tab">
+                        <!--Table Card-->
+                        <div class="card">
+                           <div class="card-datatable table-responsive">
+                              <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                 <div class="card-header flex-column flex-md-row">
+                                    <div class="head-label">
+                                       <h5 class="card-title mb-0">All Invoices Related to <b>"{{project.title}}"</b></h5>
+                                    </div>
+                                    <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                                       <div class="dt-buttons btn-group flex-wrap">
+                                          <div class="btn-group">
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <!-- Your button -->
+                                 <div class="container mb-4">
+                                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                                       <thead>
+                                          <tr>
+                                             <th style="width: 100px;" >Number</th>
+                                             <th style="width: 200px;">Bill Date</th>
+                                             <th style="width: 200px;">Due Date</th>
+                                             <th style="width: 150px;">Amount</th>
+                                             <th style="width: 90px;">Status</th>
+                                             <th style="width: 0px;" class="sorting_disabled dtr-hidden">Actions</th>
+                                          </tr>
+                                       </thead>
+                                       <tbody>
+                                          {% for invoice in invoices %}
+                                          <tr class="odd">
+                                             <td><a href="{% url 'create-build-invoice' invoice.slug %}">{{ invoice.number }}</a></td>
+                                             <td>{{ invoice.billDate }}</td>
+                                             <td>{{ invoice.dueDate }}</td>
+                                             <td>{{settings.currency_symbol}} {{ invoice.get_total }}</td>
+                                             <td>
+                                                {% with invoice_status=invoice.get_status %}
+                                                   {% if invoice_status.status == "PAID" %}
+                                                      <span class="badge bg-success">{{ invoice_status.status_display }}</span>
+                                                      {% if invoice_status.balance < 0 %}
+                                                            <span class="badge bg-primary">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                                                      {% endif %}
+                                                   {% elif invoice_status.status == "OVERDUE" %}
+                                                      <span class="badge bg-danger">{{ invoice_status.status }}</span>
+                                                      {% if invoice_status.balance < 0 %}
+                                                            <span class="badge bg-primary">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                                                      {% endif %}
+                                                   {% elif invoice_status.status == "PARTIALLY_PAID" %}
+                                                      <span class="badge bg-info">{{ invoice_status.status_display }}</span>
+                                                      {% if invoice_status.balance < 0 %}
+                                                            <span class="badge bg-primary">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                                                      {% endif %}
+                                                   {% else %}
+                                                      <span class="badge bg-warning">{{ invoice_status.status_display }}</span>
+                                                   {% endif %}
+                                                {% endwith %}
+                                             </td>
+                                             <td class="dtr-hidden" style="">
+                                                <div class="btn-group" role="group" aria-label="Button group">
+                                                   <a href="{% url 'create-build-invoice' invoice.slug %}" class="btn btn-sm btn-icon">
+                                                   <i class="bx bxs-printer"></i>
+                                                   </a>
+                                                   <a href="{% url 'create-build-invoice' invoice.slug %}" class="btn btn-sm btn-icon item-edit">
+                                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                         <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                         <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                      </svg>
+                                                   </a>
+                                             </td>
+                                          </tr>
+                                          {% endfor %}
+                                          <!-- ... more table rows ... -->
+                                       </tbody>
+                                    </table>
+                                    </div>
+                                 </div>
+                                 <!--Table Card-->         
+                              </div>
+                              <!-- / Content -->
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- Files Tab -->
+               <div role="tabpanel" class="tab-pane fade" id="project-files-section">
+                  <div class="clearfix">
+                     <div class="row project-overview-for-client">
+                        <div class="tab">
+                           <!--Table Card-->
+                           <div class="card">
+                              <div class="card-datatable table-responsive">
+                                 <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                    <div class="card-header flex-column flex-md-row">
+                                       <div class="head-label">
+                                          <h5 class="card-title mb-0">All Files Related to <b>"{{project.title}}"</b></h5>
+                                       </div>
+                                       <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                                          <div class="dt-buttons btn-group flex-wrap">
+                                             <div class="btn-group">
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <!-- Your button -->
+                                    <div class="container">
+                                       {% if project.get_project_files %}
+                                       <label>Uploaded Files</label>
+                                       <ul class="list-group mb-5 mt-2">
+                                          {% for file in project.get_project_files %}
+                                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                                             <div class="file-list">
+                                                <a href="{{ file.upload_file.url }}" download target="_blank"><i class="bx bx-download"></i> Download File {{forloop.counter}}</a>
+                                             </div>
+                                          </li>
+                                          {% endfor %}
+                                       </ul>
+                                       {% else %}
+                                       <label for="" class="mb-5">You don't have any files for {{project.title}}</label>
+                                       {% endif %}
+                                    </div>
+                                 </div>
+                                 <!--Table Card-->         
+                              </div>
+                              <!-- / Content -->
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- Payments Tab -->
+               <div role="tabpanel" class="tab-pane fade" id="project-payment-section">
+                  <div class="clearfix">
+                     <div class="row project-overview-for-client">
+                        <div class="tab">
+                           <!--Table Card-->
+                           <div class="card">
+                              <div class="card-datatable table-responsive">
+                                 <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                    <div class="card-header flex-column flex-md-row">
+                                       <div class="head-label">
+                                          <h5 class="card-title mb-0">All Payments Realted to <b>"{{project.title}}"</b></h5>
+                                       </div>
+                                       <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                                          <div class="dt-buttons btn-group flex-wrap">
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="container mb-4">
+                                       <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                                          <thead>
+                                             <tr>
+                                                <th style="width: 0px;">#</th>
+                                                <th style="width: 130px;">Title</th>
+                                                <th style="width: 0px;">Invoice</th>
+                                                <th style="width: 150px;">Payment Method</th>
+                                                <th style="width: 130px;">Payment Amount</th>
+                                                <th style="width: 130px;">Payment Date</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             {% for payment in payments %}
+                                             <tr class="odd">
+                                                <td>{{ forloop.counter}}</td>
+                                                <td><span class="emp_name text-truncate">{{ payment.title }}</span></td>
+                                                <td>{{ payment.invoice }}</td>
+                                                <td>{{ payment.payment_method }}</td>
+                                                <td>{{settings.currency_symbol}} {{ payment.payment_ammount }}</td>
+                                                <td>{{ payment.payment_date }}</td>
+                                             </tr>
+                                             {% endfor %}
+                                             <!-- ... more table rows ... -->
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!--Table Card-->
+                           </div>
+                           <!-- / Content -->
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+<!-- Add Bootstrap JS from a CDN -->
+
+<!-- Task Add Bootstrap Modal -->
+<div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+     <div class="modal-content">
+       <div class="modal-header bg-primary">
+         <h5 class="modal-title text-white mb-3" id="addTaskModalLabel">Add New Task</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+       </div>
+       <div class="modal-body">
+         <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}            
+            <input type="hidden" name="create_task">
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ taskForm.title.id_for_label }}" class="form-label">Title <span class="text-danger">*</span></label>
+                    {{ taskForm.title }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ taskForm.slug.id_for_label }}" class="form-label">Slug (Auto Generate) <span class="text-danger">*</span></label>
+                    {{ taskForm.slug }}
+                </div>
+            </div>
+            <div class="row mb-3">
+               <div class="col-md-12 mb-3">
+                     <label for="{{ form.team.id_for_label }}" class="form-label">Assign to</label>
+                     {{ taskForm.assigned_to }}
+               </div>
+           </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12 mb-3">
+                    <label for="{{ taskForm.status.id_for_label }}" class="form-label">Status <span class="text-danger">*</span></label>
+                    {{ taskForm.status }}
+                </div>
+            </div>
+        
+            <div class="row mb-3">
+                <div class="col-md-12 mb-3">
+                    <label for="{{ taskForm.description.id_for_label }}" class="form-label">Description <span class="text-danger">*</span></label>
+                    {{ taskForm.description }}
+                </div>
+            </div>
+        
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ taskForm.start_date.id_for_label }}" class="form-label">Start Date <span class="text-danger">*</span></label>
+                    {{ taskForm.start_date }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ taskForm.deadline.id_for_label }}" class="form-label">Deadline <span class="text-danger">*</span></label>
+                    {{ taskForm.deadline }}
+                </div>
+            </div>
+        
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ taskForm.priority.id_for_label }}" class="form-label">Priority</label>
+                    {{ taskForm.priority }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ taskForm.label.id_for_label }}" class="form-label">Label</label>
+                    {{ taskForm.label }}
+                </div>
+            </div>
+                          
+            <button class="btn btn-primary mb-3" type="submit">Save</button>
+        </form>
+        
+       </div>
+     </div>
+   </div>
+ </div>
+</div>
+ <!-- /Bootstrap Modal -->
+<script>
+   let circularProgress = document.querySelector(".circular-progress"),
+   progressValue = document.querySelector(".progress-value");
+   let progressStartValue = 0,
+   progressEndValue = parseInt("{{project.progress}}"), // Convert to integer
+   speed = 20;
+   
+   // If progressEndValue is 0, set the text content to "0%" and return
+   if (progressEndValue === 0) {
+      progressValue.textContent = "0%";
+   } else {
+      let progress = setInterval(() => {
+         progressStartValue++;
+         progressValue.textContent = `${progressStartValue}%`;
+         circularProgress.style.background = `conic-gradient(#7d2ae8 ${progressStartValue * 3.6}deg, #ededed 0deg)`;
+         if (progressStartValue == progressEndValue) {
+               clearInterval(progress);
+         }
+      }, speed);
+   }
+   
+</script>
+<script>
+   let circularProgressPayment = document.querySelector(".payment-progress"),
+   progressValuePayment = document.querySelector(".payment-progress-value");
+   let progressStartValuePayment = 0,
+   progressEndValuePayment = parseInt("{{ percentage_paid }}"), // Set to 0 for this example
+   speedPayment = 20;
+   
+   // If progressEndValuePayment is 0, set the text content to "0%" and return
+   if (progressEndValuePayment === 0) {
+      progressValuePayment.textContent = "0%";
+   } else {
+      let progressPayment = setInterval(() => {
+         progressStartValuePayment++;
+         progressValuePayment.textContent = `${progressStartValuePayment}%`;
+         circularProgressPayment.style.background = `conic-gradient(#7d2ae8 ${progressStartValuePayment * 3.6}deg, #ededed 0deg)`;
+         if (progressStartValuePayment == progressEndValuePayment) {
+               clearInterval(progressPayment);
+         }
+      }, speedPayment);
+   }
+   
+</script>
+<script>
+   $(document).ready(function() {
+       $('.table').DataTable({
+           pageLength: 10,
+           lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+           info: true, 
+           search: true 
+       });
+   });
+</script>
+<script>
+    const element = document.querySelector('select[name="team"]');
+    const choices = new Choices(element, {
+        searchEnabled: true,
+        removeItemButton: true,
+        placeholderValue: 'Select Team...',
+    });
+ </script>
+ <script>
+   const element2 = document.querySelector('select[name="assigned_to"]');
+   const choices2 = new Choices(element2, {
+       searchEnabled: true,
+       removeItemButton: true,
+       placeholderValue: 'Select...',
+   });
+</script>
+{% endblock content %}

@@ -1,0 +1,236 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{meta.meta_title}} - {{meta.meta_description}}{% endblock title %}
+{% block title1 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+<!-- Add the jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Add Owl Carousel styles and script -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+<style>
+    .active-dark-mode .title-white{
+        color: white;
+        font-weight: 500;
+        font-size: 22px;
+        font-family: var(--font-primary);
+        margin-bottom: 15px;
+    }
+    .title-white{
+        color: none;
+        font-weight: 500;
+        font-size: 22px;
+        font-family: var(--font-primary);
+        margin-bottom: 15px;
+    }
+    .testimonial {
+        padding: 20px;
+        border: 1px solid #eee;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        
+    }
+    
+    .testimonial p {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    
+    .testimonial h4 {
+        text-align: right;
+        font-size: 14px;
+        font-style: italic;
+    }
+
+    .testimonial h3 {
+        width : 100%;
+        border-bottom: 1px solid #707070;
+        padding-bottom:20px;
+    }
+    
+</style>
+        <!--=====================================-->
+        <!--=       Breadcrumb Area Start       =-->
+        <!--=====================================-->
+        <div class="breadcrum-area">
+            <div class="container">
+               <div class="breadcrumb">
+                  <h1 class="title h2">{{meta.meta_title}}</h1>
+               </div>
+            </div>
+            <ul class="shape-group-8 list-unstyled">
+               <li class="shape shape-1" data-sal="slide-right" data-sal-duration="500" data-sal-delay="100">
+                  <img src="{% static 'front/assets/media/others/bubble-9.png'  %}" alt="Bubble">
+               </li>
+               <li class="shape shape-3" data-sal="slide-up" data-sal-duration="500" data-sal-delay="300">
+                  <img src="{% static 'front/assets/media/others/line-4.png'  %}" alt="Line">
+               </li>
+            </ul>
+         </div>
+        <!--=====================================-->
+        <!--=       About  Area Start        =-->
+        <!--=====================================-->
+        {% if about %}
+        <section class="section section-padding case-study-featured-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="case-study-featured">
+                            <div class="section-heading heading-left">
+                                <span class="title-white">{% if about.title_white %}{{ about.title_white }}{% endif %}</span> <span class="subtitle">{% if about.title_red %}{{ about.title_red }}{% endif %}</span>
+                                <h2 class="title">{{ about.heading }}</h2>
+                                {{ about.description|safe }}
+                                {% if about.button_text %}
+                                <a href="{{ about.button_url }}" class="axil-btn btn-fill-primary btn-large">{{ about.button_text }}</a>
+                                {% endif %}
+                            </div>
+                            <div class="case-study-counterup">
+                                {% if about.years_of_experience %}
+                                    <div class="single-counterup">
+                                        <h2 class="count-number">
+                                            <span class="number" data-count="{{ about.years_of_experience }}">{{ about.years_of_experience }}</span>
+                                            <span class="symbol">+</span>
+                                        </h2>
+                                        <span class="counter-title">{{about.count_title1}}</span>
+                                    </div>
+                                {% endif %}
+                                {% if about.project_delivered %}
+                                    <div class="single-counterup">
+                                        <h2 class="count-number">
+                                            <span class="number" data-count="{{ about.project_delivered }}">{{ about.project_delivered }}</span>
+                                            <span class="symbol">+</span>
+                                        </h2>
+                                        <span class="counter-title">{{about.count_title2}}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!--=====================================-->
+        <!--=   Team Section     =-->
+        <!--=====================================-->
+        {% if teams %}
+        <section class="section section-padding bg-color-dark pb--70 pb_lg--20 pb_md--0">
+            <div class="container">
+                <div class="section-heading heading-light">
+                    <span class="subtitle">{{team_section_title.title_small}}</span>
+                    <h2 class="title mb--50">{{team_section_title.title_big}}</h2>
+                </div>
+                <div class="row">
+                    {% for team in teams %}
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="team-grid">
+                            <div class="thumbnail">
+                                <a href="{% url 'teamSigngle' team.slug %}">
+                                    {% if  team.image %}
+                                    <img src="{{ team.image.url }}" width="200" alt="Team Member">
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="content">
+                                <h4 class="title"><a href="{% url 'teamSigngle' team.slug %}">{{ team.name }}</a></h4>
+                                <span class="designation">{{ team.position }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+            <ul class="list-unstyled shape-group-10">
+                <li class="shape shape-1"><img src="{% static 'front/assets/media/others/circle-1.png' %}" alt="Circle"></li>
+                <li class="shape shape-2"><img src="{% static 'front/assets/media/others/line-3.png' %}" alt="Circle"></li>
+                <li class="shape shape-3"><img src="{% static 'front/assets/media/others/bubble-5.png' %}" alt="Circle"></li>
+            </ul>
+        </section>
+        {% endif %}
+         <!--=====================================-->
+        <!--=        Testimonial Area Start      =-->
+        <!--=====================================-->
+        {% if testimonials %}
+        <section class="section section-padding">
+            <div class="container">
+                <div class="section-heading heading-left">
+                    <span class="subtitle">{{testimonials_section_title.title_small|safe}}</span>
+                    <h2 class="title">{{testimonials_section_title.title_big|safe}}</h2>
+                </div>
+                <div class="owl-carousel owl-theme testimonial-carousel">
+                    {% for testimonial in testimonials %}
+                    <div class="testimonial">
+                        <h3>{{testimonial.title}}</h3>
+                        <p>" {{testimonial.description|safe}} "</p>
+                        <h4>{{testimonial.client_name}} - {{testimonial.client_designation}}</h4>
+                    </div>
+                    {% endfor %}
+                </div>                
+                
+            </div>
+        </section>
+        {% endif %}
+
+         <!--=====================================-->
+        <!--=        Client Area Start       	=-->
+        <!--=====================================-->
+        {% if clients %}
+        <section class="section section-padding bg-color-dark">
+            <div class="container">
+                <div class="section-heading heading-light">
+                    <span class="subtitle">{{client_section_title.title_small|safe}}</span>
+                    <h2 class="title">{{client_section_title.title_big|safe}}</h2>
+                </div>
+                <div class="row">
+                    {% for client in clients %}
+                        <div class="col-lg-3 col-6">
+                            <div class="brand-grid active">
+                                <a href="{{client.company_url}}">
+                                    {% if client.image %}
+                                        <img src="{{client.image.url}}" width="200" alt="{{client.company_name}}">
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <ul class="list-unstyled shape-group-10">
+                <li class="shape shape-1"><img src="{% static 'front/assets/media/others/line-9.png'  %}" alt="Circle"></li>
+            </ul>
+        </section>
+        {% endif %}
+        <script>
+            $(document).ready(function(){
+                $(".testimonial-carousel").owlCarousel({
+                    loop: true,
+                    {% if selected_language.is_rtl %}
+                        rtl:true,
+                    {% endif %}
+                    margin: 10,
+                    autoplay: true,
+                    autoplayTimeout: 5000,
+                    smartSpeed: 800,
+                    dots: true,
+                    nav: true,
+                    responsive: {
+                        0: { // from 0px up
+                            items: 1 // show 1 testimonial
+                        },
+                        600: { // from 600px up
+                            items: 2 // still show 1 testimonial for tablets
+                        },
+                        1000: { // from 1000px up
+                            items: 3 // show 2 testimonials side by side on larger screens
+                        }
+                    }
+                });
+            });
+            
+           </script>
+        {% endblock content %}

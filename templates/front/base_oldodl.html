@@ -1,0 +1,632 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="en" dir="{% if selected_language.is_rtl %}rtl{% endif %}">
+
+<head>
+    <!-- Meta Data -->
+    <title>{% block title %}{% endblock title %}</title>
+
+      <!-- Meta Data -->
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+      <meta name="description" content="{{seo_settings.meta_description}}">
+      {% if request.is_secure %}
+        <link rel="canonical" href="https://{{ request.get_host }}">
+      {% else %}
+        <link rel="canonical" href="http://{{ request.get_host }}">
+      {% endif %}
+        <meta name="keywords" content="{{seo_settings.seo_keywords}}" />
+      {% if request.is_secure %}
+        <meta name="publisher" content="https://{{ request.get_host }}">
+      {% else %}
+        <meta name="publisher" content="http://{{ request.get_host }}">
+      {% endif %}
+        <meta name="copyright" content="{{header_footer.footer_copyright}}" />
+        <meta name="author" content="{{settings.author}}" />
+        <meta name="contact" content="{{settings.email_address}}" />
+    
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="subjects" content="{{settings.name}}" />
+        <meta name="classification" content="{{settings.name}}" />
+    
+        <meta itemprop="name" content="{% block title1 %}{% endblock title1 %}">
+        <meta itemprop="description" content="{{seo_settings.meta_description}}">
+        {% if seo_settings.meta_image %}
+        <meta itemprop="image" content="{% if request.is_secure %}https://{{ request.get_host }}{{seo_settings.meta_image.url}}{% else %}http://{{ request.get_host }}{{seo_settings.meta_image.url}}{% endif %}">
+        {% endif %}
+        
+        <meta property="og:title" content="{% block title2 %}{% endblock title2 %}" />
+        <meta property="og:type" content="{{seo_settings.seo_keywords}}" />
+      {% if request.is_secure %}
+        <meta property="og:url" content="https://{{ request.get_host }}" />
+      {% else %}
+        <meta property="og:url" content="http://{{ request.get_host }}" />
+      {% endif %}
+      {% if seo_settings.meta_image %}
+        <meta property="og:image" content="{% if request.is_secure %}https://{{ request.get_host }}{{seo_settings.meta_image.url}}{% else %}http://{{ request.get_host }}{{seo_settings.meta_image.url}}{% endif %}" />
+        {% endif %}
+        <meta property="og:site_name" content="{{settings.name}}" />
+        <meta property="og:description" content="{{seo_settings.meta_description}}" />
+    <!-- Favicon -->
+    {% if settings.favicon %}
+    <link rel="shortcut icon" href="{{settings.favicon.url}}" type="image/x-icon">
+    <link rel="icon" href="{{settings.favicon.url}}" type="image/x-icon">
+    {% endif %}
+
+    <!--CSS Files-->
+    <link rel="stylesheet" href="{% static 'front/assets/css/vendor/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'front/assets/css/vendor/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'front/assets/css/vendor/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'front/assets/css/vendor/slick-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'front/assets/css/vendor/sal.css' %}">
+    <link rel="stylesheet" href="{% static 'front/assets/css/vendor/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'front/assets/css/vendor/green-audio-player.min.css' %}">
+    <link rel="stylesheet" href="{% static 'front/assets/css/vendor/odometer-theme-default.css' %}">
+    <!-- Site Stylesheet -->
+    <link rel="stylesheet" href="{% url 'front_styles' %}">
+
+
+
+    {% if settings.messenger_is_active %}
+        {{settings.facebook_chat_code|safe}}
+    {% endif %}
+
+    {% if settings.facebook_pixel_code %}
+        {{settings.facebook_pixel_code|safe}}
+    {% endif %}
+
+    {% if settings.analytics_code %}
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{settings.analytics_code}}"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '{{settings.analytics_code}}');
+        </script>
+    {% endif %}
+
+    {% if settings.custom_css %}
+        <style>
+            {{ settings.custom_css }}
+        </style>
+    {% endif %}
+
+    
+
+</head>
+
+<body class="sticky-header">
+    {% include "front/components/lang_switch.html" %}
+    <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  	<![endif]-->
+    <a href="#main-wrapper" id="backto-top" class="back-to-top">
+        <i class="far fa-angle-double-up"></i>
+    </a>
+
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+
+    <div class="my_switcher d-none d-lg-block">
+        <ul>
+            <li title="Light Mode">
+                <a href="javascript:void(0)" class="setColor light" data-theme="light">
+                    <i class="fal fa-lightbulb-on"></i>
+                </a>
+            </li>
+            <li title="Dark Mode">
+                <a href="javascript:void(0)" class="setColor dark" data-theme="dark">
+                    <i class="fas fa-moon"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="main-wrapper" class="main-wrapper">
+
+        <!--=====================================-->
+        <!--=        Header Area Start       	=-->
+        <!--=====================================-->
+        <header class="header axil-header {% if request.path != '/' %}header-style-1 {% else %}header-style-4{% endif %}">
+            <div id="axil-sticky-placeholder"></div>
+            <div class="axil-mainmenu">
+                <div class="container">
+                    <div class="header-navbar">
+                        <div class="header-logo">
+                            <a href="{% url 'homePage' %}" title="{{settings.name}}">
+                                <img class="light-version-logo" width="{% if settings.logo_width %}{{settings.logo_width}}{% else %}250{% endif %}" src="{{settings.logo.url}}" alt="logo">
+                            </a>
+                            <a href="{% url 'homePage' %}" title="{{settings.name}}">
+                                <img class="dark-version-logo" width="{% if settings.logo_width %}{{settings.logo_width}}{% else %}250{% endif %}" src="{{settings.logo_dark.url}}" alt="logo">
+                            </a>
+                        </div>
+                        <div class="header-main-nav">
+                            <!-- Start Mainmanu Nav -->
+                            <nav class="mainmenu-nav" id="mobilemenu-popup">
+                                <div class="d-block d-lg-none">
+                                    <div class="mobile-nav-header">
+                                        <div class="mobile-nav-logo">
+                                            <a href="{% url "homePage" %}">
+                                                <img class="light-mode" witdh="{% if settings.logo_width %}{{settings.logo_width}}{% else %}250{% endif %}" src="{{settings.logo.url}}" alt="Site Logo">
+                                                <img class="dark-mode" width="{% if settings.logo_width %}{{settings.logo_width}}{% else %}250{% endif %}" src="{{settings.logo_dark.url}}" alt="Site Logo">
+                                            </a>
+                                        </div>
+                                        <button class="mobile-menu-close" data-bs-dismiss="offcanvas"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                                {% if settings.default_menu_is_active %}
+                                <ul class="mainmenu">
+                                    <li><a href="{% url "homePage" %}" {% if request.path == '/' %}class="active"{% endif %}>Home</a></li>
+                                    <li><a href="{% url "aboutUS" %}" {% if request.path == '/about-us/' %}class="active"{% endif %}>About</a></li>
+                                    <li><a href="{% url "frontServicePage" %}" {% if request.path == '/services/' %}class="active"{% endif %}>Services</a></li>
+                                    <li><a href="{% url "frontProjectPage" %}" {% if request.path == '/projects/' %}class="active"{% endif %}>Projects</a></li>
+                                    <li><a href="{% url "pricingPage" %}" {% if request.path == '/pricing/' %}class="active"{% endif %}>Pricing</a></li>
+                                    <li><a href="{% url "blogs" %}" {% if request.path == '/blogs/' %}class="active"{% endif %}>Blogs</a></li>
+                                    <li><a href="{% url "contactPageFront" %}" {% if request.path == '/contact-us/' %}class="active"{% endif %}>Contact Us</a></li>
+                                </ul>
+                                {% else %}
+                                <ul class="mainmenu">
+                                    {% for menu in menus %}
+                                    <li><a href="{{ menu.url }}" {% if request.path == menu.url %}class="active"{% endif %}>{{ menu.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </nav>
+                            <!-- End Mainmanu Nav -->
+                        </div>
+                        
+                        <!-- Search Icon Between Menu and Action Button -->
+                        <div class="header-search-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+        
+                        <!-- Search Popup -->
+                        <div id="search-popup-container">
+                            <div id="search-popup">
+                                <form action="{% url 'combined_search' %}" method="GET" >
+                                    <input type="text" id="popup-search-input" name="search" placeholder="Type to search..." required>
+                                    <button id="popup-search-button" type="submit">Search</button>
+                                </form>
+                            </div>
+                        </div>                        
+        
+                        <div class="header-action">
+                            <ul class="list-unstyled">
+                                <li class="sidemenu-btn d-lg-block d-none">
+                                    <button class="btn-wrap btn-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenuRight">
+                                        <span></span><span></span><span></span>
+                                    </button>
+                                </li>
+                                <li class="mobile-menu-btn sidemenu-btn d-lg-none d-block">
+                                    <button class="btn-wrap btn-dark" data-bs-toggle="offcanvas" data-bs-target="#mobilemenu-popup">
+                                        <span></span><span></span><span></span>
+                                    </button>
+                                </li>
+                                <li class="my_switcher d-block d-lg-none">
+                                    <ul>
+                                        <li title="Light Mode">
+                                            <a href="javascript:void(0)" class="setColor light" data-theme="light">
+                                                <i class="fal fa-lightbulb-on"></i>
+                                            </a>
+                                        </li>
+                                        <li title="Dark Mode">
+                                            <a href="javascript:void(0)" class="setColor dark" data-theme="dark">
+                                                <i class="fas fa-moon"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+
+    {% block content %}{% endblock content %}
+
+
+
+        <!--=====================================-->
+        <!--=     Call To Action Area Start     =-->
+        <!--=====================================-->
+        <section class="section call-to-action-area">
+            <div class="container">
+                <div class="call-to-action">
+                    <div class="section-heading heading-light" style="text-align:center;">
+                        <span class="subtitle">{{header_footer.footer_col1_subtitle}}</span>
+                        <h2 class="title">{{header_footer.footer_col1_title}}</h2>
+                        <a href="{{header_footer.footer_col1_button_url}}" class="axil-btn btn-large btn-fill-white">{{header_footer.footer_col1_button}}</a>
+                    </div>
+                    <div class="thumbnail">
+                        <div class="larg-thumb" data-sal="zoom-in" data-sal-duration="600" data-sal-delay="100">
+                            <img class="paralax-image" src="{% static 'front/assets/media/others/chat-group.png' %}" alt="Chat">
+                        </div>
+                        <ul class="list-unstyled small-thumb">
+                            <li class="shape shape-1" data-sal="slide-right" data-sal-duration="800" data-sal-delay="400">
+                                <img class="paralax-image" src="{% static 'front/assets/media/others/laptop-poses.png' %}" alt="Laptop">
+                            </li>
+                            <li class="shape shape-2" data-sal="slide-left" data-sal-duration="800" data-sal-delay="300">
+                                <img class="paralax-image" src="{% static 'front/assets/media/others/bill-pay.png' %}" alt="Bill">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <ul class="list-unstyled shape-group-9">
+                <li class="shape shape-2"><img src="{% static 'front/assets/media/others/bubble-16.png' %}" alt="Comments"></li>
+               
+                <li class="shape shape-4"><img src="{% static 'front/assets/media/others/bubble-14.png' %}" alt="Comments"></li>
+                <li class="shape shape-5"><img src="{% static 'front/assets/media/others/bubble-16.png' %}" alt="Comments"></li>
+
+                <li class="shape shape-7"><img src="{% static 'front/assets/media/others/bubble-16.png' %}" alt="Comments"></li>
+            </ul>
+        </section>
+        <!--=====================================-->
+        <!--=        Footer Area Start       	=-->
+        <!--=====================================-->
+        <footer class="footer-area">
+            <div class="container">
+                <div class="footer-top">
+                    <div class="footer-social-link">
+                        <ul class="list-unstyled">
+                            {% if header_footer.facebook %}
+                                <li><a href="{{header_footer.facebook}}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="100"><i class="fab fa-facebook-f"></i></a></li>
+                            {% endif %}
+
+                            {% if header_footer.twitter %}
+                                <li><a href="{{header_footer.twitter}}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="200"><i class="fab fa-twitter"></i></a></li>
+                            {% endif %}
+
+                            {% if header_footer.pinterest %}
+                                <li><a href="{{header_footer.pinterest}}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="300"><i class="fab fa-pinterest-p"></i></a></li>
+                            {% endif %}
+                            
+                            {% if header_footer.linkedin %}
+                                <li><a href="{{header_footer.linkedin}}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="400"><i class="fab fa-linkedin-in"></i></a></li>
+                            {% endif %}
+
+                            {% if header_footer.instagram %}
+                                <li><a href="{{header_footer.instagram}}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="500"><i class="fab fa-instagram"></i></a></li>
+                            {% endif %}
+
+                            {% if header_footer.youtube %}
+                                <li><a href="{{header_footer.youtube}}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="500"><i class="fab fa-youtube"></i></a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-main">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-5" data-sal="slide-right" data-sal-duration="800" data-sal-delay="100">
+                            <div class="footer-widget border-end">
+                                <div class="footer-newsletter">
+                                    <h2 class="title">{{header_footer.subscribe_form_title}}</h2>
+                                    <p>{{header_footer.subscribe_form_description}}</p>
+                                        <form>
+                                            <div class="input-group">
+                                                <input type="email" class="form-control" placeholder="{{header_footer.subscribe_form_placeholder}}">
+                                                <button class="subscribe-btn" type="submit">{{header_footer.subscribe_form_button}}</button>
+                                                {% csrf_token %}
+                                            </div>
+                                        </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-7" data-sal="slide-left" data-sal-duration="800" data-sal-delay="100">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    {% if global_projects %}
+                                        <div class="footer-widget">
+                                            <h6 class="widget-title">{{header_footer.project_list_title}}</h6>
+                                            <div class="footer-menu-link">
+                                                <ul class="list-unstyled">
+                                                    {% for project in global_projects|slice:":5" %}
+                                                        <li><a href="{% url 'projectDetail' project.slug %}">{{project.title}}</a></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="footer-widget">
+                                        <h6 class="widget-title">{{header_footer.footer_col2_title1}}</h6>
+                                        <div class="footer-menu-link">
+                                            {{header_footer.footer_col2_description1|safe}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="footer-widget">
+                                        <h6 class="widget-title">{{header_footer.footer_col2_title2}}</h6>
+                                        <div class="footer-menu-link">
+                                            {{header_footer.footer_col2_description2|safe}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom" data-sal="slide-up" data-sal-duration="500" data-sal-delay="100">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="footer-copyright">
+                                <span class="copyright-text">{{header_footer.footer_copyright|safe}}.</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="footer-bottom-link">
+                                <ul class="list-unstyled">
+                                    <li><a href="{% url 'policyPageFront' %}">{{header_footer.policy_page_title}}</a></li>
+                                    <li><a href="{% url 'termsPageFront' %}">{{header_footer.terms_page_title}}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+
+
+        <!--=====================================-->
+        <!--=       Offcanvas Menu Area       	=-->
+        <!--=====================================-->
+        <div class="offcanvas offcanvas-end header-offcanvasmenu" tabindex="-1" id="offcanvasMenuRight">
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="row ">
+                    <div class="col-lg-5 col-xl-5">
+                        {% if settings.default_menu_is_active %}
+                        <ul class="main-navigation list-unstyled">
+                            <li>
+                                <a href="{% url "homePage" %}" {% if request.path == '/' %}class="active"{% endif %}>Home</a>
+                            </li>
+                            <li>
+                                <a href="{% url "aboutUS" %}" {% if request.path == '/about-us/' %}class="active"{% endif %}>About</a>
+                            </li>
+                            <li>
+                                <a href="{% url "frontServicePage" %}" {% if request.path == '/services/' %}class="active"{% endif %}>Services</a>
+                            </li>
+                            <li>
+                                <a href="{% url "frontProjectPage" %}" {% if request.path == '/projects/' %}class="active"{% endif %}>Projects</a>
+                            </li>
+                            <li>
+                                <a href="{% url "pricingPage" %}" {% if request.path == '/pricing/' %}class="active"{% endif %}>Pricing</a>
+                            </li>
+                            <li>
+                                <a href="{% url "blogs" %}" {% if request.path == '/blogs/' %}class="active"{% endif %}>Blogs</a>
+                            </li>
+                            <li>
+                                <a href="{% url "contactPageFront" %}" {% if request.path == '/contact-us/' %}class="active"{% endif %}>Contact Us</a>
+                            </li>
+                        </ul>
+                        {% else %}
+                        <ul class="main-navigation list-unstyled">
+                            {% for menu in menus %}
+                                <li>
+                                    <a href="{{menu.url}}">{{menu.name}}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-lg-7 col-xl-7">
+                        <div class="contact-info-wrap">
+                            <div class="contact-inner">
+                               {% if settings.address %}
+                                <address class="address">
+                                    <span class="title">Contact Information</span>
+                                    <p>{{ settings.address }} <br> {{ settings.state }} {{ settings.Zip }}, {{ settings.country }}</p>
+                                </address>
+                                {% endif %}
+                                {% if settings.phone_or_whatsapp %}
+                                <address class="address">
+                                    <span class="title">Call Now.</span>
+                                    <a class="tel" href="tel:{{ settings.phone_or_whatsapp }}"><i class="fas fa-phone"></i>{{ settings.phone_or_whatsapp }}</a>
+                                </address>
+                                {% endif %}
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        {% if not request.user.is_authenticated %}
+                                            <a href="{% url 'signIn' %}" class="btn w-100" style="color: #fff; background-color: {{settings.primary_color}}; border-color: {{settings.primary_color}};"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                                        {% endif %}
+
+                                        {% if request.user.is_authenticated %}
+                                                <a href="{% url 'signIn' %}" class="btn w-100" style="color: #fff; background-color: {{settings.primary_color}}; border-color: {{settings.primary_color}};"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% if not request.user.is_authenticated %}
+                                            <a href="{% url 'signUp' %}" class="btn w-100" style="color: #fff; background-color: {{settings.primary_color}}; border-color: {{settings.primary_color}};"><i class="fas fa-user-plus"></i> Sign Up</a>
+                                        {% endif %}
+                                        {% if request.user.is_authenticated %}
+                                            <a href="{% url 'logOut' %}" class="btn w-100" style="color: #fff; background-color: {{settings.primary_color}}; border-color: {{settings.primary_color}};"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script>
+        // Show the search popup when the icon is clicked
+            document.querySelector('.header-search-icon').addEventListener('click', function() {
+                document.getElementById('search-popup-container').style.display = 'flex';
+            });
+
+            // Hide the search popup when clicking outside the search box
+            document.getElementById('search-popup-container').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+
+    </script>
+    
+
+    {% if settings.whatsapp_is_active %}
+        <a target="_blank" class="wp_button" href="https://wa.me/{{settings.phone_or_whatsapp}}">
+            <i class="icon">
+                <svg height="682pt" viewBox="-23 -21 682 682.66669" width="682pt" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m544.386719 93.007812c-59.875-59.945312-139.503907-92.9726558-224.335938-93.007812-174.804687 0-317.070312 142.261719-317.140625 317.113281-.023437 55.894531 14.578125 110.457031 42.332032 158.550781l-44.992188 164.335938 168.121094-44.101562c46.324218 25.269531 98.476562 38.585937 151.550781 38.601562h.132813c174.785156 0 317.066406-142.273438 317.132812-317.132812.035156-84.742188-32.921875-164.417969-92.800781-224.359376zm-224.335938 487.933594h-.109375c-47.296875-.019531-93.683594-12.730468-134.160156-36.742187l-9.621094-5.714844-99.765625 26.171875 26.628907-97.269531-6.269532-9.972657c-26.386718-41.96875-40.320312-90.476562-40.296875-140.28125.054688-145.332031 118.304688-263.570312 263.699219-263.570312 70.40625.023438 136.589844 27.476562 186.355469 77.300781s77.15625 116.050781 77.132812 186.484375c-.0625 145.34375-118.304687 263.59375-263.59375 263.59375zm144.585938-197.417968c-7.921875-3.96875-46.882813-23.132813-54.148438-25.78125-7.257812-2.644532-12.546875-3.960938-17.824219 3.96875-5.285156 7.929687-20.46875 25.78125-25.09375 31.066406-4.625 5.289062-9.242187 5.953125-17.167968 1.984375-7.925782-3.964844-33.457032-12.335938-63.726563-39.332031-23.554687-21.011719-39.457031-46.960938-44.082031-54.890626-4.617188-7.9375-.039062-11.8125 3.476562-16.171874 8.578126-10.652344 17.167969-21.820313 19.808594-27.105469 2.644532-5.289063 1.320313-9.917969-.664062-13.882813-1.976563-3.964844-17.824219-42.96875-24.425782-58.839844-6.4375-15.445312-12.964843-13.359374-17.832031-13.601562-4.617187-.230469-9.902343-.277344-15.1875-.277344-5.28125 0-13.867187 1.980469-21.132812 9.917969-7.261719 7.933594-27.730469 27.101563-27.730469 66.105469s28.394531 76.683594 32.355469 81.972656c3.960937 5.289062 55.878906 85.328125 135.367187 119.648438 18.90625 8.171874 33.664063 13.042968 45.175782 16.695312 18.984374 6.03125 36.253906 5.179688 49.910156 3.140625 15.226562-2.277344 46.878906-19.171875 53.488281-37.679687 6.601563-18.511719 6.601563-34.375 4.617187-37.683594-1.976562-3.304688-7.261718-5.285156-15.183593-9.253906zm0 0" fill-rule="evenodd"></path>
+                </svg>
+            </i>
+        </a>
+    {% endif %}
+
+    
+
+
+    
+    <!-- Jquery Js -->
+    <script src="{% static 'front/assets/js/vendor/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/bootstrap.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/odometer.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/jquery-appear.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/slick.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/sal.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/js.cookie.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/jquery.style.switcher.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/tilt.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/green-audio-player.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/vendor/jquery.nav.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.10/typed.js" integrity="sha512-tQQXRDB2wEmuJGtFrmmoFYzNTq8StA1XJrfO0OQbbTxd9G0CwaTDL6/C1y805IlvBVrMwOqob1kf6r/2U5XXVg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Add Owl Carousel styles and script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <!-- Site Scripts -->
+    <script src="{% static 'front/assets/js/app.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+<!-- Your other HTML content for the page -->
+
+
+<!--Subscribe Form-->
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    $(document).ready(function() {
+        $('.subscribe-btn').on('click', function(e) {
+            e.preventDefault();
+            let email = $(this).prev().val();
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'ajax_subscribe' %}",
+                data: {
+                    'email': email,
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if(data.status === 'success') {
+                        toastr.success(data.message);
+                        $('.form-control').val('');
+                    } else {
+                        toastr.error(data.message);
+                    }
+                }                
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Hide the alert initially
+
+        $('#contact-form').on('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            
+            // Get values from the form inputs
+            let name = $('input[name="name"]').val();
+            let email = $('input[name="email"]').val();
+            let phone = $('input[name="phone"]').val();
+
+            // Prepare the data to be sent via AJAX
+            let formData = {
+                'name': name,
+                'email': email,
+                'phone': phone,
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+            };
+
+            // Send an AJAX POST request
+            $.ajax({
+                type: "POST",
+                url: "{% url 'QuoteSubmit' %}",
+                data: formData,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+
+                        // Show the toastr success notification
+                        toastr.success(data.message);
+
+                        // Clear the form fields after successful submission
+                        $('.cntform input[type="text"], .cntform input[type="email"], .cntform input[type="number"]').val('');
+                    } else {
+                        // Show the Bootstrap error alert
+                        $('#custom-alert').removeClass('alert-success').addClass('alert-danger');
+                        $('#custom-alert').html('<strong>Error:</strong> ' + data.message);
+                        $('#custom-alert').show();
+
+                        // Show the toastr error notification
+                        toastr.error(data.message);
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while submitting the form.');
+                }
+            });
+        });
+    });
+</script>
+{% if settings.custom_js %}
+<script>
+    {{ settings.custom_js }}
+</script>
+{% endif %}
+</body>
+
+</html>

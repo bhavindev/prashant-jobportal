@@ -1,0 +1,61 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+</style>
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">CRM /</span> Items / <a href="{% url 'crmItemCategories' %}">Categories</a> / Create
+              </h4>
+            <!--Table Card-->
+            <div class="container">
+                <form method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {{form.media}}                  
+                  <div class="row mb-3">
+                      <div class="col-md-6 mb-3">
+                          <div class="card">
+                              <div class="card-body">
+                                  <label for="{{ form.name.id_for_label }}" class="form-label">Name <span class="text-danger">*</span></label>
+                                  {{ form.name }}
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.slug.id_for_label }}" class="form-label">Slug (Auto Generate) <span class="text-danger">*</span></label>
+                                {{ form.slug }}
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  
+                  <button class="btn btn-primary mb-3" type="submit">Save</button>
+              </form>
+              
+            </div>  
+
+          </div>
+        <!-- / Content -->
+
+
+    </div>
+    <!-- Content wrapper -->
+
+{% endblock content %}

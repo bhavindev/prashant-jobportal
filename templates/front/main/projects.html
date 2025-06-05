@@ -1,0 +1,63 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{meta.meta_title}} - {{meta.meta_description}}{% endblock title %}
+{% block title1 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+        <!--=====================================-->
+        <!--=       Breadcrumb Area Start       =-->
+        <!--=====================================-->
+        <div class="breadcrum-area">
+            <div class="container">
+               <div class="breadcrumb">
+                  <h1 class="title h2">{{meta.meta_title}}</h1>
+               </div>
+            </div>
+            <ul class="shape-group-8 list-unstyled">
+               <li class="shape shape-1" data-sal="slide-right" data-sal-duration="500" data-sal-delay="100">
+                  <img src="{% static 'front/assets/media/others/bubble-9.png'  %}" alt="Bubble">
+               </li>
+               <li class="shape shape-3" data-sal="slide-up" data-sal-duration="500" data-sal-delay="300">
+                  <img src="{% static 'front/assets/media/others/line-4.png'  %}" alt="Line">
+               </li>
+            </ul>
+         </div>
+        <!--=====================================-->
+        <!--=       Projects  Area Start        =-->
+        <!--=====================================-->
+        {% if projects %}
+        <section class="section section-padding-equal project-column-4 pt--200 pt_md--80 pt_sm--60">
+            <div class="container">
+                <div class="section-heading heading-left">
+                    <span class="subtitle">{{project_section_title.title_small|safe}}</span>
+                    <h2 class="title">{{project_section_title.title_big|safe}}</h2>
+                </div>
+                <div class="axil-isotope-wrapper">
+                    <div class="isotope-button isotope-project-btn">
+                        <button data-filter="*" class="is-checked"><span class="filter-text">{{project_section_title.all_work_text|safe}}</span></button>
+                        {% for category in project_categories %}
+                        <button data-filter=".{{category.slug}}"><span class="filter-text">{{category.title}}</span></button>
+                        {% endfor %}
+                    </div>
+                    <div class="row row-35 isotope-list">
+                        {% for project in projects %}  
+                            <div class="col-md-4 project {{project.category.slug}}">
+                                <div class="project-grid">
+                                    <div class="thumbnail">
+                                        <a href="{% url 'projectDetail' project.slug %}">
+                                            <img src="{{project.image.url}}" alt="project">
+                                        </a>
+                                    </div>
+                                    <div class="content">
+                                        <h4 class="title"><a href="{% url 'projectDetail' project.slug %}">{{project.title}}</a></h4>
+                                        <span class="subtitle">{{project.category}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+{% endblock content %}

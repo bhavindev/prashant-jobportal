@@ -1,0 +1,127 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+.icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .green {
+    background-color: green;
+    color: white;
+  }
+  
+  .red {
+    background-color: red;
+    color: white;
+  }
+</style>
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="fw-bold py-3 mb-4">
+                        <span class="text-muted fw-light">Dashboard /</span> Agreements
+                    </h4>
+                </div>
+            </div>
+            <!--Table Card-->
+            <div class="card">
+                <div class="card-datatable table-responsive">
+                  <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="card-header flex-column flex-md-row">
+                      <div class="head-label">
+                        <h5 class="card-title mb-0">All Agreements</h5>
+                      </div>
+                      <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                      </div>
+                    </div>
+                    <!-- Your button -->
+                    <div class="container mb-4">
+                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr>
+                        <th style="width: 0px;" >#</th>
+                        <th style="width: 130px;" >Service</th>
+                        <th style="width: 150px;">Signed As</th>
+                        <th style="width: 150px;">Is Signed</th>
+                        <th style="width: 180px;">Is Approved</th>
+                        <th style="width: 0px;" class="sorting_disabled dtr-hidden">Actions</th>                           
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in user_agreement %}
+                            <tr class="odd">
+                                <td>{{ forloop.counter }}</td>
+                                <td><span class="emp_name text-truncate"><a href="{% url 'userAgreementDetail' data.id %}">{{ data.service }}</a></span></td>
+                                <td>{{ data.client }}</td>
+                                <td>
+                                    {% if data.is_signed %}
+                                        <span class="icon green">&#10003;</span> <!-- Check sign in green -->
+                                    {% else %}
+                                        <span class="icon red">&#10005;</span> <!-- Cross sign in red -->
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.is_approved %}
+                                        <span class="icon green">&#10003;</span> <!-- Check sign in green -->
+                                    {% else %}
+                                        <span class="icon red">&#10005;</span> Pending<!-- Cross sign in red -->
+                                    {% endif %}
+                                </td>
+                                <td class="dtr-hidden" style="">
+                                    <a href="{% url 'userAgreementDetail' data.id %}" class="btn btn-sm btn-icon item-edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                          </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <!-- ... more table rows ... -->
+                      </tbody>
+                      
+                    </table>
+                </div>
+              </div> <!--Table Card-->         
+
+          </div>
+        <!-- / Content -->
+
+
+    </div>
+    <!-- Content wrapper -->
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                pageLength: 10, // Set the initial page length to 10
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Allow changing page length
+                info: true, // Show the item count
+                search: true // Enable search
+            });
+        });
+    </script>
+{% endblock content %}

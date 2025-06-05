@@ -1,0 +1,506 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin | {{ seo_settings.meta_title }}">
+    <meta name="author" content="{{ settings.author }}">
+    <link rel="icon" href="{% if settings.favicon %}{{settings.favicon.url}}{% endif %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% if settings.favicon %}{{settings.favicon.url}}{% endif %}" type="image/x-icon">
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+     <!-- jQuery 3.6.0 -->
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
+<link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/font-awesome.css' %}">
+    <!-- ico-font-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/icofont.css' %}">
+    <!-- Themify icon-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/themify.css' %}">
+    <!-- Flag icon-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/flag-icon.css' %}">
+    <!-- Feather icon-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/feather-icon.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/scrollbar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/animate.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/chartist.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/prism.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/vector-map.css' %}">
+    <!-- Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/bootstrap.css' %}">
+    <!-- App css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/style.css' %}">
+    <link id="color" rel="stylesheet" href="{% static 'admin/assets/css/color-1.css' %}" media="screen">
+    <!-- Responsive css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/responsive.css' %}">
+   
+    <style>
+
+      img.img-fluid.for-light {
+        width: 154px !important;
+        margin-top: 11px !important;
+    }
+    i.icon-settings, i.icofont-growth {
+      color: white;
+      font-size: 17px;
+      margin-right: 15px;
+      vertical-align: text-bottom;
+      float: none;
+      stroke-width: 2.3px;
+      color: #fff;
+  }
+  
+  canvas#revenueVsExpenseChart {
+    height: 210px;
+    width: 100% !important;
+
+    margin-top: -20px;
+    margin-bottom: 20px;
+
+}
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  padding: 2px 7px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+}
+.icofont-site-map{
+  width: 16px;
+  vertical-align: bottom;
+  margin-right: 10px;
+}
+.django-ckeditor-widget {
+  width: 100% !important;
+}
+.ckf{
+  border:none !important; 
+  background:transparent !important; 
+  padding: 0px !important;
+  }
+  .cke {
+    width: 100% !important;
+}
+    </style>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.0/css/dataTables.bootstrap5.min.css">
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.0/js/dataTables.bootstrap5.min.js"></script>
+
+<style>
+ body.dark-only .page-wrapper .page-body-wrapper .page-body .card:not(.email-body) .dataTables_wrapper .dataTables_paginate {
+   border: none !IMPORTANT;
+}
+body.dark-only .page-wrapper .page-body-wrapper .page-body .card:not(.email-body) .page-link {
+
+ background-color: hsla(0,0%,100%,.09) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+ border: none !important;
+ color: #2c323f !important;
+ background: transparent !important;
+}
+.modal-body {
+  max-height: calc(100vh - 200px); /* Adjust the value as needed */
+  overflow-y: auto;
+}
+.modal {
+  overflow: hidden; /* Hide the main modal overflow */
+}
+
+.modal-dialog {
+  max-height: calc(100vh - 100px); /* Adjust the value to your preference */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+/* Style the modal scrollbar */
+.modal-body::-webkit-scrollbar {
+  width: 7px; /* Width of the scrollbar */
+}
+
+/* Track */
+.modal-body::-webkit-scrollbar-track {
+  background: #333; /* Dark background color of the track */
+}
+
+/* Handle */
+.modal-body::-webkit-scrollbar-thumb {
+  background: #888; /* Gray color of the scrollbar handle */
+  border-radius: 6px; /* Rounded corners on the handle */
+}
+
+/* On hover, style the handle */
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Lighter gray color on hover */
+}
+@media (max-width: 576px) {
+.mdbtn {
+    width: 100%;
+    margin-bottom: 10px;
+}
+}
+.mdbtn{
+margin-right:5px;
+}
+</style>
+<!-- ./DataTables CSS -->
+  </head>
+  <body onload="startTime()" class="dark-only">
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+    <!-- Loader starts-->
+    <div class="loader-wrapper">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"> </div>
+      <div class="dot"></div>
+    </div>
+    <!-- Loader ends-->
+   <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <!-- Page Header Start-->
+      <div class="page-header">
+        <div class="header-wrapper row m-0">
+          <div class="header-logo-wrapper col-auto p-0">
+            <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
+            <div class="logo-header-main"><a href="{% url 'admin_home' %}"><img class="img-fluid for-light img-100" src="{% if settings.logo_dark %}{{settings.logo_dark.url}}{% endif %}" alt=""><img class="img-fluid for-dark" src="{% if settings.logo_dark %}{{settings.logo_dark.url}}{% endif %}" alt=""></a></div>
+          </div>
+          <div class="left-header col horizontal-wrapper ps-0">
+            <div class="left-menu-header">
+            </div>
+          </div>
+          <div class="nav-right col-6 pull-right right-header p-0">
+            <ul class="nav-menus">
+              <li class="serchinput">
+                <div class="serchbox"><i data-feather="search"></i></div>
+                <div class="form-group search-form">
+                  <input type="text" placeholder="Search here...">
+                </div>
+              </li>
+             
+              {% if request.user.role == 'Admin' %}
+              <li class="onhover-dropdown">
+                <div class="notification-box">
+                  <i data-feather="bell"></i>
+                  <span class="notification-count">{{opened_ticket.count}}</span>
+                </div>
+                <ul class="notification-dropdown onhover-show-div">
+                  <li><i data-feather="bell">            </i>
+                    <h6 class="f-18 mb-0">Unsolved Tickets</h6>
+                  </li>
+                  {% if opened_ticket %}
+                  {% for ticket in opened_ticket %}
+                    <li>
+                      <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0"><img src="{{ticket.client.userprofile.getUserImage}}" style="width:37px; height:37px; border-radius:500px;" alt="clientImage" srcset=""></div>
+                        <div class="flex-grow-1">
+                          <p><a href="{% url 'ticketView' ticket.id %}">{{ticket.title|slice:":10"}} </a><span class="pull-right">{{ticket.created_at}}</span></p>
+                        </div>
+                      </div>
+                    </li>
+                  {% endfor %}
+                  {% else %}
+                    <li><p>You don't have any unsolved tickets</p></li>
+                  {% endif %}
+
+                  <li><a class="btn btn-primary" href="{% url 'tickets' %}">Check all tickets</a></li>
+                </ul>
+              </li>
+              {% endif %}
+              <li class="maximize"><a href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize-2"></i></a></li>
+              <li class="profile-nav onhover-dropdown">
+                <div class="account-user"><i data-feather="user"></i></div>
+                <ul class="profile-dropdown onhover-show-div">
+                  <li><a href="{% url 'Userprofile' %}"><i data-feather="user"></i><span>Account</span></a></li>
+                  {% if request.user.role == 'Admin' %}
+                  <li><a href="{% url 'websiteSettingsadm' %}"><i data-feather="settings"></i><span>Settings</span></a></li>
+                  {% endif %}
+                  <li><a class="" href="{% if request.is_secure %}https://{{ request.get_host }}/sitemap.xml{% else %}http://{{ request.get_host }}/sitemap.xml{% endif %}"><i class="icofont icofont-site-map"></i><span>Sitemap</span>
+                  </a></li>
+                  <li><a data-bs-toggle="modal" data-bs-target="#admmenuModal"><i data-feather="link"></i><span>Urls</span></a></li>
+                  <li><a href="{% url 'logOut' %}"><i data-feather="log-in"> </i><span>Log Out</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <script class="result-template" type="text/x-handlebars-template">
+            <div class="ProfileCard u-cf">                        
+            <div class="ProfileCard-avatar"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay m-0"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path><polygon points="12 15 17 21 7 21 12 15"></polygon></svg></div>
+            <div class="ProfileCard-details">
+            <div class="ProfileCard-realName">{{name}}</div>
+            </div>
+            </div>
+          </script>
+          <script class="empty-template" type="text/x-handlebars-template"><div class="EmptyMessage">Your search turned up 0 results. This most likely means the backend is down, yikes!</div></script>
+        </div>
+      </div>
+      <!-- Page Header Ends-->
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <!-- Page Sidebar Start-->
+        <div class="sidebar-wrapper">
+          <div>
+            <div class="logo-wrapper"><a href="{% url 'admin_home' %}"><img class="img-fluid for-light" src="{% if settings.logo_dark %}{{settings.logo_dark.url}}{% endif %}" alt=""></a>
+              <div class="back-btn"><i data-feather="grid"></i></div>
+              <div class="toggle-sidebar icon-box-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
+            </div>
+            <div class="logo-icon-wrapper"><a href="index.html">
+                <div class="icon-box-sidebar"><i data-feather="grid"></i></div></a></div>
+            <nav class="sidebar-main">
+              <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
+              <div id="sidebar-menu">
+                <ul class="sidebar-links" id="simple-bar">
+                  <li class="back-btn">
+                    <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
+                  </li>
+                  <li class="pin-title sidebar-list">
+                  </li>
+                  <hr>
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="home"></i><span class="">Dashboards</span></a>
+                    <ul class="sidebar-submenu">
+                      <li><a class="" href="{% url 'admin_home' %}">Admin</a></li>
+                      {% if request.user.role == 'Admin' %}
+                      <li><a class="" href="{% url 'crmHome' %}">CRM</a></li>
+                      <li><a class="" href="{% url "hrmDashboard" %}">HRM</a></li>
+                      {% endif %}
+                    </ul>
+                  </li>
+                  
+                  {% if request.user.role == 'Admin' %}
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="layout"></i><span class="lan">Pages</span></a>
+                    <ul class="sidebar-submenu" style="display: none;">
+                      <li><a href="{% url 'homePageEditadm' %}">Home Page</a></li>
+                      <li><a href="{% url 'aboutPageEditadm' %}">About Page</a></li>
+                      <li><a href="{% url 'servicePageEditadm' %}">Service Page</a></li>
+                      <li><a href="{% url 'pricingPageEditadm' %}">Pricing Page</a></li>
+                      <li><a href="{% url 'projectPageEditadm' %}">Project Page</a></li>
+                      <li><a href="{% url 'blogPageAdmin' %}">Blog Page</a></li>
+                      <li><a href="{% url 'contactPageEditadm' %}">Contact Page</a></li>
+                      <li><a href="{% url 'termsPageAdmin' %}">Terms Page</a></li>
+                      <li><a href="{% url 'policyPageAdmin' %}">Policy Page</a></li>
+                    </ul>
+                  </li>
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="file"></i><span class="lan">Custom Pages</span></a>
+                    <ul class="sidebar-submenu" style="display: none;">
+                      <li><a href="{% url 'adminCustomPage' %}">All Pages</a></li>
+                      <li><a href="{% url 'adminCustomPageCreate' %}">Create Page</a></li>
+                    </ul>
+                  </li>
+                  {% endif %}
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg><span>Blogs</span><div class="according-menu"><i class="fa fa-angle-right"></i></div></a>
+                    <ul class="sidebar-submenu" style="display: none;">
+                      <li><a href="{% url 'adminBlogHome' %}">Blog list</a></li>
+                      <li><a href="{% url 'adminBlogCreate' %}">Create new</a></li>
+                      <li><a href="{% url 'adminBlogCategoryHome' %}">Categories</a></li>
+                    </ul>
+                  </li>
+                  {% if request.user.role == 'Admin' %}
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="monitor"></i><span>Projects</span></a>
+                    <ul class="sidebar-submenu">
+                      <li><a href="{% url 'projects' %}">Project List</a></li>
+                      <li><a href="{% url 'createProject' %}">Create new</a></li>
+                      <li><a href="{% url 'projectCategories' %}">Categories</a></li>
+                    </ul>
+                  </li>
+                  {% endif %}
+                  {% if request.user.role == 'Admin' %}
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-server"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6" y2="6"></line><line x1="6" y1="18" x2="6" y2="18"></line></svg><span>Services</span><div class="according-menu"><i class="fa fa-angle-right"></i></div></a>
+                    <ul class="sidebar-submenu">
+                      <li><a href="{% url 'services' %}">Service List</a></li>
+                      <li><a href="{% url 'createService' %}">Create new</a></li>
+                    </ul>
+                  </li>
+                  {% endif %}
+                  
+                  {% if request.user.role == 'Admin' %}
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="box"></i><span>Elements</span></a>
+                    <ul class="sidebar-submenu">
+                      <li><a href="{% url 'testimonials' %}">Testimonials</a></li>
+                      <li><a href="{% url 'funfacts' %}">Fun Facts</a></li>
+                      <li><a href="{% url 'teams' %}">Team Members</a></li>
+                      <li><a href="{% url 'clients' %}">Clients</a></li>
+                      <li><a href="{% url 'pricing' %}">Pricing</a></li>
+                    </ul>
+                  </li>
+                  {% endif %}
+                  
+
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span>Forms Data</span><div class="according-menu"><i class="fa fa-angle-right"></i></div></a>
+                    <ul class="sidebar-submenu" style="display: none;">
+                      <li><a href="{% url 'contactSubmissionsadm' %}">Contact Form</a></li>
+                      <li><a href="{% url 'subscriberViewAdmin' %}">Subscribe form</a></li>
+                    </ul>
+                  </li>
+
+                  {% if request.user.role == 'Admin' %}
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Users</span><div class="according-menu"><i class="fa fa-angle-right"></i></div></a>
+                    <ul class="sidebar-submenu" style="display: none;">
+                      <li><a href="{% url 'users' %}">Users</a></li>
+                      <li><a href="{% url 'createUser' %}">Add user</a></li>
+                    </ul>
+                  </li>
+                  {% endif %}
+
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i class="icofont icofont-growth"></i><span>Marketing</span></a>
+                    <ul class="sidebar-submenu">
+                      {% if request.user.role == 'Admin' %}
+                      <li><a href="{% url "adminPromotionalBanner" %}">Promotional Banner</a></li>
+                      <li><a href="{% url 'emailMarketing' %}">Email Marketing</a></li>
+                      <li><a href="{% url 'smsMarketing' %}">SMS Marketing</a></li>
+                      {% endif %}
+                      <li><a href="{% url 'emailFormator' %}">Email Formator</a></li>
+                      <li><a href="{% url 'numberFormator' %}">Number Formator</a></li>
+                    </ul>
+                  </li>
+                  
+
+                  {% if request.user.role == 'Admin' %}
+                  <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i class="icon-settings"></i><span>Settings</span></a>
+                    <ul class="sidebar-submenu">
+                      <li><a href="{% url 'websiteSettingsadm' %}">System Settings</a></li>
+                      <li><a href="{% url 'headerFooterSettingsadm' %}">Header Footer</a></li>
+                      <li><a href="{% url 'menuSettingsadm' %}">Menus</a></li>
+                      <li><a href="{% url 'seoSettingsadm' %}">SEO</a></li>
+                      <li><a href="{% url "adminOpenaiSettings" %}">OpenAI Settings</a></li>
+                      <li><a href="{% url "adminPaymentMethodsSettings" %}">Payment Methods</a></li>
+                      <li><a href="{% url "adminLanguageHome" %}">Languages</a></li>
+                    </ul>
+                  </li>
+                  {% endif %}
+                </ul>
+              </div>
+              <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
+            </nav>
+          </div>
+        </div>
+        <!-- Page Sidebar Ends-->
+
+        {% block content %}{% endblock content %}
+
+<!-- footer start-->
+<footer class="footer">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6 p-0 footer-left">
+          <p class="mb-0">Copyright © <span id="currentYear"></span> {{settings.name}}. All rights reserved.</p>
+
+          <script>
+            // Get the current year
+            var currentYear = new Date().getFullYear();
+            
+            // Display the current year in the HTML
+            document.getElementById("currentYear").textContent = currentYear;
+          </script>
+
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+</div>
+
+<!-- URL Modal -->
+<div class="modal fade" id="admmenuModal" tabindex="-1" role="dialog" aria-labelledby="admmenuModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="admmenuModalLabel">Website's All Default URLS</h5>
+        </div>
+        <div class="modal-body">
+           <!-- Include your edit form here -->
+           <p><strong>Home Page</strong> 
+           <pre>  {% if request.is_secure %}https://{{ request.get_host }}{% else %}http://{{ request.get_host }}{% endif %}</pre>
+           </p>
+           <p><strong>About Page</strong> 
+           <pre>  {% if request.is_secure %}https://{{ request.get_host }}/about-us/{% else %}http://{{ request.get_host }}/about-us/{% endif %}</pre>
+           </p>
+           <p><strong>Service Page</strong> 
+           <pre>  {% if request.is_secure %}https://{{ request.get_host }}/services/{% else %}http://{{ request.get_host }}/services/{% endif %}</pre>
+           </p>
+           <p><strong>Project Page</strong> 
+           <pre>  {% if request.is_secure %}https://{{ request.get_host }}/projects/{% else %}http://{{ request.get_host }}/projects/{% endif %}</pre>
+           </p>
+           <p><strong>Pricing Page</strong> 
+           <pre>  {% if request.is_secure %}https://{{ request.get_host }}/pricing/{% else %}http://{{ request.get_host }}/pricing/{% endif %}</pre>
+           </p>
+           <p><strong>Blog Page</strong> 
+           <pre>  {% if request.is_secure %}https://{{ request.get_host }}/blogs/{% else %}http://{{ request.get_host }}/blogs/{% endif %}</pre>
+           </p>
+           <p><strong>Contact Page</strong> 
+           <pre>  {% if request.is_secure %}https://{{ request.get_host }}/contact-us/{% else %}http://{{ request.get_host }}/contact-us/{% endif %}</pre>
+           </p>
+           <p><strong>Terms & Conditions Page</strong> 
+              <pre>  {% if request.is_secure %}https://{{ request.get_host }}/terms-conditions/{% else %}http://{{ request.get_host }}/terms-conditions/{% endif %}</pre>
+           </p>
+           <p><strong>Privacy Policy Page</strong> 
+              <pre>  {% if request.is_secure %}https://{{ request.get_host }}/privacy-policy/{% else %}http://{{ request.get_host }}/privacy-policy/{% endif %}</pre>
+           </p>
+           <p><strong>Sign In</strong> 
+             <pre>  {% if request.is_secure %}https://{{ request.get_host }}/sign-in/{% else %}http://{{ request.get_host }}/sign-in/{% endif %}</pre>
+          </p>
+          <p><strong>Sign Up</strong> 
+           <pre>  {% if request.is_secure %}https://{{ request.get_host }}/sign-up/{% else %}http://{{ request.get_host }}/sign-up/{% endif %}</pre>
+          </p>
+          <p><strong>Forget Password</strong> 
+           <pre>  {% if request.is_secure %}https://{{ request.get_host }}/forgot-password/{% else %}http://{{ request.get_host }}/forgot-password/{% endif %}</pre>
+          </p>
+        </div>
+        <div class="modal-footer">
+           <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Close</button>
+        </div>
+     </div>
+  </div>
+</div>
+
+<!-- Bootstrap js-->
+<script src="{% static 'admin/assets/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+<!-- feather icon js-->
+<script src="{% static 'admin/assets/js/icons/feather-icon/feather.min.js' %}"></script>
+<script src="{% static 'admin/assets/js/icons/feather-icon/feather-icon.js' %}"></script>
+<!-- scrollbar js-->
+<script src="{% static 'admin/assets/js/scrollbar/simplebar.js' %}"></script>
+<script src="{% static 'admin/assets/js/scrollbar/custom.js' %}"></script>
+<!-- Sidebar jquery-->
+<script src="{% static 'admin/assets/js/config.js' %}"></script>
+<script src="{% static 'admin/assets/js/sidebar-menu.js' %}"></script>
+<script src="{% static 'admin/assets/js/chart/chartist/chartist.js' %}"></script>
+<script src="{% static 'admin/assets/js/chart/chartist/chartist-plugin-tooltip.js' %}"></script>
+<script src="{% static 'admin/assets/js/chart/apex-chart/apex-chart.js' %}"></script>
+<script src="{% static 'admin/assets/js/chart/apex-chart/stock-prices.js' %}"></script>
+<script src="{% static 'admin/assets/js/prism/prism.min.js' %}"></script>
+<script src="{% static 'admin/assets/js/clipboard/clipboard.min.js' %}"></script>
+<script src="{% static 'admin/assets/js/custom-card/custom-card.js' %}"></script>
+<script src="{% static 'admin/assets/js/notify/bootstrap-notify.min.js' %}"></script>
+<script src="{% static 'admin/assets/js/vector-map/jquery-jvectormap-2.0.2.min.js' %}"></script>
+<script src="{% static 'admin/assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js' %}"></script>
+<script src="{% static 'admin/assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js' %}"></script>
+<script src="{% static 'admin/assets/js/vector-map/map/jquery-jvectormap-uk-mill-en.js' %}"></script>
+<script src="{% static 'admin/assets/js/vector-map/map/jquery-jvectormap-au-mill.js' %}"></script>
+<script src="{% static 'admin/assets/js/vector-map/map/jquery-jvectormap-chicago-mill-en.js' %}"></script>
+<script src="{% static 'admin/assets/js/vector-map/map/jquery-jvectormap-in-mill.js' %}"></script>
+<script src="{% static 'admin/assets/js/vector-map/map/jquery-jvectormap-asia-mill.js' %}"></script>
+<script src="{% static 'admin/assets/js/dashboard/default.js' %}"></script>
+<script src="{% static 'admin/assets/js/notify/index.js' %}"></script>
+<script src="{% static 'admin/assets/js/typeahead/handlebars.js' %}"></script>
+<script src="{% static 'admin/assets/js/typeahead/typeahead.bundle.js' %}"></script>
+<script src="{% static 'admin/assets/js/typeahead/typeahead.custom.js' %}"></script>
+<script src="{% static 'admin/assets/js/typeahead-search/handlebars.js' %}"></script>
+<script src="{% static 'admin/assets/js/typeahead-search/typeahead-custom.js' %}"></script>
+<script src="{% static 'admin/assets/js/general-widget.js' %}"></script>
+<!-- Template js-->
+<script src="{% static 'admin/assets/js/script.js' %}"></script>
+<script src="{% static 'admin/assets/js/theme-customizer/customizer.js' %}">  </script>
+<!-- login js-->
+{% include "error/demo_mode.html" %}
+</body>
+</html>

@@ -1,0 +1,517 @@
+{% extends 'hrm/hr/base.html' %}
+{% load static %}
+{% block title %}
+{{ payroll.employee.userprofile.name }}'s {{ title }} - {{ settings.name }}
+{% endblock title %}
+{% block content %}
+<style>
+   .btn-group-sm>.btn-icon.btn,
+   .btn-icon.btn-sm {
+   font-size: 1.2rem !important;
+   height: calc(1.625rem + 2px);
+   width: calc(1.625rem + 2px);
+   }
+   @media (min-width: 992px) {
+   .card-datatable.table-responsive {
+   overflow-x: hidden;
+   }
+   }
+   .dt-buttons.btn-group.flex-wrap {
+   margin-top: -32px;
+   }
+   .card{
+   padding:20px 20px 20px 20px !important;
+   }
+   .card-title{
+   padding:10px 10px 10px 10px !important;
+   }
+</style>
+<!-- Content wrapper -->
+<div class="content-wrapper">
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+   <h4 class="fw-bold py-3 mb-4">
+      <span class="text-muted fw-light">HRM /</span> Payroll / {{ payroll.employee.userprofile.name }}
+   </h4>
+   {% if messages %}
+   {% for message in messages %}
+   <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+   </div>
+   {% endfor %}
+   {% endif %}
+   <div class="row">
+      <div class="col-md-6 mt-2">
+         <div class="card" style="">
+            <div class="card-datatable table-responsive">
+               <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                  <div class="card-title d-flex justify-content-between align-items-center mb-4">
+                     <h5 class="mb-0">Basic Salary</h5>
+                     {% if not salary%}
+                        {% if payroll.employee != request.user %}
+                           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSalaryModal">+ Add Salary</button>
+                        {% endif %}
+                     {% endif %}
+                  </div>
+                  <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                     <thead>
+                        <tr>
+                           <th style="width: 0px;">#</th>
+                           <th style="width: 100px;">Amount</th>
+                           <th style="width: 100px;">Type</th>
+                           <th style="width: 180px;">Added At</th>
+                           {% if payroll.employee != request.user %}
+                              <th style="width: 0px;" class="sorting_disabled dtr-hidden">Actions</th>
+                           {% endif %}
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% if salary %}
+                        <tr class="odd">
+                           <td>1</td>
+                           <td><a href="#" data-bs-toggle="modal" data-bs-target="#salaryEditModal{{ salary.id }}">{{ settings.currency_symbol }}{{ salary.amount }}</a></td>
+                           <td>{{ salary.type }}</td>
+                           <td>{{ salary.created_at }}</td>
+                           {% if payroll.employee != request.user %}
+                           <td class="dtr-hidden" style="">
+                              <button class="btn btn-sm btn-icon item-edit" data-bs-toggle="modal" data-bs-target="#salaryEditModal{{ salary.id }}">
+                              <i class="bx bxs-edit"></i> 
+                              </button>
+                              <div class="modal fade" id="salaryEditModal{{ salary.id }}" tabindex="-1" aria-labelledby="salaryEditModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                       <div class="modal-header bg-primary">
+                                          <h5 class="modal-title text-white mb-3" id="salaryEditModalLabel">Edit {{payroll.employee.userprofile.name}}'s Basic Salary</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                          <form method="post" action="{% url "salaryEdit" salary.id %}">
+                                             {% csrf_token %}
+                                             <input type="hidden" name="update_salary">
+                                             <div class="row">
+                                                <div class="col-md-12 mt-1">
+                                                   <label for="" class="form-label">Type</label>
+                                                   <select name="type" class="form-select">
+                                                      <option value="">---------</option>
+                                                      <option value="Monthly" {% if salary.type == 'Monthly' %}selected{% endif %}>Monthly</option>
+                                                      <option value="Weekly" {% if salary.type == 'Weekly' %}selected{% endif %}>Weekly</option>
+                                                      <option value="Daily" {% if salary.type == 'Daily' %}selected{% endif %}>Daily</option>
+                                                      <option value="Yearly" {% if salary.type == 'Yearly' %}selected{% endif %}>Yearly</option>
+                                                      <option value="Hourly" {% if salary.type == 'Hourly' %}selected{% endif %}>Hourly</option>
+                                                      <option value="Bi-monthly" {% if salary.type == 'Bi-monthly' %}selected{% endif %}>Bi-monthly</option>
+                                                      <option value="Commission-based" {% if salary.type == 'Commission-based' %}selected{% endif %}>Commission-based</option>
+                                                      <option value="Contract-based" {% if salary.type == 'Contract-based' %}selected{% endif %}>Contract-based</option>
+                                                      <option value="Retainer-based" {% if salary.type == 'Retainer-based' %}selected{% endif %}>Retainer-based</option>
+                                                      <option value="Profit-sharing" {% if salary.type == 'Profit-sharing' %}selected{% endif %}>Profit-sharing</option>                                                      
+                                                   </select>
+                                                   <label for="" class="form-label mt-3">Amount</label>
+                                                   <div class="input-group mb-3">
+                                                      <span class="input-group-text">{{ settings.currency_symbol }}</span>
+                                                      <input type="number" name="amount" value="{{salary.amount}}" class="form-control" required>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                       </div>
+                                       <div class="modal-footer">
+                                          <button type="submit" class="btn btn-primary">Save</button>
+                                       </div>
+                                    </form>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <button class="btn btn-sm btn-icon invoice-delete" data-slug="{{ salary.id }}" data-bs-toggle="modal" data-bs-target="#salarydeleteConfirmationModal{{ salary.id }}">
+                              <i class='bx bxs-x-circle'></i>
+                              </button>                                   
+                              <div class="modal fade" id="salarydeleteConfirmationModal{{ salary.id }}" tabindex="-1" aria-labelledby="salarydeleteConfirmationModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog">
+                                    <div class="modal-content">
+                                       <div class="modal-header">
+                                          <h5 class="modal-title" id="salarydeleteConfirmationModalLabel{{ salary.id }}">Confirm Deletion</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                          Are you sure you want to delete this?
+                                       </div>
+                                       <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                          <a type="button" href="{% url "salaryDelete" salary.id %}" class="btn btn-danger">Delete</a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </td>
+                           {% endif %}
+                        </tr>
+                        {% endif %}
+                        <!-- ... more table rows ... -->
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-6 mt-2">
+         <div class="card">
+            <div class="card-datatable table-responsive">
+               <div class="card-title d-flex justify-content-between align-items-center mb-4">
+                  <h5 class="mb-0">Allowances</h5>
+                  {% if payroll.employee != request.user %}
+                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAllowModal">+ Add Allowance</button>
+                  {% endif %}
+               </div>
+               <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_1" aria-describedby="DataTables_Table_1_info">
+                  <thead>
+                     <tr>
+                        <th style="width: 0px;">#</th>
+                        <th style="width: 100px;">Title</th>
+                        <th style="width: 150px;">Amount</th>
+                        <th style="width: 150px;">Added At</th>
+                        {% if payroll.employee != request.user %}
+                           <th style="width: 0px;" class="sorting_disabled dtr-hidden">Actions</th>
+                        {% endif %}
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for allowance in allowances %}
+                     <tr class="odd">
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#allowanceEditModal{{ allowance.id }}">{{ allowance.title }}</a></td>
+                        <td>{{ settings.currency_symbol }}{{ allowance.amount }}</td>
+                        <td>{{ allowance.created_at }}</td>
+                        {% if payroll.employee != request.user %}
+                        <td class="dtr-hidden" style="">
+                           <button class="btn btn-sm btn-icon item-edit" data-bs-toggle="modal" data-bs-target="#allowanceEditModal{{ allowance.id }}">
+                              <i class="bx bxs-edit"></i> 
+                           </button>
+                           <div class="modal fade" id="allowanceEditModal{{ allowance.id }}" tabindex="-1" aria-labelledby="allowanceEditModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                       <div class="modal-header bg-primary">
+                                             <h5 class="modal-title text-white mb-3" id="allowanceEditModalLabel">Edit {{payroll.employee.userprofile.name}}'s Basic Allowance</h5>
+                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                             <form method="post" action="{% url "allowanceEdit" allowance.id %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="update_allowance">
+                                                <div class="row">
+                                                   <div class="col-md-12 mt-1">
+                                                      <label for="" class="form-label">Title</label>
+                                                      <input type="text" name="title" value="{{ allowance.title }}" required class="form-control">
+                                                      <label for="" class="form-label mt-3">Amount</label>
+                                                      <div class="input-group mb-3">
+                                                         <span class="input-group-text">{{ settings.currency_symbol }}</span>
+                                                         <input type="number" name="amount" value="{{ allowance.amount }}" class="form-control" required>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                       </div>
+                                       <div class="modal-footer">
+                                             <button type="submit" class="btn btn-primary">Save</button>
+                                       </div>
+                                       </form>
+                                    </div>
+                                 </div>
+                           </div>
+                          
+                           <button class="btn btn-sm btn-icon invoice-delete" data-slug="{{ allowance.id }}" data-bs-toggle="modal" data-bs-target="#alwdeleteConfirmationModal{{ allowance.id }}">
+                           <i class='bx bxs-x-circle'></i>
+                           </button>                                   
+                           <div class="modal fade" id="alwdeleteConfirmationModal{{ allowance.id }}" tabindex="-1" aria-labelledby="alwdeleteConfirmationModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                 <div class="modal-content">
+                                    <div class="modal-header">
+                                       <h5 class="modal-title" id="alwdeleteConfirmationModalLabel{{ allowance.id }}">Confirm Deletion</h5>
+                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                       Are you sure you want to delete this?
+                                    </div>
+                                    <div class="modal-footer">
+                                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                       <a type="button" href="{% url "allowanceDelete" allowance.id %}" class="btn btn-danger" id="alwonfirmDelete">Delete</a>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </td>
+                        {% endif %}
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+                  {% if total_allowance > 0 %}
+                  <tr>
+                     <td></td>
+                     <td>Total</td>
+                     <td>{{ settings.currency_symbol }}{{ total_allowance }}</td>
+                     <td></td>
+                     {% if payroll.employee != request.user %}
+                     <td></td>
+                     {% endif %}
+                  </tr>
+                  {% endif %}
+               </table>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-6 mt-3">
+         <div class="card">
+            <div class="card-datatable table-responsive">
+               <div class="card-title d-flex justify-content-between align-items-center mb-4">
+                  <h5 class="mb-0">Deduction</h5>
+                  {% if payroll.employee != request.user %}
+                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDeductModal">+ Add Deduction</button>
+                  {% endif %}
+               </div>
+               <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_2" aria-describedby="DataTables_Table_2_info">
+                  <thead>
+                     <tr>
+                        <th style="width: 0px;">#</th>
+                        <th style="width: 100px;">Title</th>
+                        <th style="width: 100px;">Amount</th>
+                        <th style="width: 100px;">Added At</th>
+                        {% if payroll.employee != request.user %}
+                           <th style="width: 0px;">Actions</th>
+                        {% endif %}
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for deduction in deductions %}
+                     <tr class="odd">
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#deductionEditModal{{ deduction.id }}">{{ deduction.title }}</a></td>
+                        <td>{{ settings.currency_symbol }}{{ deduction.amount }}</td>
+                        <td>{{ deduction.created_at }}</td>
+                        {% if payroll.employee != request.user %}
+                        <td class="dtr-hidden" style="">
+                           <button class="btn btn-sm btn-icon item-edit" data-bs-toggle="modal" data-bs-target="#deductionEditModal{{ deduction.id }}">
+                              <i class="bx bxs-edit"></i> 
+                           </button>
+                           <div class="modal fade" id="deductionEditModal{{ deduction.id }}" tabindex="-1" aria-labelledby="deductionEditModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                       <div class="modal-header bg-primary">
+                                             <h5 class="modal-title text-white mb-3" id="deductionEditModalLabel">Edit {{payroll.employee.userprofile.name}}'s Deduction</h5>
+                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                             <form method="post" action="{% url "deductionEdit" deduction.id %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="update_deduction">
+                                                <div class="row">
+                                                   <div class="col-md-12 mt-1">
+                                                      <label for="" class="form-label">Title</label>
+                                                      <input type="text" name="title" value="{{ deduction.title }}" required class="form-control">
+                                                      <label for="" class="form-label mt-3">Amount</label>
+                                                      <div class="input-group mb-3">
+                                                         <span class="input-group-text">{{ settings.currency_symbol }}</span>
+                                                         <input type="number" name="amount" value="{{ deduction.amount }}" class="form-control" required>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                       </div>
+                                       <div class="modal-footer">
+                                             <button type="submit" class="btn btn-primary">Save</button>
+                                       </div>
+                                       </form>
+                                    </div>
+                                 </div>
+                           </div>
+                          
+                           <button class="btn btn-sm btn-icon invoice-delete" data-slug="{{ deduction.id }}" data-bs-toggle="modal" data-bs-target="#deddeleteConfirmationModal{{ deduction.id }}">
+                           <i class='bx bxs-x-circle'></i>
+                           </button>                                   
+                           <div class="modal fade" id="deddeleteConfirmationModal{{ deduction.id }}" tabindex="-1" aria-labelledby="deddeleteConfirmationModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                 <div class="modal-content">
+                                    <div class="modal-header">
+                                       <h5 class="modal-title" id="deddeleteConfirmationModalLabel{{ deduction.id }}">Confirm Deletion</h5>
+                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                       Are you sure you want to delete this?
+                                    </div>
+                                    <div class="modal-footer">
+                                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                       <a type="button" href="{% url "deductionDelete" deduction.id %}" class="btn btn-danger" id="dedconfirmDelete">Delete</a>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </td>
+                        {% endif %}
+                     </tr>
+                     {% endfor %}
+                     <!-- ... more table rows ... -->
+                  </tbody>
+                  {% if total_deduction %}
+                  <tr>
+                     <td></td>
+                     <td>Total</td>
+                     <td>{{ settings.currency_symbol }}{{ total_deduction }}</td>
+                     <td></td>
+                     {% if payroll.employee != request.user %}
+                     <td></td>
+                     {% endif %}
+                  </tr>
+                  {% endif %}
+               </table>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-6 mt-3">
+         <div class="card">
+            <div class="card-datatable table-responsive">
+               <div class="card-title d-flex justify-content-between align-items-center mb-4">
+                  <h5 class="mb-0">Summary</h5>
+               </div>
+               <table class="table-responsive table-bordered table table-striped table-hover">
+                  <tr>
+                     <td>Name :</td>
+                     <td><a href="{% url "hrmEmployeeEdit" payroll.employee.userprofile.slug %}">{{ payroll.employee.userprofile.name }} ( {{payroll.employee.username}} )</a></td>
+                  </tr>
+                  <tr>
+                     <td>Basic Salary :</td>
+                     <td>+{{ settings.currency_symbol }}{% if salary %}{{ salary.amount }}{% else %}0.0{% endif %}</td>
+                  </tr>
+                  <tr>
+                     <td>Total Allowance :</td>
+                     <td>+{{ settings.currency_symbol }}{{ total_allowance }}</td>
+                  </tr>
+                  <tr>
+                     <td>Total Deduction :</td>
+                     <td>-{{ settings.currency_symbol }}{{ total_deduction }}</td>
+                  </tr>
+                  <tr>
+                     <td>Net Salary :</td>
+                     <td>{{ settings.currency_symbol }}{{ net_salary }}</td>
+                  </tr>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- / Content -->
+</div>
+<!-- / Content wrapper -->
+<!-- Salary Add Bootstrap Modal -->
+<div class="modal fade" id="addSalaryModal" tabindex="-1" aria-labelledby="addSalaryModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+         <div class="modal-header bg-primary">
+            <h5 class="modal-title text-white mb-3" id="addSalaryModalLabel">Add Basic Salary</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+         </div>
+         <div class="modal-body">
+            <form method="post">
+               {% csrf_token %}
+               <input type="hidden" name="create_salary">
+               <div class="row">
+                  <div class="col-md-12 mt-1">
+                     <label for="" class="form-label">Type</label>
+                     <select name="type" class="form-select">
+                        <option value="">---------</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Yearly">Yearly</option>
+                        <option value="Hourly">Hourly</option>
+                        <option value="Bi-monthly">Bi-monthly</option>
+                        <option value="Commission-based">Commission-based</option>
+                        <option value="Contract-based">Contract-based</option>
+                        <option value="Retainer-based">Retainer-based</option>
+                        <option value="Profit-sharing">Profit-sharing</option>
+                     </select>
+                     <label for="" class="form-label mt-3">Amount</label>
+                     <div class="input-group mb-3">
+                        <span class="input-group-text">{{ settings.currency_symbol }}</span>
+                        <input type="number" name="amount" class="form-control" required>
+                     </div>
+                  </div>
+               </div>
+               <!-- Your form fields go here -->
+               <button type="submit" class="btn btn-primary mt-4">Add Salary</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- /Bootstrap Modal -->
+<!-- Allowance Add Bootstrap Modal -->
+<div class="modal fade" id="addAllowModal" tabindex="-1" aria-labelledby="addAllowModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+         <div class="modal-header bg-primary">
+            <h5 class="modal-title text-white mb-3" id="addAllowModalLabel">Add Allowance</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+         </div>
+         <div class="modal-body">
+            <form method="post">
+               {% csrf_token %}
+               <input type="hidden" name="create_allowance">
+               <div class="row">
+                  <div class="col-md-12 mt-1">
+                     <label for="" class="form-label">Title</label>
+                     <input type="text" name="title" required class="form-control">
+                     <label for="" class="form-label mt-3">Amount</label>
+                     <div class="input-group mb-3">
+                        <span class="input-group-text">{{ settings.currency_symbol }}</span>
+                        <input type="number" name="amount" class="form-control" required>
+                     </div>
+                  </div>
+               </div>
+               <!-- Your form fields go here -->
+               <button type="submit" class="btn btn-primary mt-4">Add Allowance</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- /Bootstrap Modal -->
+<!-- Deduction Add Bootstrap Modal -->
+<div class="modal fade" id="addDeductModal" tabindex="-1" aria-labelledby="addDeductModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+         <div class="modal-header bg-primary">
+            <h5 class="modal-title text-white mb-3" id="addDeductModalLabel">Add Deduction</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+         </div>
+         <div class="modal-body">
+            <form method="post">
+               {% csrf_token %}
+               <input type="hidden" name="create_deduction">
+               <div class="row">
+                  <div class="col-md-12 mt-1">
+                     <label for="" class="form-label">Title</label>
+                     <input type="text" name="title" required class="form-control">
+                     <label for="" class="form-label mt-3">Amount</label>
+                     <div class="input-group mb-3">
+                        <span class="input-group-text">{{ settings.currency_symbol }}</span>
+                        <input type="number" name="amount" class="form-control" required>
+                     </div>
+                  </div>
+               </div>
+               <!-- Your form fields go here -->
+               <button type="submit" class="btn btn-primary mt-4">Add Deduction</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- /Bootstrap Modal -->
+<script>
+   $(document).ready(function() {
+     $('.table').DataTable({
+       pageLength: 10,
+       lengthMenu: [
+         [10, 25, 50, -1],
+         [10, 25, 50, "All"]
+       ],
+       info: true,
+       search: true
+     });
+   });
+</script>
+{% endblock content %}

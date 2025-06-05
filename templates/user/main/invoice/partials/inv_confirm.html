@@ -1,0 +1,123 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}Payment Confirmation - {{settings.name}}{% endblock title %}
+{% block content %}
+<!-- Content wrapper -->
+<div class="content-wrapper">
+   <!-- Content -->
+   <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row align-items-center">
+         <div class="col-md-6">
+            <h4 class="fw-bold py-3 mb-2">
+               <span class="text-muted fw-light">Dashboard /</span> Payment Confirmation
+            </h4>
+         </div>
+      </div>
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+               {{ message }}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+         {% endfor %}
+      {% endif %} 
+
+      <div class="card">
+        <div class="card-header">
+            <h2></h2>
+        </div>
+        <div class="card-body">
+          
+            <div class="d-flex align-items-center justify-content-center mb-5" style="padding-top:20px; padding-bottom:20px;">
+                <div class="text-center">
+                    <img src="{% static 'crm/assets/img/order-confirm.png' %}" alt="" width="100px" srcset="">
+                    <h3 class="text-warning mt-2">Payment Successful</h3>
+                    <h4>Payment Details</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Total Amount</th>
+                                <th>Now Paid</th>
+                                <th>Paid By</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#{{ invoice.number }}</td>
+                                <td>{{settings.currency_symbol}}{{ invoice.get_total }}</td>
+                                <td>{{settings.currency_symbol}}{{ paid_amount }}</td>
+                                <td>{{ payment.payment_method }}</td>
+                                <td>
+                                  {% with invoice_status=invoice.get_status %}
+                                        {% if invoice_status.status == "PAID" %}
+                                            <span class="badge bg-success">{{ invoice_status.status_display }}</span>
+                                            {% if invoice_status.balance < 0 %}
+                                                <span class="badge bg-primary">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                                            {% endif %}
+                                        {% elif invoice_status.status == "OVERDUE" %}
+                                            <span class="badge bg-danger">{{ invoice_status.status }}</span>
+                                            {% if invoice_status.balance < 0 %}
+                                                <span class="badge bg-primary">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                                            {% endif %}
+                                        {% elif invoice_status.status == "PARTIALLY_PAID" %}
+                                            <span class="badge bg-info">{{ invoice_status.status_display }}</span>
+                                            {% if invoice_status.balance < 0 %}
+                                                <span class="badge bg-primary">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-warning">{{ invoice_status.status_display }}</span>
+                                        {% endif %}
+                                  {% endwith %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  
+                    <h3 class="mt-4">Invoice Details</h3>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th>Unit</th>
+                          <th>Unit Cost</th>
+                          <th>Quantity</th>
+                          <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for invoice_item in invoice_items %}
+                          <tr>
+                            <td>{{ invoice_item.item.name }}</td>
+                            <td>{{ invoice_item.unit_type }}</td>
+                            <td>{{settings.currency_symbol}}{{ invoice_item.unit_price }}</td>
+                            <td>{{ invoice_item.quantity }}</td> 
+                            <td>{{settings.currency_symbol}}{{ invoice_item.sub_total }}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+
+                    <a href="{% url 'userInvoices' %}" class="btn btn-lg btn-default mt-3" style="border: 1px solid;">All Invoices</a>
+                </div>
+            </div>          
+        
+            
+        
+          </div>
+      </div>
+
+
+
+   </div>
+   <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+<script>
+  var currentUrl = window.location.href;
+  var urlWithoutParams = currentUrl.split('?')[0];
+  window.history.replaceState({}, document.title, urlWithoutParams);
+</script>
+
+{% endblock content %}

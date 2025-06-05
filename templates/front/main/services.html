@@ -1,0 +1,106 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{meta.meta_title}} - {{meta.meta_description}}{% endblock title %}
+{% block title1 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+<style>
+
+    .active-dark-mode .modal-content {
+        background: linear-gradient(315deg, rgba(11,11,11,1) 6%, rgba(31,31,31,1) 100%);
+        border: none !important;
+        border-radius: 10px;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 0px 10px;
+    }
+    .active-dark-mode .modal-header {
+        border-bottom: 1px solid #272626;
+    }
+    .active-dark-mode .modal-footer {
+        border-top: 1px solid #272626;
+    }
+    .modal-header {
+        justify-content: flex-start !important;
+    }
+    .more-btn{
+        cursor: pointer;
+    }
+</style>
+        <!--=====================================-->
+        <!--=       Breadcrumb Area Start       =-->
+        <!--=====================================-->
+        <div class="breadcrum-area">
+            <div class="container">
+               <div class="breadcrumb">
+                  <h1 class="title h2">{{meta.meta_title}}</h1>
+               </div>
+            </div>
+            <ul class="shape-group-8 list-unstyled">
+               <li class="shape shape-1" data-sal="slide-right" data-sal-duration="500" data-sal-delay="100">
+                  <img src="{% static 'front/assets/media/others/bubble-9.png'  %}" alt="Bubble">
+               </li>
+               <li class="shape shape-3" data-sal="slide-up" data-sal-duration="500" data-sal-delay="300">
+                  <img src="{% static 'front/assets/media/others/line-4.png'  %}" alt="Line">
+               </li>
+            </ul>
+         </div>
+
+        <!--=====================================-->
+        <!--=       Service  Area Start        =-->
+        {% if services %}
+        <!--=====================================-->
+        <section class="section section-padding bg-color-light">
+            <div class="container">
+                <div class="section-heading heading-left mb--20 mb_md--70">
+                    <span class="subtitle">{{service_section_title.title_small|safe}}</span>
+                    <h2 class="title">{{service_section_title.title_big|safe}}</h2>
+                </div>
+                <div class="row">
+                    {% for service in services %}
+                        <div class="col-lg-4  mt_md--0">
+                            <div class="services-grid service-style-2">
+                                <div class="thumbnail">
+                                    {% if service.image %}
+                                        <img src="{{service.image.url}}" alt="icon">
+                                    {% endif %}
+                                </div>
+                                <div class="content">
+                                    <h5 class="title">{{service.title}}</h5>
+                                    {{service.description|safe}}
+                                    <!-- Button trigger modal -->
+                                    <a class="more-btn" data-bs-toggle="modal" data-bs-target="#serviceModal{{service.id}}">
+                                        {{service_section_title.service_card_more_text}}
+                                    </a>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+        </section>
+        {% endif %}
+
+        <!-- Modal -->
+        {% for service in services %}
+        <div class="modal fade" id="serviceModal{{service.id}}" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        {% if service.image %}
+                        <img src="{{ service.image.url }}" width="20" alt="">{% endif %} &nbsp;
+                       <h1 class="modal-title fs-5" id="serviceModalLabel">{{ service.title }}</h1>
+                        
+                    </div>
+                    <div class="modal-body">
+                        {{ service.description|safe }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+{% endblock content %}

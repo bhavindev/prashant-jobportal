@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #555;
+        }
+
+        .email-container {
+            max-width: 650px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .email-header {
+            background-color: #2c3e50;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .email-header h2 {
+            margin: 0;
+            color: white;
+            font-weight: bold;
+        }
+
+        .email-body {
+            padding: 30px;
+            line-height: 1.6;
+            border-right: 1px solid #dbdbdb;
+            border-left: 1px solid #dbdbdb;
+        }
+
+        .email-footer {
+            padding: 20px;
+            background-color: #ecf0f1;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            padding: 8px 0;
+        }
+
+        b {
+            color: #333;
+        }
+
+        .greeting {
+            font-weight: normal;
+        }
+
+        .service-details {
+            background-color: #f7f9fc;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            color: #7f8c8d;
+            font-size: 13px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h2>Agreement Approval Confirmation</h2>
+        </div>
+        <div class="email-body">
+            <p class="greeting">Dear <b>{{ data.name }},</b></p>
+            <p>We're pleased to inform you that your agreement has been approved. Thank you for placing your trust in us and choosing our services.</p>
+            
+            <div class="service-details">
+                <p>Service Details:</p>
+                <ul>
+                    <li><b>Service:</b> {{ data.service.title }}</li>
+                    <li><b>Price:</b> {{ data.service.price }} {{settings.currency_name}}</li>
+                </ul>
+            </div>
+
+            <p>Best regards,<br><b>{{ settings.name }}</b></p>
+        </div>
+        <div class="email-footer">
+            <p class="footer">{{ footer.footer_copyright }}</p>
+        </div>
+    </div>
+</body>
+
+</html>

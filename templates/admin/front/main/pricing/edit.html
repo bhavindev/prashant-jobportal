@@ -1,0 +1,133 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% load bootstrap_tags%}
+{% block title %}{{title}} {{pricing.title}}{% endblock title %}
+{% block content %}
+        <div class="page-body  dark-only">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3> Edit {{pricing.title}}</h3>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item"> <a href="{% url 'adminBlogHome' %}" class="text-white">Elements</a> </li>
+                    <li class="breadcrumb-item active">Edit Pricing</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            <div class="row project-cards">
+              <div class="col-md-12 project-list">
+
+              </div>
+              <div class="container">
+                <form method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}  
+                  {{ form.media }}
+                  {% if form.errors %}
+                    <div class="alert alert-danger">
+                      <ul>
+                        {% for field_name, field_errors in form.errors.items %}
+                          {% for error in field_errors %}
+                            <li>{{ field_name }}: {{ error }}</li>
+                          {% endfor %}
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% endif %}       
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.title.id_for_label }}" class="form-label">Title <span class='text-danger'>*</span></label>
+                                {{ form.title }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card">
+                          <div class="card-body">
+                              <label for="{{ form.slug.id_for_label }}" class="form-label">Price <span class='text-danger'>*</span></label>
+                              {{ form.price }}
+                          </div>
+                      </div>
+                  </div>
+                </div>
+
+                  
+                  <div class="row mb-3">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                                  <label for="{{ form.description.id_for_label }}" class="form-label">Description ( Use &lt;ul&gt; &lt;li&gt; tags )<span class='text-danger'>*</span></label>
+                                  <br>
+                                  <div class="form-control ckf">{{ form.description }}</div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.button_text.id_for_label }}" class="form-label">Button Text <span class='text-danger'>*</span></label>
+                                {{ form.button_text }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.button_url.id_for_label }}" class="form-label">Button Url <span class='text-danger'>*</span></label>
+                                {{ form.button_url }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body icon-state">
+                              <div class="d-flex">
+                                <label class="col-form-label m-r-10" style="font-family: monospace;">Featured <span class="text-danger">*</span></label>
+                                <div class="flex-grow-1 text-end icon-state">
+                                  <label  class="switch" for="{{ form.is_featured.id_for_label }}">
+                                    {{form.is_featured}}<span class="switch-state"></span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.featured_badge_title.id_for_label }}" class="form-label">Featured Badge Title </label>
+                                {{ form.featured_badge_title }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  
+                  <button class="btn btn-primary mb-3" type="submit">Save</button>
+              </form>
+              
+            </div>
+          </div>
+        </div>
+          <!-- Container-fluid Ends-->
+          
+        </div>
+
+
+{% endblock content %}

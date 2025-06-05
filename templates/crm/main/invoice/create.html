@@ -1,0 +1,535 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% load bootstrap_tags %}
+{% block title %}Invoice #{{invoice.number}} - {{settings.name}}{% endblock title %}
+{% block content %}
+
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+.fieldRow {
+    margin-bottom: 10px;
+  }
+  i.bx.bxs-printer, .bx-mail-send {
+    font-size: 18px;
+}
+.info-btn{
+    background: none;
+    border: none;
+}
+
+.selectize-input.items.required.invalid.not-full.has-options {
+    background: transparent;
+    border: none !important;
+    margin-bottom: 8px;
+    padding: 10px 0px 0px 12px;
+}
+.selectize-input {
+    margin-bottom: 8px !important;
+    padding: 10px 0px 0px 12px !important;
+}
+
+.option.active{
+    background-color:#696cff !important;
+    color: white !important;
+}
+.selectize-control.form-control.single {
+    padding: 0px !important;
+}
+.selectize-input.full {
+    background-color: transparent !important;
+}
+.dark-style #yourSelectInput-selectized {
+    color: #cdcdcd;
+}
+.dark-style .selectize-dropdown.single.form-control {
+    background: #31324b;
+    color: #cdcdcd !important;
+    border: none !important;
+    border-radius: 0px 0px 5px 5px;
+    padding: 0px 0px 10px 0px!important;
+    margin-top:10px !important;
+}
+.selectize-dropdown.single.form-control {
+    border: none !important;
+    border-radius: 0px 0px 5px 5px;
+    padding: 0px 0px 10px 0px!important;
+    margin-top:10px !important;
+}
+
+.dark-style .item {
+    color: #cdcdcd !important;
+}
+.selectize-input {
+    border: none !important;
+}
+
+.selectize-control.single .selectize-input:before{
+    border:none !important;
+    background: transparent !important;
+
+}
+
+.selectize-control.single .selectize-input:after {
+    margin-top: 3px !important;
+}
+.selectize-control.single .selectize-input.input-active, .selectize-input {
+    background: none !important;
+}
+
+.item {
+    margin-top: 6px !important;
+}
+</style>
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+      <!-- Content -->
+      <div class="container-xxl flex-grow-1 container-p-y">
+        <!-- Bootstrap alert for success message -->
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              <div class="card">
+                  <div class="card-header">
+                      {% with invoice_status=invoice.get_status %}
+                      {% if invoice_status.status == "PAID" %}
+                          <span class="badge bg-success">{{ invoice_status.status_display }}</span>
+                          {% if invoice_status.balance < 0 %}
+                              <span class="badge bg-primary">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                          {% endif %}
+                      {% elif invoice_status.status == "OVERDUE" %}
+                          <span class="badge bg-danger">{{ invoice_status.status }}</span>
+                          {% if invoice_status.balance < 0 %}
+                              <span class="badge bg-primary">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                          {% endif %}
+                      {% elif invoice_status.status == "PARTIALLY_PAID" %}
+                          <span class="badge bg-info">{{ invoice_status.status_display }}</span>
+                          {% if invoice_status.balance < 0 %}
+                              <span class="badge bg-primary">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                          {% endif %}
+                      {% else %}
+                          <span class="badge bg-warning">{{ invoice_status.status_display }}</span>
+                      {% endif %}
+                  {% endwith %}
+                  </div>
+  
+                  <div class="card-body">
+  
+                      <div class="row">
+                          <div class="col-lg-12">
+                            <div class="row mb-3">
+                              <div class="col">
+                                  <h5 class="card-title">Items of invoice #{{invoice.number}}</h5>
+                              </div>
+                              <div class="col-auto">
+                                <div class="button-group">
+                                    <button href="#addProductModal" type="button" class="btn btn-primary mt-2" id="additem" data-bs-toggle="modal">Add Item</button>
+                                    <button href="#addDiscountModal" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal">{% if discount > 0 %}Update{% else %}Add{% endif %} Discount</button>
+                                    <button href="#addTaxModal" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal">{% if tax > 0 %}Update{% else %}Add{% endif %} Tax</button>
+                                    <button href="#addFeesModal" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal">Other Fees</button>
+                                    <button href="#addPaymentModal" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal">Add Payment</button>
+                                </div>
+                              </div>
+                            </div>
+  
+                            {% if invoice.products.all %}
+                                <div class="table-responsive table-hover">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Total Price</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for product in invoice.products.all %}
+                                                <tr>
+                                                    <td>{{ product.name }}</td>
+                                                    {% for invoice_item in product.invoiceitem_set.all %}
+                                                        {% if invoice_item.invoice == invoice %}
+                                                            <td>{{ invoice_item.quantity }}</td>
+                                                            <td>{{ settings.currency_symbol }} {{ invoice_item.unit_price }}</td>
+                                                            <td>{{ settings.currency_symbol }} {{ invoice_item.sub_total }}</td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <td class="dtr-hidden" style="">
+                                                        <div class="btn-group" role="group" aria-label="Button group">
+                                                            <a href="{% url "crmItemEdit" product.slug %}" class="btn btn-sm btn-icon item-edit">
+                                                                <i class="bx bxs-edit"></i>
+                                                            </a>
+                                                            <a class="btn btn-sm btn-icon item-delete" href="{% url 'delete-invoice-product' slug=invoice.slug product_id=product.id %}">
+                                                                <i class='bx bxs-x-circle'></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td colspan="2"></td>
+                                                <td><strong>Sub Total:</strong></td>
+                                                <td><strong>{{settings.currency_symbol}} {{ invoice.sub_total }}</strong></td>
+                                                <td></td>
+                                            </tr>
+                                            {% if discount > 0 %}
+                                                <tr>
+                                                    <td colspan="2"></td>
+                                                    <td><strong>Discount:</strong></td>
+                                                    <td><strong>- {{settings.currency_symbol}} {{ discount }}</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                            {% endif %}
+                                            {% if tax > 0 %}
+                                                <tr>
+                                                    <td colspan="2"></td>
+                                                    <td><strong>Tax:</strong></td>
+                                                    <td><strong>+ {{settings.currency_symbol}} {{ tax }}</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                            {% endif %}
+                                            {% if other_fee_amount > 0 %}
+                                                <tr>
+                                                    <td colspan="2"></td>
+                                                    <td><strong>{{ other_fee_name }}:</strong></td>
+                                                    <td><strong>+ {{settings.currency_symbol}} {{ other_fee_amount }}</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <td colspan="2"></td>
+                                                <td><strong>Total:</strong></td>
+                                                <td><strong>{{settings.currency_symbol}} {{ total }}</strong></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2"></td>
+                                                <td><strong>Payment Added:</strong></td>
+                                                <td><strong>{{settings.currency_symbol}} {{ payment_amount }}</strong></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="">
+                                    <p>You don't have any items in your invoice</p>
+                                </div>
+                            {% endif %}
+
+
+                          </div>
+                      </div>
+                  </div>
+              </div>
+  
+              <br>
+  
+              <div class="row">
+                  <div class="col-lg-6 col-md-6 mb-3">
+                      <div class="card">
+                          <div class="card-body">
+                              <form class="" action="#" method="post">
+                                  {% csrf_token %}
+                                  <div class="row mb-2">
+                                    <div class="col-6">
+                                      <label for="inv_form.title.id_for_label">Title <span class="text-danger">*</span></label>
+                                      {{ inv_form.title }}
+                                    </div>
+                                    <div class="col-6">
+                                      <label for="inv_form.title.id_for_label">Invoice Number</label>
+                                      {{ inv_form.number }}
+                                    </div>
+                                  </div>
+
+                                  <div class="row mb-2">
+                                    <div class="col-6">
+                                      <label for="inv_form.billDate.id_for_label">Bill Date <span class="text-danger">*</span></label>
+                                      {{ inv_form.billDate }}
+                                    </div>
+                                    <div class="col-6">
+                                      <label for="inv_form.dueDate.id_for_label">Due Date <span class="text-danger">*</span></label>
+                                      {{ inv_form.dueDate }}
+                                    </div>
+                                  </div>
+
+                                  <div class="row mb-2">
+                                    <div class="col-6">
+                                      <label for="inv_form.status.id_for_label">Status <span class="text-danger">*</span></label>
+                                      {{ inv_form.status }}
+                                    </div>
+                                    <div class="col-6">
+                                      <label for="inv_form.project.id_for_label">Project <span class="text-danger">*</span></label>
+                                      {{ inv_form.project }}
+                                    </div>
+                                  </div>
+
+                                  <div class="row mb-2">
+                                    <div class="col-12">
+                                      <label for="inv_form.status.id_for_label">Note </label>
+                                      {{ inv_form.notes }}
+                                    </div>
+                                  </div>
+                                  <button type="submit " class="btn btn-primary mt-2">Save Changes</button>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="col-lg-6 col-md-6 mb-3">
+                      <div class="card">
+                          <div class="card-body">
+                            <h5 class="card-title d-flex align-items-center">Select Client to Add 
+                              </h5>                              
+                              <br>
+                              {% if invoice.client %}
+                              <h5 class="card-title">Current Client: <span class="badge bg-info"><b>{{ invoice.client }}</b></span></h5>
+                              <h5 class="card-title">Email : <span class="badge bg-secondary"><b>{{invoice.client.userprofile.email}}</b></span></h5>
+                              {% endif %}
+  
+                              <div class="mb-5">
+                                  <form class="" action="#" method="post">
+                                      {% csrf_token %}
+                                      {{ client_form.as_p }}
+                                      <button type="submit" class="btn btn-primary">ADD CLIENT</button> 
+                                  </form>
+                              </div>
+  
+                              <div class="row">
+                                <div class="col-md-12 col-sm-12 mb-3">
+                                    <a href="{% url 'viewPrintnvoice' invoice.slug %}"><button class="btn btn-danger text-white w-100"><i class='bx bxs-printer'></i>&nbsp; PRINT PDF INVOICE</button></a>
+                                </div>
+                                {% if invoice.client %}
+                                <div class="col-md-12 col-sm-12">
+                                    <!-- Add the "Send Email" button -->
+                                    <form method="post" action="">
+                                        {% csrf_token %}
+                                        <button type="submit" name="send_email" class="btn btn-primary text-white w-100"><i class='bx bx-mail-send'></i> &nbsp;<b>Email Invoice</b></button>
+                                    </form>                                    
+                                </div>
+                                {% else %}
+                                <div class="col-md-12 col-sm-12">
+                                    <form>
+                                        <button type="button" class="btn btn-primary text-white w-100" data-bs-toggle="tooltip" data-bs-placement="right" title="Add client to send mail" onclick="sendEmail(); return false;">
+                                          <i class='bx bx-mail-send'></i> &nbsp;<b>Email Invoice</b>
+                                        </button>
+                                      </form>
+                                      <script>
+                                        function sendEmail() {
+                                          $('[data-bs-toggle="tooltip"]').tooltip('show');
+                                        }
+                                      </script>
+                                                                        
+                                </div>
+                              </div>   
+                              </div>  
+                              {% endif %}
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+    </div>
+      <!-- / Content -->
+
+  <!-- Content wrapper -->
+  
+  <!-- MODALS MODALS -->
+  <!-- Item ADD Modals Start Here -->
+  <div class="modal modal-sheet py-5" tabindex="-1" id="addProductModal">
+      <div class="modal-dialog">
+          <div class="modal-content rounded-6 shadow">
+  
+              <form class="" action="#" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="modal-header border-bottom-0">
+                      <h5 class="modal-title">Add Invoice Product</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+  
+                  <div class="modal-body py-0">
+                    <label for="other_fees_name" class="mb-1 mt-2">Item/Product</label>
+                       <div class="mb-3">
+                            {{item_selection_form.selected_item}}
+                        </div>
+
+                        <label for="other_fees_name" class="mb-1">Quantity</label>
+                        <div class="mb-3">
+                            {{item_selection_form.quantity}}
+                        </div>
+                  </div>
+  
+                  <div class="modal-footer flex-column border-top-0">
+                      <button type="submit" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Save</button>
+                  </div>
+              </form>
+          </div>
+        </div>
+  </div>
+
+    <!-- Discount Modals Start Here -->
+    <div class="modal modal-sheet py-5" tabindex="-1" id="addDiscountModal">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-6 shadow">
+    
+                <form class="" action="#" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-header border-bottom-0">
+                        <h5 class="modal-title">{% if discount > 0 %}Update{% else %}Add{% endif %} Discount to Invoice</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body py-0">
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">{{ settings.currency_symbol }}</span>
+                            {{discount_form.discount_amount}}
+                        </div>
+                    </div>
+    
+                    <div class="modal-footer flex-column border-top-0">
+                        <button type="submit" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Add</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+    </div>
+
+        <!-- Payment Modals Start Here -->
+        <div class="modal modal-sheet py-5" tabindex="-1" id="addPaymentModal">
+            <div class="modal-dialog">
+                <div class="modal-content rounded-6 shadow">
+        
+                    <form class="" action="#" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title">{% if payment_amount > 0 %}Update{% else %}Add{% endif %} Payment to Invoice</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        
+                        <div class="modal-body py-0">
+                            <div class="row mt-2 mb-2">
+                                <div class="col-md-6 mb-2">
+                                    <label for="">Amount</label>
+                                    {{payment_form.payment_ammount}}
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="">Payment Method</label>
+                                    {{payment_form.payment_method}}
+                                </div>
+                            </div>
+                            <div class="row mt-2 mb-2">
+                                <div class="col-md-6 mb-2">
+                                    <label for="">Pyament Date</label>
+                                    {{payment_form.payment_date}}
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="">Note</label>
+                                    {{payment_form.payment_note}}
+                                </div>
+                            </div>
+                            <div class="row mt-2 mb-2">
+                                <div class="col-md-12 mb-2">
+                                    <label for="">Transaction ID</label>
+                                    {{payment_form.transaction_id}}
+                                </div>
+                            </div>
+
+                        </div>
+        
+                        <div class="modal-footer flex-column border-top-0">
+                            <button type="submit" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Save</button>
+                        </div>
+                    </form>
+                </div>
+              </div>
+        </div>
+
+        <!-- Tax Modals Start Here -->
+    <div class="modal modal-sheet py-5" tabindex="-1" id="addTaxModal">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-6 shadow">
+    
+                <form class="" action="#" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-header border-bottom-0">
+                        <h5 class="modal-title">{% if tax > 0 %}Update{% else %}Add{% endif %} Tax to Invoice</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body py-0">
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">{{ settings.currency_symbol }}</span>
+                            {{tax_form.tax_amount}}
+                        </div>
+                    </div>
+    
+                    <div class="modal-footer flex-column border-top-0">
+                        <button type="submit" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Add</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+    </div>
+
+    <!-- Other Frees Modals Start Here -->
+    <div class="modal modal-sheet py-5" tabindex="-1" id="addFeesModal">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-6 shadow">
+    
+                <form class="" action="#" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-header border-bottom-0">
+                        <h5 class="modal-title">{% if other_fee_amount > 0 %}Update{% else %}Add{% endif %} Other Fees to Invoice</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body py-0">
+                      <label for="other_fees_name" class="mb-1">Fee name</label>
+                       <div class="input-group mb-3">
+                            {{other_fee_form.other_fees_name}}
+                        </div>
+
+                        <label for="other_fees_name" class="mb-1">Fee Amount</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">{{ settings.currency_symbol }}</span>
+                            {{other_fee_form.other_fees_amount}}
+                        </div>
+                    </div>
+    
+                    <div class="modal-footer flex-column border-top-0">
+                        <button type="submit" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Add</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+    </div>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/css/selectize.min.css">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/js/standalone/selectize.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Initialize Selectize for the dropdown
+        $('#yourSelectInput').selectize();
+    });
+</script>
+
+
+{% endblock content %}

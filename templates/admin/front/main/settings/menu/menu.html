@@ -1,0 +1,186 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+        <div class="page-body  dark-only">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3> Menus </h3>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Settings</li>
+                    <li class="breadcrumb-item active">Menus</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            <div class="alert alert-primary fade show" role="alert" id="emailAlert">
+              <b>Note:</b> Before creating custom menu, turn off the default menu from <b><a href="{% url "websiteSettingsadm" %}" class="text-light">Website Settings</a></b>
+            </div>
+            {% include "admin/components/lang.html" %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %} 
+            <div class="row project-cards">
+              <div class="col-md-12 project-list">
+                <div class="card">
+                  <div class="row">
+                    <div class="col-md-6 p-0 d-flex">
+                      <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="top-home-tab" data-bs-toggle="tab" href="#top-home" role="tab" aria-controls="top-home" aria-selected="true"><i data-feather="target"></i>All Menus</a></li>
+                       </ul>
+                    </div>
+                    <div class="col-md-6 p-0">                    
+                      <div class="form-group mb-0 me-0"></div><a class="btn btn-primary mdbtn" href="{% url 'menuCreateadm' %}"> <i data-feather="plus-square"> </i>Create New Menu</a>
+
+                      <a class="btn btn-danger mdbtn" data-bs-toggle="modal" data-bs-target="#menuModal" href=""> Default Website URLS </a>
+                      <!-- Bootstrap 4 Modal -->
+                      <div class="modal fade" id="menuModal" tabindex="-1" role="dialog" aria-labelledby="menuModalLabel" aria-hidden="true">
+                         <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                               <div class="modal-header">
+                                  <h5 class="modal-title" id="editcontactModalLabel">Website's All Default URLS</h5>
+                               </div>
+                               <div class="modal-body">
+                                  <!-- Include your edit form here -->
+                                  <p><strong>Home Page</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}{% else %}http://{{ request.get_host }}{% endif %}</pre>
+                                  </p>
+                                  <p><strong>About Page</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/about-us/{% else %}http://{{ request.get_host }}/about-us/{% endif %}</pre>
+                                  </p>
+                                  <p><strong>Service Page</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/services/{% else %}http://{{ request.get_host }}/services/{% endif %}</pre>
+                                  </p>
+                                  <p><strong>Project Page</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/projects/{% else %}http://{{ request.get_host }}/projects/{% endif %}</pre>
+                                  </p>
+                                  <p><strong>Pricing Page</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/pricing/{% else %}http://{{ request.get_host }}/pricing/{% endif %}</pre>
+                                  </p>
+                                  <p><strong>Blog Page</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/blogs/{% else %}http://{{ request.get_host }}/blogs/{% endif %}</pre>
+                                  </p>
+                                  <p><strong>Contact Page</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/contact-us/{% else %}http://{{ request.get_host }}/contact-us/{% endif %}</pre>
+                                  </p>
+                                  <p><strong>Terms & Conditions Page</strong> 
+                                     <pre>  {% if request.is_secure %}https://{{ request.get_host }}/terms-conditions/{% else %}http://{{ request.get_host }}/terms-conditions/{% endif %}</pre>
+                                  </p>
+                                  <p><strong>Privacy Policy Page</strong> 
+                                     <pre>  {% if request.is_secure %}https://{{ request.get_host }}/privacy-policy/{% else %}http://{{ request.get_host }}/privacy-policy/{% endif %}</pre>
+                                  </p>
+                                  <p><strong>Sign In</strong> 
+                                    <pre>  {% if request.is_secure %}https://{{ request.get_host }}/sign-in/{% else %}http://{{ request.get_host }}/sign-in/{% endif %}</pre>
+                                 </p>
+                                 <p><strong>Sign Up</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/sign-up/{% else %}http://{{ request.get_host }}/sign-up/{% endif %}</pre>
+                                 </p>
+                                 <p><strong>Admin Panel</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/admin/{% else %}http://{{ request.get_host }}/admin/{% endif %}</pre>
+                                 </p>
+                                 <p><strong>User Panel</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/dashboard/{% else %}http://{{ request.get_host }}/dashboard/{% endif %}</pre>
+                                 </p>
+                                 <p><strong>Forget Password</strong> 
+                                  <pre>  {% if request.is_secure %}https://{{ request.get_host }}/forgot-password/{% else %}http://{{ request.get_host }}/forgot-password/{% endif %}</pre>
+                                 </p>
+                               </div>
+                               <div class="modal-footer">
+                                  <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Close</button>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="container">
+                <div class="col-sm-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h4>Manage your all menus</h4>
+                      </div>
+                      <div class="table-responsive theme-scrollbar container mb-3">
+                        <table class="table table-hover">
+                          <thead>
+                              <tr>
+                                  <th scope="col">Order</th>
+                                  <th scope="col">Name</th>
+                                  <th scope="col">Slug</th>
+                                  <th scope="col">Url</th>
+                                  <th scope="col">Edit</th>
+                                  <th scope="col">Delete</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {% for menu in menus %}
+                              <tr>
+                                  <th scope="row">{{ menu.order }}</th>
+                                  <td><a href="{% url 'menuEditadm' slug=menu.slug%}">{{ menu.name }}</a></td>
+                                  <td>{{ menu.slug }}</td>
+                                  <td>{{ menu.url }}</td>
+                                  <td>
+                                      <a href="{% url 'menuEditadm' slug=menu.slug%}" class="btn btn-primary btn-sm">Edit</a>
+                                  </td>
+                                  <td>
+                                      <button class="btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter{{ menu.id }}">Delete</button>
+                                      <div class="modal fade" id="exampleModalCenter{{ menu.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter{{ menu.id }}" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-centered" role="document">
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <h5 class="modal-title">Warning</h5>
+                                                      <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <p class="mb-0">Are you sure you want to delete {{menu.name}}</p>
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                      <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                      <a href="{% url 'menuDeleteadm' slug=menu.slug%}" class="btn btn-danger" type="button">Delete</a>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                              </tr>
+                              {% endfor %}
+                          </tbody>
+                      </table>
+                      
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+          
+        </div>
+
+        <script>
+          $(document).ready(function() {
+              $('.table').DataTable({
+                  pageLength: 10, // Set the initial page length to 10
+                  lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Allow changing page length
+                  info: true, // Show the item count
+                  search: true // Enable search
+              });
+          });
+      </script>
+{% endblock content %}

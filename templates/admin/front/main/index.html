@@ -1,0 +1,838 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<style>
+.ww_source {
+  display: none !important;
+}
+
+.dashboard-default .profile-greeting .greeting-user {
+  text-align: center;
+  margin: -38px 0 13px !important;
+}
+
+#ww_7b6924a9addc2 {
+  border-radius: 10px !important;
+}
+canvas#taskStatusChart {
+  margin-top: -20px;
+  
+}
+canvas#projectTypeChart {
+  margin-bottom: 10px;
+  margin-top: -18px;
+}
+.payment-icon , .expense-icon {
+  width: 35px;
+  height: 35px;
+  margin-top: 5px;
+}
+.ppm, .expm{
+  font-size:16px;
+}
+.page-body{
+ overflow-x: hidden !important;
+}
+</style>
+
+<div class="page-body dark-only">
+  <div class="container-fluid">
+    <div class="page-title">
+      <div class="row">
+        <div class="col-sm-6">
+          <h3>Dashboard</h3>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "admin_home" %}"><i data-feather="home"></i></a></li>
+            <li class="breadcrumb-item">Dashboard</li>
+            <li class="breadcrumb-item active">Home</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Container-fluid starts-->
+  <div class="container-fluid dashboard-default dashboard-2">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %} 
+    <div class="row"> 
+      <div class="col-lg-3 col-md-6">
+        <div class="card profit-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-primary">Total Blogs<i class="fa fa-circle"> </i></p>
+                <h4>{{blog.count}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-primary"><i class="fa fa-book"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-primary"><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if request.user.role == 'Editor' %}
+      <div class="col-lg-3 col-md-12">
+        <div class="card sell-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-secondary">Blog Categories<i class="fa fa-circle"> </i></p>
+                <h4>{{blog_categories.count}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-secondary"><i class="fa fa-laptop"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-secondary"><i styel=""></i><i style="background-color: rgb(174 159 65 / 40%)"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card visitor-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-info">Contact Submissionss<i class="fa fa-circle"> </i></p>
+                <h4>{{contact_submissions.count}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-info"><i class="fa fa-message"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-primary"><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card visitor-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-danger">Subscribers<i class="fa fa-circle"> </i></p>
+                <h4>{{subscribers.count}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-danger"><i class="fa fa-bell"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-danger"><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if request.user.role == 'Admin' %}
+      <div class="col-lg-3 col-md-12">
+        <div class="card sell-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-secondary">Services<i class="fa fa-circle"> </i></p>
+                <h4>{{services.count}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-secondary"><i class="fa fa-laptop"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-secondary"><i styel=""></i><i style="background-color: rgb(174 159 65 / 40%)"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if request.user.role == 'Admin' %}
+      <div class="col-lg-3 col-md-6">
+        <div class="card visitor-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-info">Total Projects<i class="fa fa-circle"> </i></p>
+                <h4>{{projects.count}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-info"><i class="fa fa-briefcase"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-primary"><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card profit-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-primary">Testimonials<i class="fa fa-circle"> </i></p>
+                <h4>{{testimonials.count}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-primary"><i class="fa fa-comment-o"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-primary"><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card visitor-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-info">Team Members<i class="fa fa-circle"> </i></p>
+                <h4>{{teams.count}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-info"><i class="fa fa-user"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-primary"><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if request.user.role == 'Admin' %}
+      <div class="col-lg-3 col-md-6">
+        <div class="card profit-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-primary">Total Clients<i class="fa fa-circle"> </i></p>
+                <h4>{{clients.count}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-primary"><i class="fa fa-handshake-o"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-primary"><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if request.user.role == 'Admin' %}
+      <div class="col-lg-3 col-md-12">
+        <div class="card sell-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-success">Total Revenue<i class="fa fa-circle"> </i></p>
+                <h4>{{settings.currency_symbol}} {{total_revenue}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-success"><i class="fa fa-usd"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-success"><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if request.user.role == 'Admin' %}
+      <div class="col-lg-3 col-md-6">
+        <div class="card sell-card">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-danger">Total Expense<i class="fa fa-circle"> </i></p>
+                <h4>{{settings.currency_symbol}} {{total_expense}}</h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="right-side icon-right-danger"><i class="fa fa-shopping-basket"></i>
+              <div class="shap-block">
+                <div class="rounded-shap animate-bg-danger"><i style="background-color: rgb(174 65 65 / 40%)"></i><i style="background-color: rgb(174 65 65 / 40%)"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    <div class="row">
+      <div class="col-lg-5 col-md-6">
+        <div class="card profile-greeting">               
+          <div class="card-body" style="text-align: center;">
+            <h5><span>Weather Forcast</span><span class="right-circle"></span></h5>
+            <div id="ww_7b6924a9addc2" v='1.3' loc='auto' a='{"t":"horizontal","lang":"en","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>More forecasts: <a href="https://oneweather.org/johannesburg/14_days/" id="ww_7b6924a9addc2_u" target="_blank">oneweather.org</a></div>
+            <script async src="https://app1.weatherwidget.org/js/?id=ww_7b6924a9addc2"></script>
+          </div>        
+          <div class="greeting-user"> 
+            <div class="profile-vector">
+              <ul class="dots-images">
+                <li class="dot-small bg-info dot-1"></li>
+                <li class="dot-medium bg-primary dot-2"></li>
+                <li class="dot-medium bg-info dot-3"></li>
+                <li class="semi-medium bg-primary dot-4"></li>
+                <li class="dot-small bg-info dot-5"></li>
+                <li class="dot-big bg-info dot-6"></li>
+                <li class="dot-small bg-primary dot-7"></li>
+                <li class="semi-medium bg-primary dot-8"></li>
+                <li class="dot-big bg-info dot-9"></li>
+              </ul>
+              <ul class="vector-image"> 
+                <li> <img src="{% static 'admin/assets/images/dashboard/default/ribbon1.png' %}" alt=""></li>
+                <li> <img src="{% static 'admin/assets/images/dashboard/default/ribbon3.png' %}" alt=""></li>
+                <li> <img src="{% static 'admin/assets/images/dashboard/default/ribbon4.png' %}" alt=""></li>
+                <li> <img src="{% static 'admin/assets/images/dashboard/default/ribbon5.png' %}" alt=""></li>
+                <li> <img src="{% static 'admin/assets/images/dashboard/default/ribbon6.png' %}" alt=""></li>
+                <li> <img src="{% static 'admin/assets/images/dashboard/default/ribbon7.png' %}" alt=""></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if request.user.role == 'Admin' %}
+      <div class="col-lg-3 col-md-6">
+        <div class="card total-revenue overflow-hidden">
+          <div class="card-header">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-primary">Revenue & Expense<i class="fa fa-circle"></i></p>
+              </div>
+              <div class="setting-list">
+                <ul class="list-unstyled setting-option">
+                  <li>
+                    <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                  </li>
+                  <li><i class="view-html fa fa-code font-white"></i></li>
+                  <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                  <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            {% if total_revenue > 0 %}
+            <canvas id="revenueVsExpenseChart"></canvas>
+            {% else %}
+            <div style="padding:10px; margin-left:10px; margin-top:-20px; margin-bottom:20px;" class="TaskEMP">You don't have any profit data</div>
+            {% endif %}
+            <div class="code-box-copy">
+              <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#revenue"><i class="icofont icofont-copy-alt"></i></button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card total-invoice overflow-hidden">
+          <div class="card-header">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-primary">Invoice Status<i class="fa fa-circle"></i></p>
+                {% if invoice.count > 0 %}
+                <h5>Total Invoice: {{invoice.count}}</h5>
+                {% endif %}
+              </div>
+              <div class="setting-list">
+                <ul class="list-unstyled setting-option">
+                  <li>
+                    <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                  </li>
+                  <li><i class="view-html fa fa-code font-white"></i></li>
+                  <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                  <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            {% if invoice.count > 0 %}
+            <canvas style="padding:10px; margin-left:10px;" id="invoiceStatusChart"></canvas>
+            {% else %}
+            <div style="padding:10px; margin-left:10px; margin-top:-20px; margin-bottom:20px;" class="TaskEMP">You don't have any invoices</div>
+            {% endif %}
+            <div class="code-box-copy">
+              <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#revenue"><i class="icofont icofont-copy-alt"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card total-invoice overflow-hidden">
+          <div class="card-header">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-primary">Tasks Status<i class="fa fa-circle"></i></p>
+                {% if tasks.count > 0 %}
+                <h5>Total Task: {{tasks.count}}</h5>
+                {% endif %}
+              </div>
+              <div class="setting-list">
+                <ul class="list-unstyled setting-option">
+                  <li>
+                    <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                  </li>
+                  <li><i class="view-html fa fa-code font-white"></i></li>
+                  <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                  <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            {% if tasks %}
+            <canvas style="padding:10px; margin-left:10px;" id="taskStatusChart"></canvas>
+            {% else %}
+            <div style="padding:10px; margin-left:10px;  margin-top:-20px; margin-bottom:20px;" class="TaskEMP">You don't have any tasks</div>
+            {% endif %}
+            <div class="code-box-copy">
+              <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#revenue"><i class="icofont icofont-copy-alt"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card overflow-hidden">
+          <div class="card-header">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-primary">Profit Report<i class="fa fa-circle"></i></p>
+                {% if profit > 0%}
+                <h5>Total Profit: {{settings.currency_symbol}} {{profit}}</h5>
+                {% endif %}
+              </div>
+              <div class="setting-list">
+                <ul class="list-unstyled setting-option">
+                  <li>
+                    <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                  </li>
+                  <li><i class="view-html fa fa-code font-white"></i></li>
+                  <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                  <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            {% if profit > 0%}
+            <canvas style="padding:10px; margin-left:10px;" id="profitStatusChart"></canvas>
+            {% else %}
+            <div style="padding:10px; margin-left:10px; margin-top:-15px;" class="TaskEMP">You don't have any profit data</div>
+            {% endif %}
+            <div class="code-box-copy">
+              <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#revenue"><i class="icofont icofont-copy-alt"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card total-invoice overflow-hidden">
+          <div class="card-header">
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">
+                <p class="square-after f-w-600 header-text-primary">Project Overview<i class="fa fa-circle"></i></p>
+                {% if project_count > 0 %}
+                <h5>Total Projects: {{project_count}}</h5>
+                {% endif %}
+              </div>
+              <div class="setting-list">
+                <ul class="list-unstyled setting-option">
+                  <li>
+                    <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                  </li>
+                  <li><i class="view-html fa fa-code font-white"></i></li>
+                  <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                  <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            {% if project_count > 0 %}
+            <canvas id="projectTypeChart"></canvas>
+            {% else %}
+            <div style="padding:10px; margin-left:10px; margin-top:-15px;" class="TaskEMP">You don't have any projects</div>
+            {% endif %}
+            <div class="code-box-copy">
+              <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#revenue"><i class="icofont icofont-copy-alt"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Payments -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <div class="flex-grow-1">
+                    <p class="square-after f-w-600 header-text-primary">Recent Payments<i class="fa fa-circle"></i></p>
+                  </div>
+                  <div class="setting-list">
+                    <ul class="list-unstyled setting-option">
+                      <li>
+                        <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                      </li>
+                      <li><i class="view-html fa fa-code font-white"></i></li>
+                      <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                      <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="margin-top:-30px;">
+                <ul class="p-0 m-0">
+                  {% if payments %}
+                  {% for payment in payments|slice:":6" %}
+                  <li class="d-flex mb-4 pb-1">
+                    <div class="avatar flex-shrink-0 me-3">
+                      <span class="badge bg-success p-2 payment-icon"><i class="fa fa-wallet ppm text-light"></i></span>
+                    </div>
+                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                      <div class="me-2">
+                        <small class="text-muted d-block mb-1">{{payment.payment_date}}</small>
+                        <h6 class="mb-0"><a href="{% url 'paymentEdit' slug=payment.slug %}">{{payment.title|truncatewords:1}}</a></h6>
+                      </div>
+                      <div class="user-progress d-flex align-items-center gap-1">
+                        <h6 class="mb-0"><i class='fa fa-plus'></i> {{payment.payment_ammount}}</h6> <span class="text-muted">{{settings.currency_name}}</span>
+                      </div>
+                    </div>
+                  </li>
+                  {% endfor %}
+                  {% else %}
+                  <li>You don't have any payments</li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!--/ Payments  -->
+
+          <!-- Expense -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <div class="flex-grow-1">
+                    <p class="square-after f-w-600 header-text-primary">Recent Expenses<i class="fa fa-circle"></i></p>
+                  </div>
+                  <div class="setting-list">
+                    <ul class="list-unstyled setting-option">
+                      <li>
+                        <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                      </li>
+                      <li><i class="view-html fa fa-code font-white"></i></li>
+                      <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                      <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="margin-top:-30px;">
+                <ul class="p-0 m-0">
+                  {% if expenses %}
+                  {% for expense in expenses|slice:":6" %}
+                  <li class="d-flex mb-4 pb-1">
+                    <div class="avatar flex-shrink-0 me-3">
+                      <span class="badge bg-danger p-2 expense-icon"><i class="fa fa-money expm text-danger text-light"></i></span>
+                    </div>
+                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                      <div class="me-2">
+                        <small class="text-muted d-block mb-1">{{expense.date_of_expense}}</small>
+                        <h6 class="mb-0"><a href="{% url 'expenseEdit' slug=expense.slug %}">{{expense.title|truncatewords:1}}</a></h6>
+                      </div>
+                      <div class="user-progress d-flex align-items-center gap-1">
+                        <h6 class="mb-0"><i class='fa fa-minus'></i> {{expense.amount}}</h6> <span class="text-muted">{{settings.currency_name}}</span>
+                      </div>
+                    </div>
+                  </li>
+                  {% endfor %}
+                  {% else %}
+                  <li >You don't have any expenses</li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!--/ Expense -->
+
+          <!-- Invoice Statistic -->
+          <div class="col-md-6 col-lg-4 col-xl-4 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <div class="flex-grow-1">
+                    <p class="square-after f-w-600 header-text-primary">Recent Invoices<i class="fa fa-circle"></i></p>
+                  </div>
+                  <div class="setting-list">
+                    <ul class="list-unstyled setting-option">
+                      <li>
+                        <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                      </li>
+                      <li><i class="view-html fa fa-code font-white"></i></li>
+                      <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                      <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="margin-top:-30px;">
+                <ul class="p-0 m-0">
+                  {% if invoice %}
+                  {% for inv in invoice|slice:":6" %}
+                  <li class="d-flex mb-4 pb-1">
+                    <div class="avatar flex-shrink-0 me-3">
+                      <span class="badge rounded p-2 bg-primary"><i class="fas fa-file-invoice-dollar" style="font-size:16px;"></i></span>
+                    </div>
+                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                      <div class="me-2">
+                        <h6 class="mb-0"><a href="{% url 'create-build-invoice' inv.slug %}">#{{inv.number}}</a></h6>
+                        <small class="text-muted">{{inv.billDate}}</small>
+                      </div>
+                      <div class="user-progress">
+                        {% if inv.status == 'PAID' %}
+                            <span class="badge p-2 badge-success">{{ inv.get_status_display }}</span>
+                        {% elif inv.status == 'UNPAID' %}
+                            <span class="badge p-2 badge-warning">{{ inv.get_status_display }}</span>
+                        {% elif inv.status == 'OVERDUE' %}
+                            <span class="badge p-2 badge-danger">{{ inv.get_status_display }}</span>
+                        {% else %}
+                            <span class="badge p-2 badge-primary">{{ inv.get_status_display }}</span>
+                        {% endif %}
+
+                      </div>
+                    </div>
+                  </li>
+                  {% endfor %}
+                  {% else %}
+                  <li>You don't have any invoices</li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </div>
+   
+          <!--/ Invoice Statistics -->
+
+          {% endif %}
+
+          {% if request.user.role == 'Admin' %}
+          <!-- OS Visitor Data -->
+          <div class="col-md-12 col-lg-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <div class="flex-grow-1">
+                    <p class="square-after f-w-600 header-text-primary">Visitors by OS<i class="fa fa-circle"></i></p>
+                    {% if analytics.total_visitors%}
+                    <h5>Out of {{analytics.total_visitors}} Visitors</h5>
+                    {% endif %}
+                  </div>
+                  <div class="setting-list">
+                    <ul class="list-unstyled setting-option">
+                      <li>
+                        <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                      </li>
+                      <li><i class="view-html fa fa-code font-white"></i></li>
+                      <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                      <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="margin-top:-30px;">
+                <ul class="p-0 m-0">
+                  {% if analytics.total_visitors%}
+                  <canvas id="osVisitorChart"></canvas>
+                  {% else %}
+                  <li>No data available</li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!--/ Payments  -->
+
+          <!-- Browser Visitor -->
+          <div class="col-md-12 col-lg-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <div class="flex-grow-1">
+                    <p class="square-after f-w-600 header-text-primary">Visitors By Browser<i class="fa fa-circle"></i></p>
+                    {% if analytics.total_visitors%}
+                    <h5>Out of {{analytics.total_visitors}} Visitors </h5>
+                    {% endif %}
+                  </div>
+                  <div class="setting-list">
+                    <ul class="list-unstyled setting-option">
+                      <li>
+                        <div class="setting-light"><i class="icon-layout-grid2"></i></div>
+                      </li>
+                      <li><i class="view-html fa fa-code font-white"></i></li>
+                      <li><i class="icofont icofont-maximize full-card font-white"></i></li>
+                      <li><i class="icofont icofont-minus minimize-card font-white"></i></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="margin-top:-30px;">
+                <ul class="p-0 m-0">
+                  {% if analytics.total_visitors%}
+                  <canvas id="browserVisitorChart"></canvas>
+                  {% else %}
+                  <li >No data available</li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!--/ Browser visitor -->
+
+
+
+          {% endif %}
+
+    </div>
+  </div>
+  <!-- Container-fluid Ends-->
+</div>
+
+<script>
+  var osDataPercentages = {{ analytics.os_percentages|safe }};
+</script>
+
+<script>
+  var browserDataPercentages = {{ analytics.browser_percentages|safe }};
+</script>
+
+<script>
+  var totalRevenue = "{{ total_revenue }}";
+  var totalExpense = "{{ total_expense }}";
+  var currencySymbol = "{{ settings.currency_symbol }}";
+</script>
+
+<script>
+  var paidInvoice = "{{paid_invoice}}"
+  var unpaidInvoice = "{{unpaid_invoice}}"
+</script>
+
+<script>
+  // Get the counts for each task status
+  var toDoCount = parseInt("{{to_do}}"); 
+  var inProgressCount = parseInt("{{in_progress}}");
+  var doneCount = parseInt("{{done}}");
+</script>
+
+<script>
+  var clientProject = parseInt("{{client_project}}");
+  var internalProject = parseInt("{{internal_project}}");
+
+  // If there are projects, create the project chart
+  if (clientProject || internalProject) {
+    var ctx = document.getElementById('projectTypeChart').getContext('2d');
+    ctx.canvas.width = 200; // Set the desired width
+    ctx.canvas.height = 200;
+    var chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Client Project', 'Internal Project'],
+            datasets: [{
+                data: [clientProject, internalProject],
+                backgroundColor: [
+                    '#fc6230', // Background color for revenue
+                    '#6774e6' // Background color for expense
+                ],
+                borderColor: '#dfdfdfbf', // Border color
+                borderWidth: 2, // Border width
+                hoverBackgroundColor: [
+                    '#fc6230',, // Hover background color for revenue
+                    '#6774e6' // Hover background color for expense
+                ],
+                hoverOffset: 8 // Increase the offset on hover for a unique effect
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            var label = context.label || '';
+                            var value = context.raw || 0;
+                            return label + ': ' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+  }
+</script>
+
+
+
+{% endblock content %}

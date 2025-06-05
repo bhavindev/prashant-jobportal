@@ -1,0 +1,94 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+  #cke_id_description {
+    width: 990px !important;
+}
+</style>
+        <div class="page-body  dark-only">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3> Create New Menu </h3>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item"> <a href="{% url 'menuSettingsadm' %}" class="text-white">Menus</a> </li>
+                    <li class="breadcrumb-item active">Create Menu</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            {% include "admin/components/lang.html" %}
+            <div class="row project-cards">
+              <div class="col-md-12 project-list">
+
+              </div>
+              <div class="container">
+                <form method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {{form.media}}  
+                  {% if form.errors.order %}
+                  <div class="alert alert-danger" role="alert">
+                    {{ form.errors.order }}
+                  </div>
+                  {% endif %} 
+                                 
+                  <div class="row mb-3">
+                      <div class="col-md-6">
+                          <div class="card">
+                              <div class="card-body">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">Name <span class="text-danger">*</span></label>
+                                {{ form.name }}
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="card">
+                              <div class="card-body">
+                                <label for="{{ form.url.id_for_label }}" class="form-label">Url <span class="text-danger">*</span></label>
+                                {{ form.url }}
+                                  
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.order.id_for_label }}" class="form-label">Order <span class="text-danger">*</span></label>
+                                {{ form.order }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.slug.id_for_label }}" class="form-label">Slug (Read Only)</label>
+                                {{ form.slug }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  
+                  <button class="btn btn-primary mb-3" type="submit">Save</button>
+              </form>
+              
+            </div>
+          </div>
+        </div>
+          <!-- Container-fluid Ends-->
+          
+        </div>
+
+
+{% endblock content %}

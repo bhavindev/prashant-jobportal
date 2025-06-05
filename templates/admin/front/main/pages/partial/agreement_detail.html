@@ -1,0 +1,150 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{data.client}}'s Agreement{% endblock title %}
+{% block content %}
+<style>
+  .xtox {
+    margin-right: 10px;
+}
+ul.pagination {
+  margin-right: 5px;
+}
+.icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .green {
+    background-color: green;
+    color: white;
+  }
+  
+  .red {
+    background-color: red;
+    color: white;
+  }
+  .detail-text{
+    font-size:16px;
+  }
+  label.col-form-label.m-r-10 {
+    font-size: 17px;
+}
+</style>
+        <div class="page-body  dark-only">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3> {{data.client}}'s Agreement Details</h3>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Agreement</li>
+                    <li class="breadcrumb-item active">Details</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            <div class="row project-cards">
+              <div class="col-md-12 project-list">
+                <div class="card">
+                  <div class="row">
+                    <div class="col-md-6 p-0 d-flex">
+                      <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="top-home-tab" data-bs-toggle="tab" href="#top-home" role="tab" aria-controls="top-home" aria-selected="true"><i data-feather="target"></i>{{data.client}}'s Agreement</a></li>
+                       </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="container">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-8 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="mb-4">Details</h4>
+                                    <p class="detail-text"><b>Service: </b>{{data.service}}</p>
+                                    <p class="detail-text"><b>Name: </b>{{data.client.userprofile.name}}</p>
+                                    <p class="detail-text"><b>Email: </b>{{data.email}}</p>
+                                    <p class="detail-text"><b>Phone: </b>{{data.phone}}</p>
+                                    <p class="detail-text"><b>Address: </b>{{data.address}}</p>
+                                    <p class="detail-text"><b>City: </b>{{data.city}}, <b>State: </b>{{data.state}}, <b>Postal Code: </b>{{data.postal}}</p>
+                                    {% if data.is_signed %}
+                                    <p class="detail-text"><b>Signature:</b> He/She signed this agreement as <b>"{{data.client}}"</b> and agreed with the <a href="{% url 'termsPageFront' %}">Terms & Conditions.</a></p>
+                                    {% else %}
+                                    <p class="detail-text"><b>Signature: </b>{{data.client.userprofile.name}} didn't signed this agreement. Please ask for sign this agreement.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4>Action</h4>
+                                    <div class="detail-container d-flex justify-content-between align-items-start">
+                                        <div class="detail-text mt-4">
+                                            <b>Signed Status:</b>
+                                        </div>
+                                        <div class="status-icon mt-4">
+                                            {% if data.is_signed %}
+                                                <span class="icon green">&#10003;</span> <!-- Check sign in green -->
+                                            {% else %}
+                                                <span class="icon red">&#10005;</span> <!-- Cross sign in red -->
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="detail-container d-flex justify-content-between align-items-start">
+                                        <div class="detail-text mt-4">
+                                            <b>Admin Approval Status:</b>
+                                        </div>
+                                        <div class="status-icon mt-4">
+                                            {% if data.is_approved %}
+                                                <span class="icon green">&#10003;</span> <!-- Check sign in green -->
+                                            {% else %}
+                                                <span class="icon red">&#10005;</span> <!-- Cross sign in red -->
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <form action="" method="post" class="mt-5">
+                                    {% csrf_token %}
+                                    <div class="d-flex mb-3 mt-3">
+                                        <label class="col-form-label m-r-10" style="font-family: monospace;"><b>Approve</b></label>
+                                        <div class="flex-grow-1 text-end icon-state">
+                                          <label  class="switch detail-text" for="{{ form.is_approved.id_for_label }}">
+                                            {{form.is_approved}}<span class="switch-state"></span>
+                                          </label>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary w-100" type="submit">Change</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                </div>
+              
+              
+              
+            </div>
+          </div>
+        </div>
+          <!-- Container-fluid Ends-->
+          
+        </div>
+
+{% endblock content %}

@@ -1,0 +1,91 @@
+{% extends "crm/base.html" %}
+{% block title %}Generate {{ category }} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    #generated-content {
+        white-space: pre-line;
+    }
+
+    #output-editor {
+        width: 100%;
+        height: 200px;
+    }
+</style>
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<div class="container mt-5 mb-5">
+    <div class="row mb-5">
+
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-body">
+                    <form id="content-form" onsubmit="return false;"> 
+                        <label for="user-input">Enter your {{category}} topic:</label>
+                        <input type="text" id="user-input" class='form-control mt-2' name="user_input" required>
+                        <label for="word-limit" class="mt-2">Generate between (Words):</label>
+                        <input type="number" id="word-limit" class='form-control mt-2' name="word_limit" value="100" min="1" required>
+
+                        <button type="submit" class="btn btn-primary mt-3" id="generate-btn" onclick="generateContent(event)"> <!-- Change type to submit -->
+                            <span id="generate-btn-text">Generate</span>
+                            <span class="spinner-border spinner-border-sm text-white d-none" role="status" id="loading-spinner"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Output</h3>
+                    <textarea id="output-editor" class="form-control mt-3"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var editor = CKEDITOR.replace('output-editor');
+    
+    function generateContent(event) {
+        event.preventDefault();
+    
+        var userInput = $('#user-input').val();
+        var wordLimit = $('#word-limit').val();
+    
+        $('#generate-btn-text').addClass('d-none');
+        $('#loading-spinner').removeClass('d-none');
+        $('#generate-btn').attr('disabled', true);
+    
+        $.ajax({
+            type: 'POST',
+            url: '/ai-assistant/content-generator/category/' + '{{ category }}' + '/',
+            data: {'user_input': userInput, 'word_limit': wordLimit},
+            dataType: 'json',
+            success: function (data) {
+                if (data.generated_content) {
+                    // If generated content is available, set it to CKEditor
+                    editor.setData(data.generated_content);
+                } else if (data.error_message) {
+                    // If error message is available, set it to CKEditor
+                    editor.setData(`<p style="color: red;">${data.error_message}</p>`);
+                }
+            },
+            error: function () {
+                var errorMessage = 'Error generating content. Please try again or check your api key!';
+                toastr.error(errorMessage);
+            },
+            complete: function () {
+                $('#generate-btn-text').removeClass('d-none');
+                $('#loading-spinner').addClass('d-none');
+                $('#generate-btn').attr('disabled', false);
+            }
+        });
+    }
+    </script>
+
+{% endblock content %}

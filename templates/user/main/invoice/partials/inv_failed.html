@@ -1,0 +1,39 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}Payment Failed - {{settings.name}}{% endblock title %}
+{% block content %}
+<!-- Content wrapper -->
+<div class="content-wrapper">
+   <!-- Content -->
+   <div class="container-xxl flex-grow-1 container-p-y">
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+               {{ message }}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+         {% endfor %}
+      {% endif %} 
+
+      <div class="card">
+        <div class="card-header">
+            <h2></h2>
+        </div>
+        <div class="card-body">
+          
+            <div class="d-flex align-items-center justify-content-center mb-5" style="padding-top:20px; padding-bottom:20px;">
+                <div class="text-center">
+                    <img src="{% static 'crm/assets/img/cancel.png' %}" alt="" width="90px" srcset="">
+                    <h4 class=" mt-4">Opps! Payment Failed</h4>
+
+                    <a href="{% url 'view_cart' %}" class="btn btn-lg btn-default mt-3" style="border: 1px solid;">Back to Cart</a>
+                </div>
+            </div>
+          </div>
+      </div>
+
+   </div>
+   <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+{% endblock content %}

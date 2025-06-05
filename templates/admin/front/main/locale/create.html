@@ -1,0 +1,124 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+   label.switch {
+    margin-top: -35px;
+}
+@media only screen and (max-width: 600px) {
+  #ver-pills-tab {
+     display: -webkit-box;
+     margin-bottom: 18px;
+ }
+ .nav-link {
+    display: inline-block;
+    margin-bottom: 10px !important;
+    /* margin-top: 10px !important; */
+}
+}
+</style>
+<div class="page-body  dark-only">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-sm-6">
+               <h3> Create Language</h3>
+            </div>
+            <div class="col-sm-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                  <li class="breadcrumb-item"> <a href="{% url 'adminLanguageHome' %}" class="text-white">Languages</a> </li>
+                  <li class="breadcrumb-item active">Create Language</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+            <form method="POST" enctype="multipart/form-data">
+               {% csrf_token %}
+               {{form.media}}      
+               {% if form.errors %}
+               <div class="alert alert-danger">
+                  <strong>Error:</strong>
+                  <ul>
+                     {% for field, errors in form.errors.items %}
+                     {% for error in errors %}
+                     <li>{{ field }}: {{ error }}</li>
+                     {% endfor %}
+                     {% endfor %}
+                  </ul>
+               </div>
+               {% endif %}    
+               <div class="row mb-3">
+                  <div class="col-md-12">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
+                           {{ form.image }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="row mb-3">
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+                           {{ form.name }}
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.code.id_for_label }}" class="form-label">Code</label>
+                           {{ form.code }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row mb-2">
+                <div class="col-md-6">
+                   <div class="card">
+                      <div class="card-body">
+                         <label for="{{ form.is_rtl.id_for_label }}" class="form-label">Is RTL</label>
+                         <div class="media-body text-end icon-state">
+                            <label class="switch">
+                              {{ form.is_rtl }}<span class="switch-state"></span>
+                            </label>
+                         </div>
+                         <p>If enabled the front webpage layout will be convert to Right To Left layout.</p>
+                      </div>
+                   </div>
+                </div>
+                <div class="col-md-6">
+                   <div class="card">
+                      <div class="card-body">
+                         <label for="{{ form.is_default.id_for_label }}" class="form-label">Is Default</label>
+                         <div class="media-body text-end icon-state">
+                            <label class="switch">
+                              {{ form.is_default }}<span class="switch-state"></span>
+                            </label>
+                         </div>
+                         <p>If enabled, this language serves as default; shown if visitor selects nothing.</p>
+                      </div>
+                   </div>
+                </div>
+             </div>
+
+               <button class="btn btn-primary mb-3" type="submit">Save</button>
+            </form>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid Ends-->
+</div>
+{% endblock content %}

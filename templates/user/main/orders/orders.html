@@ -1,0 +1,181 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+.dt-buttons.btn-group.flex-wrap {
+    margin-top: -32px;
+}
+</style>
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="fw-bold py-3 mb-4">
+                        <span class="text-muted fw-light">Dashboard /</span> Orders
+                    </h4>
+                </div>
+            </div>
+                      <!-- Card Border Shadow -->
+          <div class="row">
+            <div class="col-sm-6 col-lg-3 mb-4">
+              <div class="card card-border-shadow-primary h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2 pb-1">
+                    <div class="avatar me-2">
+                      <span class="avatar-initial rounded bg-label-primary"><i class='bx bx-cart'></i></span>
+                    </div>
+                    <h4 class="ms-1 mb-0">{{orders.count}}</h4>
+                  </div>
+                  <p class="mb-1">Total Orders</p>
+                  <p class="mb-0">
+                    <small class="text-muted">Your total orders with us</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3 mb-4">
+              <div class="card card-border-shadow-warning h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2 pb-1">
+                    <div class="avatar me-2">
+                      <span class="avatar-initial rounded bg-label-info"><i class='bx bx-loader'></i></span>
+                    </div>
+                    <h4 class="ms-1 mb-0">{{pending_orders}}</h4>
+                  </div>
+                  <p class="mb-1">Pending Orders</p>
+                  <p class="mb-0">
+                    <small class="text-muted">Total pending orders</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3 mb-4">
+              <div class="card card-border-shadow-danger h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2 pb-1">
+                    <div class="avatar me-2">
+                      <span class="avatar-initial rounded bg-label-success"><i class='bx bxs-check-circle'></i></span>
+                    </div>
+                    <h4 class="ms-1 mb-0">{{confirmed_orders}}</h4>
+                  </div>
+                  <p class="mb-1">Confirmed Orders</p>
+                  <p class="mb-0">
+                    <small class="text-muted">Total confirmed orders</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3 mb-4">
+              <div class="card card-border-shadow-info h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2 pb-1">
+                    <div class="avatar me-2">
+                      <span class="avatar-initial rounded bg-label-danger"><i class='bx bxs-x-circle'></i></span>
+                    </div>
+                    <h4 class="ms-1 mb-0">{{canceled_orders}}</h4>
+                  </div>
+                  <p class="mb-1">Canceled Orders</p>
+                  <p class="mb-0">
+                    <small class="text-muted">Total canceled orders</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--/ Card Border Shadow -->
+            <!--Table Card-->
+            <div class="card">
+                <div class="card-datatable table-responsive">
+                  <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="card-header flex-column flex-md-row">
+                      <div class="head-label">
+                        <h5 class="card-title mb-0">All Orders</h5>
+                      </div>
+                      <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                        <div class="dt-buttons flex-wrap"> 
+                            <div class="">
+
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Your button -->
+                    <div class="container mb-4">
+                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr>
+                        <th style="width: 150px;">Order Id</th>
+                         <th style="width: 120px;">Amount</th>
+                         <th style="width: 200px;">Payment Method</th>
+                         <th style="width: 200px;">Ordered At</th>
+                         <th style="width: 100px;">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for order in orders %}
+                            <tr class="odd">
+                                <td><a href="{% url "userOrderDetail" order.order_id%}">#{{ order.order_id }}</a></td>
+                                {% if order.promo %}
+                                  <td>{{ settings.currency_symbol }}{{ order.total_amount_after_discount }}</td>
+                                {% else %}
+                                  <td>{{ settings.currency_symbol }}{{ order.total_amount }}</td>
+                                {% endif %}
+                                <td>{{ order.get_payment_method_display }}</td>
+                                <td>{{ order.ordered_at }}</td>
+                                <td>
+                                    {% if order.status == 'pending' %}
+                                        <span class="badge bg-warning"><b>{{ order.get_status_display }}</b></span>
+                                    {% elif order.status == 'confirmed' %}
+                                        <span class="badge bg-primary"><b>{{ order.get_status_display }}</b></span>
+                                    {% elif order.status == 'completed' %}
+                                        <span class="badge bg-success"><b>{{ order.get_status_display }}</b></span>
+                                    {% elif order.status == 'canceled' %}
+                                        <span class="badge bg-danger"><b>{{ order.get_status_display }}</b></span>
+                                    {% endif %}  
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <!-- ... more table rows ... -->
+                      </tbody>
+                      
+                    </table>
+                </div>
+                  
+              </div> <!--Table Card-->         
+
+          </div>
+        </div>
+        <!-- / Content -->
+
+
+    </div>
+    <!-- Content wrapper -->
+    <script>
+      $(document).ready(function() {
+          $('.table').DataTable({
+              pageLength: 10,
+              lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+              info: true,
+              search: true,
+              order: [[4, 'desc']]
+          });
+      });
+  </script>
+  
+{% endblock content %}

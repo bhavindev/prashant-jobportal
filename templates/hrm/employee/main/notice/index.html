@@ -1,0 +1,130 @@
+{% extends 'hrm/employee/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+.dt-buttons.btn-group.flex-wrap {
+    margin-top: -32px;
+}
+
+</style>
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">HRM /</span> Notice
+              </h4>
+              {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            <!--Table Card-->
+            <div class="card">
+                <div class="card-datatable table-responsive">
+                  <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="card-header flex-column flex-md-row">
+                      <div class="head-label">
+                        <h5 class="card-title mb-0">All Notices</h5>
+                      </div>
+
+                    </div>
+                    <!-- Your button -->
+                    <div class="container mb-4">
+                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr>
+                            <th style="width: 0px;" >#</th>
+                            <th style="width: 100px;">Title</th>
+                            <th style="width: 150px;">Branch</th>
+                            <th style="width: 150px;">Start Date</th>
+                            <th style="width: 150px;">End Date</th>                       
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for notice in notices %}
+                            <tr class="odd">
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="#" data-slug="{{ notice.id }}" data-bs-toggle="modal" data-bs-target="#detailNoticeModal{{ notice.id }}">{{ notice.title|truncatewords:3 }}</a></td>
+                                    <!-- Department Details Modal -->
+                                    <div class="modal fade" id="detailNoticeModal{{ notice.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary">
+                                                    <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{notice.title}}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <ul class="list-group">
+                                                      <li class="list-group-item">
+                                                          <strong>Title:</strong> {{ notice.title }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Branch:</strong> {{ notice.branch }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Department:</strong> {{ notice.department }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Start Date:</strong> {{ notice.start_date }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>End Date:</strong> {{ notice.end_date }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Description:</strong> {{ notice.description }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Created By:</strong> {{ notice.created_by.userprofile.name }} ( {{ notice.created_by.username }} )
+                                                      </li>
+                                                  </ul>
+                                              </div>                                              
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- / Modal -->
+                                <td>{{ notice.branch }}</td>
+                                <td>{{ notice.start_date }}</td>
+                                <td>{{ notice.end_date }}</td>
+                            </tr>
+                        {% endfor %}
+                        <!-- ... more table rows ... -->
+                      </tbody>
+                    </table>
+                </div>
+              </div> <!--Table Card-->         
+
+          </div>
+        <!-- / Content -->
+
+      </div>
+    </div>
+    <!-- Content wrapper -->
+
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                info: true, 
+                search: true 
+            });
+        });
+    </script>
+{% endblock content %}

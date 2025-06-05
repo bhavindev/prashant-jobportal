@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #7366ff;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 6px 6px 0 0;
+        }
+        .header h1 {
+            margin: 0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #7366ff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .button:hover {
+            background-color: #6052f3;
+        }
+        .note {
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
+        }
+        .ii a[href] {
+            color: white !important;
+        }
+        a {
+            color: white !important;
+            margin-top: 2px;
+        }
+        a:visited {
+            color: white !important;
+        }
+        .footer {
+            text-align: center;
+            background-color: #efefef;
+            padding: 15px;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .footer-name {
+            font-size: 13px;
+            color: #777373;
+        }
+        .content{
+            padding: 15px;
+        }
+        p{
+            margin-top: 10px;
+            line-height: 1.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Ticket #{{ticket.id}}</h1>
+        </div>
+        <div class="content">
+            <p>Hello <b>{{ user }}</b>,</p>
+            <p>This email is to notify you that <b>{{client.userprofile.name}}({{client.username}})</b> added response to <b>[Ticket:#{{ticket.id}}]</b></p>
+            <a class="button" href="{{ admin_view_link }}" target="_blank">View Ticket</a>
+            <p class="note">Please click the above button to view the response and post a reply to the ticket.</p>
+        </div>
+        <div class="footer">
+            <div class="footer-name">
+                <p><b>{{footer.footer_copyright|safe}}</b></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,377 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% load bootstrap_tags %}
+{% block title %}Checkout - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+   .payment-card {
+   border: 1px solid;
+   border-radius: 5px;
+   overflow: hidden;
+   cursor: pointer;
+   transition: box-shadow 0.3s ease-in-out;
+   }
+   @media only screen and (min-width: 601px) {
+   .make-flex{
+   display:flex;
+   }
+   .custom-control-label {
+   position: relative;
+   padding: 10px;
+   text-align: center;
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   background-color: white;
+   width: 90px;
+   height: 40px;
+   cursor: pointer;
+   }
+   }
+   @media only screen and (max-width: 600px) {
+   .payment-card {
+   width: 118px !important;
+   margin-top: 5px !important;
+   display: inline-block !important;
+   }
+   .custom-control-label {
+   position: relative;
+   padding: 10px;
+   text-align: center;
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   background-color: white;
+   width: 116px;
+   height: 40px;
+   cursor: pointer;
+   }
+   }
+   .payment-card:hover {
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+   }
+   .payment-card img {
+   width: 100%;
+   cursor: pointer;
+   object-position: center center; 
+   }
+   .custom-control-input {
+   position: absolute;
+   opacity: 0;
+   cursor: pointer;
+   }
+   .custom-control-input:checked + .custom-control-label {
+   border: 1px solid #007bff;
+   border-radius: 5px;
+   color: #fff;
+   }
+   .instruction-box {
+   padding: 15px 31px 7px 22px;
+   border: 1px solid;
+   border-radius: 15px;
+   width: fit-content;
+   background: white;
+   color: black;
+   }
+   @media only screen and (max-width: 600px) {
+   .payment-method-cards{
+   display: inline-table !important;
+   width: 290px;
+   }
+   }
+</style>
+<!-- Content wrapper -->
+<div class="content-wrapper">
+   <!-- Content -->
+   <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row align-items-center">
+         <div class="col-md-6">
+            <h4 class="fw-bold py-3 mb-2">
+               <span class="text-muted fw-light">Dashboard /</span> Checkout
+            </h4>
+         </div>
+      </div>
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+         {{ message }}
+         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+      {% endif %} 
+      <div class="card">
+         <div class="card-header">
+            <h2>Checkout</h2>
+         </div>
+         <div class="card-body">
+            <div class="row">
+               <div class="col-md-4 order-md-2 mb-4">
+                  <h4 class="d-flex justify-content-between align-items-center mb-3">
+                     <span class="text-muted">Your cart</span>
+                     <span class="badge badge-secondary badge-pill">{{user_cart.count}}</span>
+                  </h4>
+                  <ul class="list-group mb-3">
+                     {% for cart in user_cart %}
+                     <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div>
+                           <h6 class="my-0">{{cart.product.name}}</h6>
+                           <small class="text-muted">×{{cart.quantity}}</small>
+                        </div>
+                        <span class="text-muted">{{settings.currency_symbol}}{{cart.product.rate}}</span>
+                     </li>
+                     {% endfor %}
+
+                     {% if order.promo %}
+                      <li class="list-group-item d-flex justify-content-between bg-light">
+                          <div class="text-success">
+                            <h6 class="my-0">Promo code</h6>
+                            <small class="badge bg-info">{{ order.promo.code }}</small> 
+                          </div>
+                          <strong class="text-success">-{{settings.currency_symbol}}{{ order.total_amount|subtract:order.total_amount_after_discount }}</strong>
+                      </li>
+                     {% endif %}
+
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>Total ({{settings.currency_name}})</span>
+                        {% if order.promo %}
+                        <strong>{{settings.currency_symbol}}{% if user_order %}{{user_order.total_amount_after_discount}}{% else %}0{% endif %}</strong>
+                        {% else %}
+                        <strong>{{settings.currency_symbol}}{% if user_order %}{{user_order.total_amount}}{% else %}0{% endif %}</strong>
+                        {% endif %}
+                     </li>
+                  </ul>
+                  
+                  {% if order.promo %}
+                    <form action="" method="post" class="mb-3">
+                      {% csrf_token %}
+                      <input type="hidden" name="remove_coupon">
+                      <button type="submit" class="btn btn-danger btn-sm w-100">Remove Coupon</button>
+                    </form>
+                  {% endif %}
+                  <!-- Apply coupon form -->
+                  <form class="form-inline d-flex justify-content-between" action="" method="POST">
+                    {% csrf_token %}
+                    <input type="text" class="form-control mr-2" name="coupon_code" placeholder="Promo code" required>
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                  </form>
+
+               </div>
+               <div class="col-md-8 order-md-1">
+                  <h4 class="mb-3">Billing information</h4>
+                  <p>Add or change billing information from <a href="{% url "profile_edit" %}">Profile</a></p>
+                  <form class="needs-validation" method='post'>
+                     {% csrf_token %}
+                     <div class="row">
+                        <div class="col-md-12 mb-3">
+                           <label for="firstName">Name<span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" readonly name="name" value="{{request.user.userprofile.name}}" id="name" placeholder="" required>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-6">
+                           <div class="mb-3">
+                              <label for="email">Email<span class="text-danger">*</span></label>
+                              <input type="email" class="form-control" name="email" readonly value="{{request.user.userprofile.email}}" id="email" placeholder="you@example.com" required>
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="mb-3">
+                              <label for="phone">Phone<span class="text-danger">*</span></label>
+                              <input type="number" class="form-control" name="phone" readonly value="{{request.user.userprofile.phone}}" id="phone" placeholder="+1 2154 4541" required>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row mb-3">
+                        <div class="col-md-6">
+                           <label for="address">Address<span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" name="address" readonly value="{{request.user.userprofile.address}}" id="address" placeholder="1234 Main St" required>
+                        </div>
+                        <div class="col-md-6">
+                           <label for="address">City<span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" name="city" readonly value="{{request.user.userprofile.city}}" id="address" placeholder="Your city" required>
+                        </div>
+                     </div>
+                     <div class="row mb-3">
+                        <div class="col-md-4">
+                           <label for="address">State<span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" name="state" readonly value="{{request.user.userprofile.state}}" id="address" placeholder="Your state" required>
+                        </div>
+                        <div class="col-md-4">
+                           <label for="address">Postal<span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" name="zipcode" readonly value="{{request.user.userprofile.zipcode}}" id="address" placeholder="Postal code" required>
+                        </div>
+                        <div class="col-md-4">
+                           <label for="address">Country<span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" name="country" readonly value="{{request.user.userprofile.country}}" id="address" placeholder="Your country" required>
+                        </div>
+                     </div>
+                     <hr class="mb-4">
+                     <h4 class="mb-3">Payment</h4>
+                     <div class="make-flex my-3 payment-method-cards">
+                        <!-- SSL Commerze -->
+                        {% if method.ssl_commerze_is_active %}
+                        <div class="card payment-card mx-2 common-tooltip" data-placement="top" title="SSLCOMMERZ">
+                           <input id="sslcommerze" name="sslcommerze" type="radio" onclick="togglePaymentButtons()" class="custom-control-input" checked>
+                           <label class="custom-control-label" for="sslcommerze">
+                           <img src="{% static 'crm/assets/img/sslcommerze.png'%}" alt="SSLCOMMERZE">
+                           </label>
+                        </div>
+                        {% endif %}
+                        <!-- PayPal -->
+                        {% if method.paypal_is_active %}
+                        <div class="card payment-card mx-2 common-tooltip" data-placement="top" title="PayPal">
+                           <input id="paypal" name="paypal" type="radio" onclick="togglePaymentButtons()" class="custom-control-input">
+                           <label class="custom-control-label" for="paypal">
+                           <img src="{% static 'crm/assets/img/PayPal.png'%}" alt="PayPal">
+                           </label>
+                        </div>
+                        {% endif %}
+                        <!-- Stripe -->
+                        {% if method.stripe_is_active %}
+                        <div class="card payment-card mx-2 common-tooltip" data-placement="top" title="Stripe">
+                           <input id="stripe" name="stripe" type="radio" onclick="togglePaymentButtons()" class="custom-control-input">
+                           <label class="custom-control-label" for="stripe">
+                           <img src="{% static 'crm/assets/img/stripe.webp'%}" alt="Stripe">
+                           </label>
+                        </div>
+                        {% endif %}
+                        <!-- Instamojo -->
+                        {% if method.instamojo_is_active %}
+                        <div class="card payment-card mx-2 common-tooltip" data-placement="top" title="Instamojo">
+                           <input id="instamojo" name="instamojo" type="radio" onclick="togglePaymentButtons()" class="custom-control-input">
+                           <label class="custom-control-label" for="instamojo">
+                           <img src="{% static 'crm/assets/img/mojo.png'%}" alt="instamojo">
+                           </label>
+                        </div>
+                        {% endif %}
+                        <!-- Paymob -->
+                        {% if method.paymob_is_active %}
+                        <div class="card payment-card mx-2 common-tooltip" data-placement="top" title="Paymob">
+                           <input id="paymob" name="paymob" type="radio" class="custom-control-input" onclick="togglePaymentButtons()">
+                           <label class="custom-control-label" for="paymob">
+                           <img src="{% static 'crm/assets/img/Paymob.png'%}" alt="paymob">
+                           </label>
+                        </div>
+                        {% endif %}
+                        <!-- Razorpay -->
+                        {% if method.razorpay_is_active %}
+                        <div class="card payment-card mx-2 common-tooltip" data-placement="top" title="Razorpay">
+                           <input id="razorpay" name="razorpay" type="radio" class="custom-control-input" onclick="togglePaymentButtons()">
+                           <label class="custom-control-label" for="razorpay">
+                           <img src="{% static 'crm/assets/img/razorpay.png'%}" alt="Razorpay">
+                           </label>
+                        </div>
+                        {% endif %}
+                        <!-- Offline Payment -->
+                        {% if method.offline_payment_is_active %}
+                        <div class="card payment-card mx-2 common-tooltip" data-placement="top" title="Offline Payment">
+                           <input id="offlinepayment" name="offlinepayment" type="radio" onclick="togglePaymentButtons()"  class="custom-control-input">
+                           <label class="custom-control-label" for="offlinepayment">
+                           <img src="{% static 'crm/assets/img/cash.png'%}" alt="Offline Payment">
+                           </label>
+                        </div>
+                        {% endif %}
+                     </div>
+                     <!-- Instruction Box -->
+                     <div class="instruction-box" style="display: none;">
+                        {{method.offline_payment_instruction|safe}}
+                     </div>
+                     <hr class="mb-4">
+                      {% if order.promo %}
+                        <button id="payButton" class="btn btn-primary btn-lg btn-block" type="submit">Pay {% if user_order %}{{user_order.total_amount_after_discount}}{% else %}0{% endif %} {{settings.currency_name}}</button>
+                      {% else %}
+                        <button id="payButton" class="btn btn-primary btn-lg btn-block" type="submit">Pay {% if user_order %}{{user_order.total_amount}}{% else %}0{% endif %} {{settings.currency_name}}</button>
+                      {% endif %}
+                     
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+<script>
+   function togglePaymentButtons() {
+     var razorpayButtonContainer = document.getElementById('razorpayButton');
+     var payButton = document.getElementById('payButton');
+     var razorpayRadioButton = document.getElementById('razorpay');
+     var sslcommerzeRadioButton = document.getElementById('sslcommerze');
+     var paypalRadioButton = document.getElementById('paypal');
+     var stripeRadioButton = document.getElementById('stripe');
+     var offlinepaymentRadioButton = document.getElementById('offlinepayment');
+   
+     // Check which radio button is selected
+     if (razorpayRadioButton.checked) {
+         razorpayButtonContainer.style.display = 'block';
+         payButton.style.display = 'none';
+     } else {
+         razorpayButtonContainer.style.display = 'none';
+         payButton.style.display = 'block';
+     }
+   }
+   
+   
+</script>
+<script>
+   $(document).ready(function () {
+     $('.common-tooltip').tooltip({
+         trigger: 'hover'
+     });
+   });
+     
+   
+     $(document).ready(function () {
+       $(".payment-card").on("click", function () {
+           $(".payment-card input[type=radio]").prop("checked", false);
+   
+           // Define radioInput here
+           var radioInput = $(this).find("input[type=radio]");
+           radioInput.prop("checked", true);
+   
+           var instructionBox = $(".instruction-box");
+           if (radioInput.attr("id") === "offlinepayment") {
+               instructionBox.show();
+           } else {
+               instructionBox.hide();
+           }
+       });
+   });
+</script>
+<!-- Include Razorpay Checkout script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- Your existing JavaScript code -->
+<script>
+   function startRazorpay() {
+       const options = {
+           key: 'your_razorpay_api_key',  // Replace with your Razorpay API key
+           amount: "{{user_order.total_amount}}",  // Replace with the amount in paisa (e.g., 500 for ₹5.00)
+           currency: 'INR',
+           name: '{{settings.name}}',
+           description: '',
+           image: '', 
+           order_id: '{{user_order.order_id}}',  // Replace with the order ID generated on your server
+           handler: function (response) {
+               alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+           },
+           prefill: {
+               name: '{{request.user.userprofile.name}}',
+               email: '{{request.user.userprofile.email}}',
+               contact: '{{request.user.userprofile.phone}}'
+           },
+           theme: {
+               color: '#528FF0'  // Replace with your preferred color
+           }
+       };
+   
+       // Initialize Razorpay
+       const rzp = new Razorpay(options);
+   
+       // Open the Razorpay checkout dialog
+       rzp.open();
+   }
+</script>
+{% endblock content %}

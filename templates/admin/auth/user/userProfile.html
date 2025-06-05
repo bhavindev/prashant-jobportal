@@ -1,0 +1,145 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+  a.btn.social-btn.btn-instagram.mb-2.text-center {
+    background: #d53d6b;
+    color: white;
+    width: 100%;
+}
+.fa-paper-plane-o, .fa-phone{
+  color:#5c61f2;
+}
+@media only screen and (max-width: 1199px)
+.user-profile .profile-header .userpro-box {
+    max-width: 396px !important;
+    padding: 25px;
+}
+</style>
+<div class="page-body">
+    <div class="container-fluid">
+      <div class="page-title">
+        <div class="row">
+          <div class="col-sm-6">
+            <h3>User Profile</h3>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url "admin_home" %}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a></li>
+              <li class="breadcrumb-item">Users</li>
+              <li class="breadcrumb-item active">User Profile</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+      <div class="user-profile">
+        <div class="row">
+          <!-- user profile header start-->
+          <div class="col-sm-12">
+            <div class="card profile-header bg-size" style="background-image: url(&quot;{% static 'admin/assets/images/user-profile/bg-profile.jpg' %} &quot;); background-size: cover; background-position: center center; display: block;"><img class="img-fluid bg-img-cover" src="{% static '/admin/assets/images/user/cover.png' %}" alt="" style="display: none;">
+              <div class="profile-img-wrrap bg-size" style="background-image: url(&quot;{% static 'admin/assets/images/user-profile/bg-profile.jpg' %} &quot;); background-size: cover; background-position: center center; display: block;"><img class="img-fluid bg-img-cover" src="{% static '/admin/assets/images/user/cover.png' %}" alt="" style="display: none;"></div>
+              <div class="userpro-box">
+                <div class="img-wrraper">                              
+                  <div class="avatar"><img class="img-fluid" alt="" src="{{profile.getUserImage}}"></div><a class="icon-wrapper" href="{% url 'editProfile' slug=profile.slug %}"><i class="icofont icofont-pencil-alt-5"></i></a>
+                </div>
+                <div class="user-designation">
+                  <div class="title"><a target="_blank" href=""> 
+                      <h4>{{profile.name}}</h4>
+                      <p>{{request.user.role}}</p></a></div>
+                  <div class="social-media">
+                    <ul class="user-list-social">
+                      <li><a href="{{profile.facebook}}"><i class="fa fa-facebook"></i></a></li>
+                      <li><a href="{{profile.instagram}}"><i class="fa fa-instagram"></i></a></li>
+                      <li><a href="{{profile.linkedin}}"><i class="fa fa-linkedin"></i></a></li>
+                      </ul>
+                  </div>
+                  <div class="d-flex justify-content-center bd-highlight mb-3">
+                    <a href="{% url 'editProfile' slug=profile.slug %}" class="btn btn-primary" style='margin-right:5px;'>Edit</a>
+                    <button class="btn btn-danger btn-sm" style='margin-left:5px;' type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter{{ user.id }}">Delete</button>
+                                      <div class="modal fade" id="exampleModalCenter{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter{{ user.id }}" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-centered" role="document">
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <h5 class="modal-title">Warning</h5>
+                                                      <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <p class="mb-0">Are you sure you want to delete {{profile.name}}?</p>
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                      <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                      <a href="{% url 'delete_user' profile.user %}" class="btn btn-danger" type="button">Delete</a>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                </div>
+                </div>
+              </div>
+            </div>
+
+            
+          </div>
+
+          
+          <!-- user profile header end-->
+          <div class="col-xl-3 col-lg-4 col-md-5 xl-35 box-col-40">
+            <div class="default-according style-1 job-accordion">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h5 class="p-0">
+                        <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon2" aria-expanded="true" aria-controls="collapseicon2">About Me</button>
+                      </h5>
+                    </div>
+                    <div class="collapse show" id="collapseicon2" aria-labelledby="collapseicon2" data-parent="#accordion" style="">
+                      <div class="card-body post-about">
+                        <ul>
+                          <li>
+                            <div class="icon"><i class="fa fa-paper-plane-o"></i></div>
+                            <div>
+                              <h5>Email</h5>
+                              <p class="mb-0">{{profile.email}}</p>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="icon"><i class="fa fa-phone"></i></div>
+                            <div>
+                              <h5>Phone</h5>
+                              <p class="mb-0">{{profile.phone}}</p>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div><div>
+                              <h5>Address</h5>
+                              <p class="mb-0">{{profile.address}}, {{profile.city}}-{{profile.zipcode}}. {{profile.state}}</p>
+                            </div>
+                          </li>                                                                                                                                                                                                                                                  
+            <div class="social-network theme-form mt-3">
+                <span class="f-w-600">Social Networks</span>
+                  <a class="btn social-btn btn-fb mb-2 text-center" href="{{profile.facebook}}"><i class="fa fa-facebook m-r-5"></i>Facebook</a>
+                          <a class="btn social-btn btn-instagram mb-2 text-center" href="{{profile.instagram}}"><i class="fa fa-instagram m-r-5"></i>Instagram</a>
+                          <a class="btn social-btn btn-linkedin text-center" href="{{profile.linkedin}}"><i class="fa fa-linkedin m-r-5"></i>Linkedin</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+            </div>
+          </div>
+          <!-- user profile fifth-style end-->
+
+        </div>
+      </div>
+      
+      </div>
+    </div>
+    <!-- Container-fluid Ends-->
+  </div>
+{% endblock content %}

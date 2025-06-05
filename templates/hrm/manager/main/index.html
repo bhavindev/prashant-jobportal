@@ -1,0 +1,539 @@
+{% extends 'hrm/manager/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+   body{
+   overflow-x:hidden;
+   }
+   div#revenueExpenseChart {
+   margin-bottom: 11px;
+   }
+   div#taskStatusChart {
+   margin-left: -30px;
+   }
+   .payment-icon , .expense-icon {
+   width: 35px;
+   height: 35px;
+   margin-top: 5px;
+   }
+   .ppm, .expm{
+   font-size:16px;
+   }
+   /* Media query for mobile devices */
+   @media (max-width: 767px) {
+   div#revenueExpenseChart {
+   margin-left: -19px !important;
+   }
+   }
+   .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+   font-size: 1.2rem !important;
+   height: calc(1.625rem + 2px);
+   width: calc(1.625rem + 2px);
+   }
+   @media (min-width: 992px) {
+   .card-datatable.table-responsive {
+   overflow-x: hidden;
+   }
+   }
+   .sform {
+   margin-top: -25px;
+   }
+   .hst{
+   overflow-x: auto;
+   }
+</style>
+<!-- Content wrapper -->
+<div class="content-wrapper">
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+   <div class="row">
+      <div class="col-lg-12 mb-4 order-0">
+         <div class="card">
+            <div class="d-flex align-items-end row">
+               <div class="col-sm-7">
+                  <div class="card-body">
+                     <h5 class="card-title text-primary">Hi! {{user_profile.name}}! 🎉</h5>
+                     <p class="mb-4">Welcome to your dashboard.</p>
+                     <a href="{% url 'crmHome' %}" class="btn btn-sm btn-label-primary">Visit CRM</a>
+                  </div>
+               </div>
+               <div class="col-sm-5 text-center text-sm-left">
+                  <div class="card-body pb-0 px-0 px-md-4">
+                     <img src="{% static 'crm/assets/img/man-with-laptop-dark.png' %}" height="140">
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Card Border Shadow -->
+   <div class="row">
+      <div class="col-sm-6 col-lg-3 mb-4">
+         <div class="card card-border-shadow-primary h-100">
+            <div class="card-body">
+               <div class="d-flex align-items-center mb-2 pb-1">
+                  <div class="avatar me-2">
+                     <span class="avatar-initial rounded bg-label-primary"><i class='bx bxs-group'></i></span>
+                  </div>
+                  <h4 class="ms-1 mb-0">{{staffs.count}}</h4>
+               </div>
+               <p class="mb-1">Total Staff</p>
+               <p class="mb-0">
+                  <small class="text-muted">Your Total Active Staff</small>
+               </p>
+            </div>
+         </div>
+      </div>
+      <div class="col-sm-6 col-lg-3 mb-4">
+         <div class="card card-border-shadow-warning h-100">
+            <div class="card-body">
+               <div class="d-flex align-items-center mb-2 pb-1">
+                  <div class="avatar me-2">
+                     <span class="avatar-initial rounded bg-label-info"><i class='bx bx-sitemap'></i></span>
+                  </div>
+                  <h4 class="ms-1 mb-0">{{ request.user.userprofile.branch }}</h4>
+               </div>
+               <p class="mb-1">Branch</p>
+               <p class="mb-0">
+                  <small class="text-muted">Branch you can manage</small>
+               </p>
+            </div>
+         </div>
+      </div>
+      <div class="col-sm-6 col-lg-3 mb-4">
+         <div class="card card-border-shadow-danger h-100">
+            <div class="card-body">
+               <div class="d-flex align-items-center mb-2 pb-1">
+                  <div class="avatar me-2">
+                     <span class="avatar-initial rounded bg-label-success"><i class='bx bxs-building'></i></span>
+                  </div>
+                  <h4 class="ms-1 mb-0">All</h4>
+               </div>
+               <p class="mb-1">Department</p>
+               <p class="mb-0">
+                  <small class="text-muted">Department you can manage</small>
+               </p>
+            </div>
+         </div>
+      </div>
+      <div class="col-sm-6 col-lg-3 mb-4">
+         <div class="card card-border-shadow-info h-100">
+            <div class="card-body">
+               <div class="d-flex align-items-center mb-2 pb-1">
+                  <div class="avatar me-2">
+                     <span class="avatar-initial rounded bg-label-warning"><i class='bx bxs-briefcase'></i></span>
+                  </div>
+                  <h4 class="ms-1 mb-0">{{ projects.count }}</h4>
+               </div>
+               <p class="mb-1">Total Project</p>
+               <p class="mb-0">
+                  <small class="text-muted">Your Total Project</small>
+               </p>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!--/ Card Border Shadow -->
+   <!-- Meeting Over View -->
+   <div class="row">
+      <div class="col-sm-12 col-lg-12 mb-4">
+         <div class="card">
+            <div class="card-body">
+               <div class="card-datatable table-responsive">
+                  <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                     <div class="card-header flex-column flex-md-row">
+                        <div class="head-label">
+                           <h5 class="card-title mb-0">Meeting Schedule</h5>
+                        </div>
+                        <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Your button -->
+                  <div class="">
+                     <table class="datatables-basic js-add-table table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                        <thead>
+                           <tr>
+                              <th style="width: 0px;" >#</th>
+                              <th style="width: 130px;">Title</th>
+                              <th style="width: 150px;">Branch</th>
+                              <th style="width: 150px;">Department</th>
+                              <th style="width: 150px;">Meeting Date</th>
+                              <th style="width: 150px;">Meeting Time</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {% for meeting in meetings %}
+                           <tr class="odd">
+                              <td>{{ forloop.counter }}</td>
+                              <td><a href="#" data-slug="{{ meeting.id }}" data-bs-toggle="modal" data-bs-target="#detailMeetingModal{{ meeting.id }}">{{ meeting.title|truncatewords:3 }}</a></td>
+                              <!-- Department Details Modal -->
+                              <div class="modal fade" id="detailMeetingModal{{ meeting.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                       <div class="modal-header bg-primary">
+                                          <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{meeting.title|truncatewords:3}}</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                          <ul class="list-group">
+                                             <li class="list-group-item">
+                                                <strong>Title:</strong> {{ meeting.title }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Branch:</strong> {{ meeting.branch }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Department:</strong> {% if meeting.department %}{{ meeting.department }}{% else %}All{% endif %}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Description:</strong> {{ meeting.description }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Date:</strong> {{ meeting.meeting_date }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Time:</strong> {{ meeting.meeting_time }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Meeting Type:</strong> {{ meeting.meeting_type }}
+                                             </li>
+                                             {% if meeting.meeting_type == 'Online' %}
+                                             <li class="list-group-item">
+                                                <strong>Meeting Link:</strong> <a href="{{ meeting.meeting_link }}">{{ meeting.meeting_link }}</a>
+                                             </li>
+                                             {% endif %}
+                                             <li class="list-group-item">
+                                                <strong>Created By:</strong> {{ meeting.created_by.userprofile.name }} ( {{ meeting.created_by.username }} )
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- / Modal -->
+                              <td>{{ meeting.branch }}</td>
+                              <td>{% if  meeting.department %}{{ meeting.department }}{% else %}All{% endif %}</td>
+                              <td>{{ meeting.meeting_date }}</td>
+                              <td>{{ meeting.meeting_time }}</td>
+                           </tr>
+                           {% endfor %}
+                           <!-- ... more table rows ... -->
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!--/ Meeting Over View -->
+   <div class="row">
+      <!-- Recent Notice -->
+      <div class="col-md-6 col-lg-6 col-xl-6 mb-4">
+         <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+               <h5 class="card-title m-0 me-2">Recent Notice</h5>
+            </div>
+            <div class="card-body">
+               <ul class="p-0 m-0">
+                  {% if notices %}
+                  <div class="table-responsive">
+                     <table class="table border-top">
+                        <thead>
+                           <tr>
+                              <th scope="col">Title</th>
+                              <th scope="col">Start</th>
+                              <th scope="col">End</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {% for notice in notices|slice:":10" %}
+                           <tr>
+                              <td><a href="#" data-slug="{{ notice.id }}" data-bs-toggle="modal" data-bs-target="#detailNoticeModal{{ notice.id }}">{{ notice.title|truncatewords:3 }}</a></td>
+                              <!-- Notice Details Modal -->
+                              <div class="modal fade" id="detailNoticeModal{{ notice.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                       <div class="modal-header bg-primary">
+                                          <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{notice.title}}</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                          <ul class="list-group">
+                                             <li class="list-group-item">
+                                                <strong>Title:</strong> {{ notice.title }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Branch:</strong> {{ notice.branch }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Department:</strong> {{ notice.department }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Start Date:</strong> {{ notice.start_date }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>End Date:</strong> {{ notice.end_date }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Description:</strong> {{ notice.description }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Created By:</strong> {{ notice.created_by.userprofile.name }} ( {{ notice.created_by.username }} )
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- / Modal -->
+                              <td scope="col">{{notice.start_date}}</td>
+                              <td scope="col">{{notice.end_date}}</td>
+                           </tr>
+                           {% endfor %}
+                        </tbody>
+                     </table>
+                  </div>
+                  {% else %}
+                  <li class="d-flex mb-4 pb-1">No data found</li>
+                  {% endif %}
+               </ul>
+            </div>
+         </div>
+      </div>
+      <!--/ recent Notice  -->
+      <!-- Events -->
+      <div class="col-md-6 col-lg-6 col-xl-6 mb-4">
+         <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+               <div class="card-title mb-0">
+                  <h5 class="m-0 me-2">Recent Events</h5>
+               </div>
+            </div>
+            <div class="card-body">
+               <ul class="p-0 m-0">
+                  {% if events %}
+                  <div class="table-responsive">
+                     <table class="table border-top">
+                        <thead>
+                           <tr>
+                              <th scope="col">Title</th>
+                              <th scope="col">Start</th>
+                              <th scope="col">End</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {% for event in events|slice:":10" %}
+                           <tr>
+                              <td><a href="#" data-slug="{{ event.id }}" data-bs-toggle="modal" data-bs-target="#detailEventModal{{ event.id }}">{{event.title|truncatewords:3}}</a></td>
+                              <!-- Notice Details Modal -->
+                              <div class="modal fade" id="detailEventModal{{ event.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                       <div class="modal-header bg-primary">
+                                          <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{event.title}}</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                          <ul class="list-group">
+                                             <li class="list-group-item">
+                                                <strong>Title:</strong> {{ event.title }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Branch:</strong> {{ event.branch }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Start Date:</strong> {{ event.start_time }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>End Date:</strong> {{ event.end_time }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Description:</strong> {{ event.description }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Created By:</strong> {{ event.created_by.userprofile.name }} ( {{ notice.created_by.username }} )
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- / Modal -->
+                              <td scope="col">{{event.start_time}}</td>
+                              <td scope="col">{{event.end_time}}</td>
+                           </tr>
+                           {% endfor %}
+                        </tbody>
+                     </table>
+                  </div>
+                  {% else %}
+                  <li class="d-flex mb-4 pb-1">No data found</li>
+                  {% endif %}
+               </ul>
+            </div>
+         </div>
+      </div>
+      <!-- Holidays -->
+      <div class="col-md-6 col-lg-6 col-xl-6 mb-4">
+         <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+               <h5 class="card-title m-0 me-2">Recent Holidays</h5>
+            </div>
+            <div class="card-body">
+               <ul class="p-0 m-0">
+                  {% if holidays %}
+                  <div class="table-responsive">
+                     <table class="table border-top">
+                        <thead>
+                           <tr>
+                              <th scope="col">Title</th>
+                              <th scope="col">Start</th>
+                              <th scope="col">End</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {% for holiday in holidays|slice:":10" %}
+                           <tr>
+                              <td><a href="#" data-slug="{{ holiday.id }}" data-bs-toggle="modal" data-bs-target="#detailHolidayModal{{ holiday.id }}">{{ holiday.occasion|truncatewords:3 }}</a></td>
+                              <!-- Holiday Details Modal -->
+                              <div class="modal fade" id="detailHolidayModal{{ holiday.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                       <div class="modal-header bg-primary">
+                                          <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{holiday.occasion|truncatewords:3}}</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                          <ul class="list-group">
+                                             <li class="list-group-item">
+                                                <strong>Occasion:</strong> {{ holiday.occasion }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Branch:</strong> {{ holiday.branch }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Description:</strong> {{ holiday.description }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Start Date:</strong> {{ holiday.start_date }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>End Date:</strong> {{ holiday.end_date }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Created By:</strong> {{ holiday.created_by.userprofile.name }} ( {{ holiday.created_by.username }} )
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- / Modal -->
+                              <td scope="col">{{holiday.start_date}}</td>
+                              <td scope="col">{{holiday.end_date}}</td>
+                           </tr>
+                           {% endfor %}
+                        </tbody>
+                     </table>
+                  </div>
+                  {% else %}
+                  <li class="d-flex mb-4 pb-1">No data found</li>
+                  {% endif %}
+               </ul>
+            </div>
+         </div>
+      </div>
+      <!--/ holiday  -->
+      <!-- Leaves -->
+      <div class="col-md-6 col-lg-6 col-xl-6 mb-4">
+         <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+               <h5 class="card-title m-0 me-2">Recent Leaves</h5>
+            </div>
+            <div class="card-body">
+               <ul class="p-0 m-0">
+                  {% if leaves %}
+                  <div class="table-responsive" style="overflow-x: auto;">
+                     <table class="table border-top" style="min-width: 700px;">
+                        <thead>
+                           <tr>
+                              <th>Employee</th>
+                              <th>Start</th>
+                              <th>End</th>
+                              <th>Status</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {% for leave in leaves|slice:":10" %}
+                           <tr>
+                              <td><a href="#" data-slug="{{ leave.id }}" data-bs-toggle="modal" data-bs-target="#detailLeaveModal{{ leave.id }}">{{ leave.employee.userprofile.name|truncatewords:3 }}</a></td>
+                              <!-- Leave Details Modal -->
+                              <div class="modal fade" id="detailLeaveModal{{ leave.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                 <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                       <div class="modal-header bg-primary">
+                                          <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{leave.employee.userprofile.name|truncatewords:3}}'s Leave Request</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                          <ul class="list-group">
+                                             <li class="list-group-item">
+                                                <strong>Employee:</strong> {{ leave.employee.userprofile.name }} ( {{leave.employee.username}} )
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Leave Type:</strong> {{ leave.leave_type }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Reason:</strong> {{ leave.reason }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Start Date:</strong> {{ leave.start_date }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>End Date:</strong> {{ leave.end_date }}
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Status:</strong> <span class="badge bg-{{leave.get_status}}">{{ leave.status }}</span>
+                                             </li>
+                                             <li class="list-group-item">
+                                                <strong>Created By:</strong> {{ leave.created_by.userprofile.name }} ( {{ leave.created_by.username }} )
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- / Modal -->
+                              <td>{{ leave.start_date }}</td>
+                              <td>{{ leave.end_date }}</td>
+                              <td><span class="badge bg-{{ leave.get_status }}">{{ leave.status }}</span></td>
+                           </tr>
+                           {% endfor %}
+                        </tbody>
+                     </table>
+                  </div>
+                  {% else %}
+                  <li class="d-flex mb-4 pb-1">No data found</li>
+                  {% endif %}
+               </ul>
+            </div>
+         </div>
+      </div>
+      <!--/ Leave  -->
+   </div>
+</div>
+<!-- / Content -->
+<script>
+   $(document).ready(function() {
+       $('.js-add-table').DataTable({
+           pageLength: 10, // Set the initial page length to 10
+           lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Allow changing page length
+           info: true, // Show the item count
+           search: true // Enable search
+       });
+   });
+</script>
+{% endblock content %}

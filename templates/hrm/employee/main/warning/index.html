@@ -1,0 +1,122 @@
+{% extends 'hrm/employee/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+.dt-buttons.btn-group.flex-wrap {
+    margin-top: -32px;
+}
+
+</style>
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">HRM /</span> Warning
+              </h4>
+              {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            <!--Table Card-->
+            <div class="card">
+                <div class="card-datatable table-responsive">
+                  <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="card-header flex-column flex-md-row">
+                      <div class="head-label">
+                        <h5 class="card-title mb-0">All Warnings</h5>
+                      </div>
+                    </div>
+                    <!-- Your button -->
+                    <div class="container mb-4">
+                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr>
+                            <th style="width: 0px;" >#</th>
+                            <th style="width: 100px;">Employee</th>
+                            <th style="width: 150px;">Reason</th>
+                            <th style="width: 150px;">Warned At</th>                       
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for warning in warnings %}
+                            <tr class="odd">
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="#" data-slug="{{ warning.id }}" data-bs-toggle="modal" data-bs-target="#detailWarningModal{{ warning.id }}">{{ warning.employee.userprofile.name }}</a></td>
+                                    <!-- Department Details Modal -->
+                                    <div class="modal fade" id="detailWarningModal{{ warning.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary">
+                                                    <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{warning.employee.userprofile.name}}'s Warning</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <ul class="list-group">
+                                                      <li class="list-group-item">
+                                                          <strong>Employee:</strong> {{ warning.employee.userprofile.name }} ( {{ warning.employee.username }} )
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Reason:</strong> {{ warning.reason }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Warned At:</strong> {{ warning.created_at }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Warned By:</strong> {{ warning.created_by.userprofile.name }} ( {{ warning.created_by.username }} )
+                                                      </li>
+                                                  </ul>
+                                              </div>                                              
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- / Modal -->
+                                <td>{{ warning.reason|truncatewords:3 }}</td>
+                                <td>{{ warning.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+                        <!-- ... more table rows ... -->
+                      </tbody>
+                    </table>
+                </div>
+              </div> <!--Table Card-->         
+
+          </div>
+        <!-- / Content -->
+
+      </div>
+    </div>
+    <!-- Content wrapper -->
+
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                info: true, 
+                search: true 
+            });
+            $('#employeeadd').selectize();
+            {% for warning in warnings %}
+            $('#employeeeditlist{{warning.id}}').selectize();
+            {% endfor %} 
+        });
+    </script>
+{% endblock content %}

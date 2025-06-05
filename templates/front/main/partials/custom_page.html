@@ -1,0 +1,47 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{page.title}} - {{seo_settings.meta_title}} {% endblock title %}
+{% block title1 %} {{page.title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{page.title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+        <!--=====================================-->
+        <!--=       Breadcrumb Area Start       =-->
+        <!--=====================================-->
+        <div class="breadcrum-area">
+            <div class="container">
+                <div class="breadcrumb">
+                    <ul class="list-unstyled">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">{{page.title}}</li>
+                    </ul>
+                    <h1 class="title h2">{{page.title}}</h1>
+                </div>
+            </div>
+            <ul class="shape-group-8 list-unstyled">
+                <li class="shape shape-1" data-sal="slide-right" data-sal-duration="500" data-sal-delay="100">
+                    <img src="{% static 'front/assets/media/others/bubble-9.png'  %}" alt="Bubble">
+                </li>
+                <li class="shape shape-2" data-sal="slide-left" data-sal-duration="500" data-sal-delay="200">
+                    <img src="{% static 'front/assets/media/others/bubble-11.png'  %}" alt="Bubble">
+                </li>
+                <li class="shape shape-3" data-sal="slide-up" data-sal-duration="500" data-sal-delay="300">
+                    <img src="{% static 'front/assets/media/others/line-4.png'  %}" alt="Line">
+                </li>
+            </ul>
+        </div>
+        <!--=====================================-->
+        <!--=    Privacy Policy Area Start      =-->
+        <!--=====================================-->
+        <section class="section-padding privacy-policy-area">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="">
+                            {{ page.content|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock %}

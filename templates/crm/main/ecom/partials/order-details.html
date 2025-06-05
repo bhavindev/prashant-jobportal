@@ -1,0 +1,152 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% load bootstrap_tags %}
+{% block title %}Order #{{ order.order_id }} - {{ settings.name }}{% endblock title %}
+{% block content %}
+<style>
+    .table-responsive::-webkit-scrollbar {
+        height: 9px; 
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 6px;
+    }
+</style>
+<div class="container mt-3 mb-5">
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+    <div class="row mb-5">
+        <div class="col-md-8 mt-3">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Order Details</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 150px;">Order ID</th>
+                                    <th style="min-width: 150px;">Total Amount</th>
+                                    <th style="min-width: 150px;">Discount</th>
+                                    <th style="min-width: 150px;">Paid Amount</th>
+                                    <th style="min-width: 150px;">Ordered At</th>
+                                    <th style="min-width: 200px;">Paid By</th>
+                                    {% if order.payment_method != 'offlinepayment' %}
+                                        <th>Transaction ID</th>
+                                    {% endif %}
+                                    <th style="min-width: 150px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#{{ order.order_id }}</td>
+                                    <td>{{ settings.currency_symbol }}{{ order.total_amount }}</td>
+
+                                    {% if order.promo %}
+                                        <td>{{ settings.currency_symbol }}{{order.total_amount|subtract:order.total_amount_after_discount}}</td>
+                                    {% else %}
+                                        <td>{{ settings.currency_symbol }}0</td>
+                                    {% endif %}
+
+                                    {% if order.promo %}
+                                        <td>{{ settings.currency_symbol }}{{ order.total_amount_after_discount }}</td>
+                                    {% else %}
+                                        <td>{{ settings.currency_symbol }}{{ order.total_amount }}</td>
+                                    {% endif %}   
+                                         
+                                    <td>{{ order.ordered_at }}</td>
+                                    <td>{{ order.get_payment_method_display }}</td>
+                                    {% if order.payment_method != 'offlinepayment' %}
+                                        <td>{{ order.transaction_id }}</td>
+                                    {% endif %}
+                                    <td>
+                                        <span class="badge {% if order.status == 'pending' %}bg-warning{% elif order.status == 'confirmed' %}bg-primary{% elif order.status == 'completed' %}bg-success{% elif order.status == 'canceled' %}bg-danger{% endif %}">
+                                            <b>{{ order.get_status_display }}</b>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Ordered Items</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product</th>
+                                    <th>Unit</th>
+                                    <th>Unit Cost</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cart_item in cart_items %}
+                                    <tr>
+                                        <td><img style="width:80px; border-radius:5px;" src="{% if cart_item.product.image %}{{ cart_item.product.image.url }}{% else %}{% static 'crm/assets/img/placeholder.webp' %}{% endif %}" alt="" srcset=""></td>
+                                        <td>{{ cart_item.product.name }}</td>
+                                        <td>{{ cart_item.unit_type }}</td>
+                                        <td>{{ settings.currency_symbol }}{{ cart_item.unit_price }}</td>
+                                        <td>{{ cart_item.quantity }}</td>
+                                        <td>{{ settings.currency_symbol }}{{ cart_item.subtotal }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mt-3">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Client Details</h4>
+                    <dl class="row">
+                        <dt class="col-sm-4">Name:</dt>
+                        <dd class="col-sm-8">{{ order.user.userprofile.name }}</dd>
+
+                        <dt class="col-sm-4">Email:</dt>
+                        <dd class="col-sm-8">{{ order.user.userprofile.email }}</dd>
+
+                        <dt class="col-sm-4">Phone:</dt>
+                        <dd class="col-sm-8">{{ order.user.userprofile.phone }}</dd>
+
+                        <dt class="col-sm-4">Address:</dt>
+                        <dd class="col-sm-8">{{ order.user.userprofile.address }}</dd>
+
+                        <dt class="col-sm-4">C - P, S:</dt>
+                        <dd class="col-sm-8">{{ order.user.userprofile.city }} - {{ order.user.userprofile.zipcode }}, {{ order.user.userprofile.state }}</dd>
+
+                        <dt class="col-sm-4">Country:</dt>
+                        <dd class="col-sm-8">{{ order.user.userprofile.country }}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h4 class="card-title">Action</h4>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {{ form.status }}
+                        <button type="submit" class="btn btn-primary mt-3 w-100">Change Status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

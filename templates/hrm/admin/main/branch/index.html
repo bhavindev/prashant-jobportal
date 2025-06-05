@@ -1,0 +1,303 @@
+{% extends 'hrm/admin/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+.dt-buttons.btn-group.flex-wrap {
+    margin-top: -32px;
+}
+.selectize-input.items.required.invalid.not-full.has-options {
+  background: transparent;
+  border: none !important;
+  margin-bottom: 8px;
+  padding: 10px 0px 0px 12px;
+}
+.selectize-input {
+  margin-bottom: 8px !important;
+  padding: 10px 0px 0px 12px !important;
+}
+
+.option.active{
+  background-color:#696cff !important;
+  color: white !important;
+}
+.selectize-control.form-control.single {
+  padding: 0px !important;
+  height: 38px !important;
+}
+.selectize-input.full {
+  background-color: transparent !important;
+}
+.dark-style #yourSelectInput-selectized {
+  color: #cdcdcd;
+}
+.dark-style #yourSelectInput1-selectized {
+  color: #cdcdcd;
+}
+.dark-style #yourSelectInput2-selectized {
+  color: #cdcdcd;
+}
+.dark-style #yourSelectInput3-selectized {
+  color: #cdcdcd;
+}
+.dark-style .selectize-dropdown.single.form-control {
+  background: #31324b;
+  color: #cdcdcd !important;
+  border: none !important;
+  border-radius: 0px 0px 5px 5px;
+  padding: 0px 0px 10px 0px!important;
+  margin-top:10px !important;
+}
+.selectize-dropdown.single.form-control {
+  border: none !important;
+  border-radius: 0px 0px 5px 5px;
+  padding: 0px 0px 10px 0px!important;
+  margin-top:10px !important;
+}
+
+.selectize-input {
+  border: none !important;
+}
+
+.selectize-control.single .selectize-input:before{
+  border:none !important;
+  background: transparent !important;
+
+}
+
+.selectize-control.single .selectize-input:after {
+  margin-top: 3px !important;
+}
+.selectize-control.single .selectize-input.input-active, .selectize-input {
+  background: none !important;
+}
+.dark-style .item {
+  color: #cdcdcd !important;
+}
+</style>
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">HRM /</span> Branches
+              </h4>
+              {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            <!--Table Card-->
+            <div class="card">
+                <div class="card-datatable table-responsive">
+                  <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="card-header flex-column flex-md-row">
+                      <div class="head-label">
+                        <h5 class="card-title mb-0">All Branches</h5>
+                      </div>
+                      <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                        <div class="dt-buttons btn-group flex-wrap">
+                          <a class="btn btn-secondary create-new btn-primary" href="#" tabindex="0" aria-controls="DataTables_Table_0" type="button" data-bs-toggle="modal" data-bs-target="#addBranchModal">
+                            <span><i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Branch</span></span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Your button -->
+                    <div class="container mb-4">
+                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr>
+                            <th style="width: 0px;" >#</th>
+                            <th style="width: 100px;">Name</th>
+                            <th style="width: 120px;">Email</th>
+                            <th style="width: 120px;">Contact</th>
+                            <th style="width: 150px;">Created At</th>
+                            <th style="width: 0px;" class="sorting_disabled dtr-hidden">Actions</th>                           
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for branch in branches %}
+                            <tr class="odd">
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="#" data-slug="{{ branch.id }}" data-bs-toggle="modal" data-bs-target="#detailBranchModal{{ branch.id }}">{{ branch.name }}</a></td>
+                                    <!-- Branch Details Modal -->
+                                    <div class="modal fade" id="detailBranchModal{{ branch.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary">
+                                                    <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{ branch.name }} Branch</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <ul class="list-group">
+                                                      <li class="list-group-item">
+                                                          <strong>Name:</strong> {{ branch.name }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                          <strong>Email:</strong> {{ branch.email }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                          <strong>Contact:</strong> {{ branch.contact }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                          <strong>Address:</strong> {{ branch.address }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                          <strong>Created At:</strong> {{ branch.created_at }}
+                                                      </li>
+                                                  </ul>
+                                              </div>                                              
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /Bootstrap Modal -->
+                                <td>{{ branch.email }}</td>
+                                <td>{{ branch.contact }}</td>
+                                <td>{{ branch.created_at }}</td>
+                                <td class="dtr-hidden" style="">
+                                    <button class="btn btn-sm btn-icon item-edit" data-slug="{{ branch.id }}" data-bs-toggle="modal" data-bs-target="#updateBranchModal{{ branch.id }}">
+                                        <i class="bx bxs-edit"></i> 
+                                    </button>
+                                    <!-- Branch Update Bootstrap Modal -->
+                                    <div class="modal fade" id="updateBranchModal{{ branch.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary">
+                                                    <h5 class="modal-title text-white mb-3" id="exampleModalLabel">Edit {{ branch.name }} Branch</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="post" action="{% url "hrmBranchEdit" branch.id %}">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="create_branch">
+                                                        <div class="row">
+                                                            <div class="col-md-6 mt-2">
+                                                                <label for="" class="form-label">Name</label>
+                                                                <input type="text" name="name" class="form-control" value="{{ branch.name }}" required>
+                                                            </div>
+                                                            <div class="col-md-6 mt-2">
+                                                                <label for="" class="form-label">Email</label>
+                                                                <input type="email" name="email" class="form-control" value="{{ branch.email }}">
+                                                            </div>
+                                                            <div class="col-md-6 mt-3">
+                                                                <label for="" class="form-label">Contact</label>
+                                                                <input type="number" name="contact" class="form-control" value="{{ branch.contact }}">
+                                                            </div>
+                                                            <div class="col-md-6 mt-3">
+                                                                <label for="" class="form-label">Address</label>
+                                                                <input type="text" name="address" class="form-control" value="{{ branch.address }}">
+                                                            </div>
+                                                        </div>
+                                                  
+                                                        <button type="submit" class="btn btn-primary mt-3">Save Branch</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /Bootstrap Modal -->
+                                    <button class="btn btn-sm btn-icon invoice-delete" data-slug="{{ branch.id }}" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal{{ branch.id }}">
+                                      <i class='bx bxs-x-circle'></i>
+                                    </button>                                   
+                                    <div class="modal fade" id="deleteConfirmationModal{{ branch.id }}" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteConfirmationModalLabel{{ branch.id }}">Confirm Deletion</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <a type="button" href="{% url "hrmBranchDelete" branch.id %}" class="btn btn-danger" id="confirmDelete">Delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <!-- ... more table rows ... -->
+                      </tbody>
+                    </table>
+                </div>
+              </div> <!--Table Card-->         
+
+          </div>
+        <!-- / Content -->
+
+      </div>
+    </div>
+    <!-- Content wrapper -->
+
+    <!-- Branch Add Bootstrap Modal -->
+    <div class="modal fade" id="addBranchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-primary">
+            <h5 class="modal-title text-white mb-3" id="exampleModalLabel">Add New Branch</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+          </div>
+          <div class="modal-body">
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="create_branch">
+              <div class="row">
+                  <div class="col-md-6 mt-2">
+                      <label for="" class="form-label">Name</label>
+                      {{form.name}}
+                  </div>
+                  <div class="col-md-6 mt-2">
+                      <label for="" class="form-label">Email</label>
+                      {{form.email}}
+                  </div>
+                  <div class="col-md-6 mt-3">
+                    <label for="" class="form-label">Contact</label>
+                    {{form.contact}}
+                  </div>
+                  <div class="col-md-6 mt-3">
+                    <label for="" class="form-label">Address</label>
+                    {{form.address}}
+                  </div>
+                  
+              </div>
+            
+              <!-- Your form fields go here -->
+              <button type="submit" class="btn btn-primary mt-3">Save Branch</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /Bootstrap Modal -->
+
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                pageLength: 10, // Set the initial page length to 10
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Allow changing page length
+                info: true, // Show the item count
+                search: true // Enable search
+            });
+        });
+    </script>
+{% endblock content %}

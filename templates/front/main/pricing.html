@@ -1,0 +1,131 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{meta.meta_title}} - {{meta.meta_description}}{% endblock title %}
+{% block title1 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+<style>
+    .popular-badge {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: {{ settings.primary_color }};  /* You can change the background color */
+        color: #ffffff;  /* You can change the text color */
+        padding: 5px 10px;
+        font-weight: bold;
+        border-radius: 12px;
+        z-index: 1;
+    }
+    .active-dark-mode .bg-popular{
+        background: #2d2d2d !important;
+    }
+
+    .bg-popular{
+        background: var(--color-primary) !important;
+        color:white !important;
+    }
+    .bg-popular h3{
+        color:white !important;
+    }
+    .bg-popular span{
+        color:white !important;
+    }
+    .bg-popular a{
+        color:white !important;
+    }
+    .bg-popular li{
+        color:white !important;
+    }
+    .pricing-body ul{
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0;
+    }
+    .active-light-mode .bg-popular .axil-btn{
+        color:black !important;
+        background: white !important;
+    }
+    .active-light-mode .bg-popular .axil-btn:hover{
+        color:white !important;
+        background: var(--color-accent1) !important;
+    }
+    
+
+    .res-margin {
+        margin-bottom: 6rem;
+    }
+    @media only screen and (max-width: 768px) {
+        .res-margin {
+            margin-bottom: 0rem;
+        }
+        .bg-popular{
+            margin-top: 0px !important;
+        }
+    }
+    
+</style>
+        <!--=====================================-->
+        <!--=       Breadcrumb Area Start       =-->
+        <!--=====================================-->
+        <div class="breadcrum-area">
+            <div class="container">
+                <div class="breadcrumb">
+                    <h1 class="title h2">{{meta.meta_title}}</h1>
+                </div>
+            </div>
+            <ul class="shape-group-8 list-unstyled">
+                <li class="shape shape-1" data-sal="slide-right" data-sal-duration="500" data-sal-delay="100">
+                    <img src="{% static 'front/assets/media/others/bubble-9.png'  %}" alt="Bubble">
+                </li>
+         
+                <li class="shape shape-3" data-sal="slide-up" data-sal-duration="500" data-sal-delay="300">
+                    <img src="{% static 'front/assets/media/others/line-4.png'  %}" alt="Line">
+                </li>
+            </ul>
+        </div>
+        <!--=====================================-->
+        <!--=        Pricing Area Start         =-->
+        <!--=====================================-->
+        {% if pricing_list %}
+        <section class="section section-padding">
+            <div class="container">
+                <div class="section-heading mb-0">
+                    <span class="subtitle">{{pricing_section_title.title_small}}</span>
+                    <h2 class="title">{{pricing_section_title.title_big}}</h2>
+                </div>
+                <div class="res-margin"></div>
+                <div class="row mt-5">
+                    {% for pricing in pricing_list %}
+                    <div class="col-lg-4" data-sal="slide-up" data-sal-duration="800" data-sal-delay="200">
+                        <div class="pricing-table pricing-borderd {% if pricing.is_featured %}bg-popular{% endif %}">
+                            <div class="pricing-header">
+                                {% if pricing.is_featured %}
+                                    <div class="popular-badge">
+                                        {{ pricing.featured_badge_title }}
+                                    </div>
+                                {% endif %}
+                                <h3 class="title">{{ pricing.title }}</h3>
+                                <div class="price-wrap">
+                                    <div class="monthly-pricing">
+                                        <span class="amount">{{settings.currency_symbol}}{{ pricing.price }}</span>
+                                    </div>
+                                </div>
+                                <div class="pricing-btn">
+                                    <a href="{{ pricing.button_url }}" class="axil-btn btn-large btn-borderd">{{ pricing.button_text }}</a>
+                                </div>
+                            </div>
+                            <div class="pricing-body">
+                                {{ pricing.description|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+        </section>
+        {% endif %}
+
+{% endblock %}

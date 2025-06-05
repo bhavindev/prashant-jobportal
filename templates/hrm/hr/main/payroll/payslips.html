@@ -1,0 +1,257 @@
+{% extends 'hrm/hr/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+   .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+   font-size: 1.2rem !important;
+   height: calc(1.625rem + 2px);
+   width: calc(1.625rem + 2px);
+   }
+   @media (min-width: 992px) {
+   .card-datatable.table-responsive {
+   overflow-x: hidden;
+   }
+   }
+   .dt-buttons.btn-group.flex-wrap {
+   margin-top: -32px;
+   }
+   .btn-success {
+      background-color: #0f950f !important;
+      border-color: #0f950f !important;
+   }
+   .btn-success:hover {
+      background-color: #0f950f !important;
+      border-color: #0f950f !important;
+   }
+</style>
+<!-- Content wrapper -->
+<div class="content-wrapper">
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+   <h4 class="fw-bold py-3 mb-4">
+      <span class="text-muted fw-light">HRM /</span> Payslip
+   </h4>
+   {% if messages %}
+   {% for message in messages %}
+   <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+   </div>
+   {% endfor %}
+   {% endif %}
+   <!--Table Card-->
+   <div class="card">
+      <div class="card-datatable table-responsive">
+         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+            <div class="card-header flex-column flex-md-row">
+               <div class="head-label">
+                  <h5 class="card-title mb-0">All Payslips</h5>
+               </div>
+               <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                  <div class="dt-buttons btn-group flex-wrap">
+                     <form action="{% url 'hrmPayslip' %}" method="POST" class="form-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="filter_payslip">
+                        <div class="row align-items-center">
+                           <div class="col-auto">
+                              <select class="form-select" name="month">
+                              <option value="1" {% if current_month == 1 %} selected {% endif %}>January</option>
+                              <option value="2" {% if current_month == 2 %} selected {% endif %}>February</option>
+                              <option value="3" {% if current_month == 3 %} selected {% endif %}>March</option>
+                              <option value="4" {% if current_month == 4 %} selected {% endif %}>April</option>
+                              <option value="5" {% if current_month == 5 %} selected {% endif %}>May</option>
+                              <option value="6" {% if current_month == 6 %} selected {% endif %}>June</option>
+                              <option value="7" {% if current_month == 7 %} selected {% endif %}>July</option>
+                              <option value="8" {% if current_month == 8 %} selected {% endif %}>August</option>
+                              <option value="9" {% if current_month == 9 %} selected {% endif %}>September</option>
+                              <option value="10" {% if current_month == 10 %} selected {% endif %}>October</option>
+                              <option value="11" {% if current_month == 11 %} selected {% endif %}>November</option>
+                              <option value="12" {% if current_month == 12 %} selected {% endif %}>December</option>
+                              </select>
+                           </div>
+                           <div class="col-auto">
+                              <select class="form-select" name="year">
+                                 {% for year_value in year_values %}
+                                 {% if year_value == current_year %}
+                                 <option value="{{ year_value }}" selected>{{ year_value }}</option>
+                                 {% else %}
+                                 <option value="{{ year_value }}">{{ year_value }}</option>
+                                 {% endif %}
+                                 {% endfor %}
+                              </select>
+                           </div>
+                           <div class="col-auto">
+                              <button class="btn btn-secondary create-new btn-primary" type="submit">
+                              <span class="d-none d-sm-inline-block">Filter</span>
+                              </button>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+            <!-- Your button -->
+            <div class="container mb-4">
+               <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed dtbl" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                  <thead>
+                     <tr>
+                        <th style="width: 0px;" >#</th>
+                        <th style="width: 150px;">Employee</th>
+                        <th style="width: 100px;">Has To Pay</th>
+                        <th style="width: 100px;">Status</th>
+                        <th style="width: 130px;">Created At</th>
+                        <th style="width: 0px;" class="sorting_disabled dtr-hidden">Actions</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for payslip in payslips %}
+                     <tr class="odd">
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url "hrmPayslipDetail" payslip.id %}">{{ payslip.payroll.employee.userprofile.name }} ( {{payslip.payroll.employee.username}} )</a></td>
+                        <td>{{ settings.currency_symbol }}{% if payslip.net_salary > 0 %}{{ payslip.net_salary }}{% else %}0.0{% endif %}</td>
+                        <td><span class="badge bg-{{ payslip.get_status }}">{{ payslip.status }}</span></td>
+                        <td>{{ payslip.date }}</td>
+                        <td class="dtr-hidden" style="">
+                           <form action="{% url "hrmPayslipMarkPaid" payslip.id %}" method="post" style="display:inline !important;">
+                           {% csrf_token %}
+                           <input type="hidden" name="mark_paid">
+                           <button class="btn btn-sm btn-icon item-edit" type="submit" data-bs-toggle="tooltip" title="Click to Paid">
+                           <i class="bx bxs-check-circle"></i>
+                           </button>         
+                           </form>                    
+                           <button class="btn btn-sm btn-icon item-edit" data-bs-toggle="modal" data-bs-target="#payslipViewModal{{ payslip.id }}" >
+                           <i class="fas fa-eye" style="font-size:18px;"></i> 
+                           </button>
+                           <div class="modal fade" id="payslipViewModal{{ payslip.id }}" tabindex="-1" aria-labelledby="payslipViewModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered">
+                                 <div class="modal-content">
+                                    <div class="modal-header bg-primary">
+                                       <h5 class="modal-title text-white mb-3" id="payslipViewModalLabel">{{payslip.payroll.employee.userprofile.name}}'s Payslip</h5>
+                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                    </div>
+                                    <div class="modal-body">
+
+                                       <div class="row">
+                                          <div class="col-md-6">
+                                             <p><strong>Name:</strong> {{payslip.payroll.employee.userprofile.name}}</p>
+                                             <p><strong>Designation:</strong> {{payslip.payroll.employee.userprofile.designation}}</p>
+                                             <p><strong>Salary Date:</strong> {{payslip.date}}</p>
+                                          </div>
+                                          <div class="col-md-6" style="text-align:right;">
+                                             <p>{{settings.name}}</p>
+                                             <p>{{ settings.address }} {{ settings.state }} {{ settings.Zip }}, {{ settings.country }}</p>
+                                             <p><strong>Payslip of:</strong> {{ payslip.date|date:"m" }}/{{ payslip.date|date:"y" }}</p>
+                                          </div>
+                                       </div>
+                                       <div class="row">
+                                          <div class="col-md-12">
+                                             <p><strong>Status:</strong> <span class="badge bg-{{ payslip.get_status }}">{{ payslip.status }}</span></p>
+                                          </div>
+                                       </div>
+
+                                       <div class="row">
+                                          <div class="col-md-12">
+                                             <table class="table-responsive table-bordered table table-striped table-hover">
+                                                <thead>
+                                                   <tr>
+                                                      <th>Basic Salary ({{payslip.salary.type}})</th>
+                                                      <th>+{{ settings.currency_symbol }}{{payslip.salary.amount}}</th>
+                                                   </tr>
+                                                   {% for allowance in payslip.allowances %}
+                                                      <tr>
+                                                         <th>{{ allowance.title }} (A)</th>
+                                                         <th>+{{ settings.currency_symbol }}{{ allowance.amount }}</th>
+                                                      </tr>
+                                                   {% endfor %}
+                                                   {% for deduction in payslip.deductions %}
+                                                      <tr>
+                                                         <th>{{ deduction.title }} (D)</th>
+                                                         <th>-{{ settings.currency_symbol }}{{ deduction.amount }}</th>
+                                                      </tr>
+                                                   {% endfor %}
+                                                   <tr>
+                                                      <th>Net Salary</th>
+                                                      <th>{{ settings.currency_symbol }}{{ payslip.net_salary }}</th>
+                                                   </tr>
+                                                </thead>
+                                             </table>
+
+                                             <!--Email Button and Mark Paid Button-->
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <a class="btn btn-info mt-4" href="{% url "hrmPayslipDetail" payslip.id %}">Details</a>         
+                                                </div>
+                                                <div class="col-md-6" style="text-align:right;">
+                                                   <form action="{% url "emailPyslip" payslip.id %}" method="post">
+                                                      {% csrf_token %}
+                                                      <input type="hidden" name="email_payslip">
+                                                      <button type="submit" class="btn btn-primary mt-4">Email Payslip</a>
+                                                   </form>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </td>
+                     </tr>
+                     {% endfor %}
+                     <!-- ... more table rows ... -->
+                  </tbody>
+               </table>
+               </div>
+            </div>
+            <!--Table Card-->         
+         </div>
+         <!-- / Content -->
+      </div>
+   </div>
+   <!-- Content wrapper -->
+   <!-- Department Add Bootstrap Modal -->
+   <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+         <div class="modal-content">
+            <div class="modal-header bg-primary">
+               <h5 class="modal-title text-white mb-3" id="exampleModalLabel">Add New Payslip</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+            </div>
+            <div class="modal-body">
+               <form method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="create_payslip">
+                  <div class="row mt-1">
+                     <div class="col-md-12 mt-1">
+                        <label for="" class="form-label">Employee</label>
+                        <select name="employee" class="form-control selectized" id="employeeadd" tabindex="-1" style="display: none;">
+                           <option value="">---------</option>
+                           {% for employee in employees %}
+                           <option value="{{employee.id}}">{{employee.username}}</option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                  </div>
+                  <!-- Your form fields go here -->
+                  <button type="submit" class="btn btn-primary mt-4">Add Payslip</button>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- /Bootstrap Modal -->
+<script>
+   $(document).ready(function() {
+       $('.dtbl').DataTable({
+           pageLength: 10,
+           lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+           info: true, 
+           search: true 
+       });
+       $('#employeeadd').selectize();
+   });
+</script>
+{% endblock content %}

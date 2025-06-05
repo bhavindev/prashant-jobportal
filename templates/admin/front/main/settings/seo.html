@@ -1,0 +1,143 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+.currentImg{
+  width: 200px !important;
+  margin-bottom: 10px;
+  border-radius:7px;
+  
+}
+</style>
+
+        <div class="page-body  dark-only">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3> SEO Settings </h3>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Settings</li>
+                    <li class="breadcrumb-item active">SEO</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            {% include "admin/components/lang.html" %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %} 
+            <div class="row project-cards">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-12">
+                    <form method="POST" action="" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      {{ form.media }}
+                      {% if form.errors %}
+                      <div class="alert alert-danger">
+                        <strong>Error:</strong>
+                        <ul>
+                          {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                              <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% endif %}    
+                      <div class="row mb-3">
+                          <div class="col-md-6">
+                              <div class="card">
+                                  <div class="card-body">
+                                      <label for="{{ form.meta_title.id_for_label }}" class="form-label">Meta Title</label>
+                                      {{ form.meta_title }}
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.tag_line.id_for_label }}" class="form-label">Tag Line</label>
+                                    {{ form.tag_line }}
+                                </div>
+                            </div>
+                          </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.meta_description.id_for_label }}" class="form-label">Meta Description</label>
+                                    {{ form.meta_description }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.seo_keywords.id_for_label }}" class="form-label">SEO Keywords</label>
+                                    {{ form.seo_keywords }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.meta_image.id_for_label }}" class="form-label">Meta Image</label>
+                                    {% if SeoSettings.meta_image %}
+                                        <br>
+                                        <img class="currentImg" src="{{ SeoSettings.meta_image.url }}" alt="Current Image">
+                                        <br>
+                                    {% endif %}
+                                    {{ form.meta_image }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                               Go to the <a class="" href="{% if request.is_secure %}https://{{ request.get_host }}/sitemap.xml{% else %}http://{{ request.get_host }}/sitemap.xml{% endif %}">Dynamic Sitemap
+                              </a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  
+                      <button class="btn btn-primary mb-5" type="submit">Save</button>
+                  </form>
+                
+                  
+            </div>
+            </div>
+              </div>
+              
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+          
+        </div>
+
+        
+        
+
+{% endblock content %}

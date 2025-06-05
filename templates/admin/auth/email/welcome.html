@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 50px 0;
+            background-color: #f5f5f5;
+            font-size: 16px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+        /* Header Styles */
+        .email-header {
+            background: linear-gradient(90deg, #007bff, #34ace0);
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+        }
+        .email-header h2 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+        /* Body Styles */
+        .email-body {
+            padding: 20px;
+            border-right: 1px solid #dbdbdb;
+            border-left: 1px solid #dbdbdb;
+        }
+        .email-body p {
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        /* Footer Styles */
+        .email-footer {
+            padding: 20px;
+            text-align: center;
+            background-color: #f5f5f5;
+            border-top: 1px solid #e0e0e0;
+        }
+        .email-footer p {
+            margin: 0;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h2>Welcome to {{ settings.name }}</h2>
+        </div>
+        <div class="email-body">
+            <p>Hello <b>{{ username }},</b></p>
+            <p>We are thrilled to welcome you to <b>{{ settings.name }}</b>!</p>
+            <p>Your account has been successfully created. If you have any questions, feel free to <a href="{{contact}}">contact us</a>.</p>
+            <p>Best regards,<br><b>{{ settings.name }} Team</b></p>
+        </div>
+        <div class="email-footer">
+            <p>{{footer.footer_copyright}}</p>
+        </div>
+    </div>
+</body>
+</html>

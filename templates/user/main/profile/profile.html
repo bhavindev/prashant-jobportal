@@ -1,0 +1,322 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ settings.name }}{% endblock title %}
+{% block content %}
+<style>
+    .user-profile-info {
+        margin-top: -7px;
+    }
+    img.d-block.mt-4.h-auto.ms-0.ms-sm-4.rounded.user-profile-img {
+        margin-top: 31px !important;
+    }
+    @media (min-width: 992px) {
+        .card-datatable.table-responsive {
+        overflow-x: hidden;
+        }
+        a.btn.btn-primary.text-nowrap.editbtn {
+          margin-right: -7rem;
+      }
+        }
+
+    
+</style>
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+
+    <!-- Content -->
+    
+      <div class="flex-grow-1 container-p-y container-fluid">
+        
+        
+<h4 class="py-3 mb-4">
+<span class="text-muted fw-light">Dashboard /</span> Profile
+</h4>
+
+{% if form.errors %}
+                    <div class="alert alert-danger">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <p><strong>{{ field }}:</strong> {{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+{% endif %}
+<!-- Header -->
+<div class="row">
+<div class="col-12">
+<div class="card mb-4">
+
+  <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
+    <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
+      <img src="{{request.user.userprofile.getUserImage}}" alt="user image" width="100" class="d-block mt-4 h-auto ms-0 ms-sm-4 rounded user-profile-img">
+    </div>
+    <div class="flex-grow-1 mt- mt-sm-5">
+      <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
+        <div class="user-profile-info">
+          <h4>{{request.user.userprofile.name}} {% if request.user.is_Vrified %}<i class='bx bxs-check-circle'></i>{% endif %}</h4>
+          <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
+            <li class="list-inline-item fw-medium">
+              <i class="bx bx-user"></i> {{request.user.role}}/Client
+            </li>
+            <li class="list-inline-item fw-medium">
+              <i class="bx bx-map"></i> {{request.user.userprofile.country}}
+            </li>
+            <li class="list-inline-item fw-medium">
+              <i class="bx bx-calendar-alt"></i> Joined {{request.user.created}}
+            </li>
+          </ul>
+        </div>
+        <a href="{% url 'profile_edit' %}" class="btn btn-primary text-nowrap editbtn">
+          <i class="bx bx-pencil me-1"></i>Edit Profile
+        </a>
+        <button class="btn btn-info passbtn" tabindex="0" aria-controls="DataTables_Table_0" type="button" aria-haspopup="dialog" aria-expanded="false" data-bs-toggle="modal" data-bs-target="#changePassModal">
+          <i class="bx bx-key me-1"></i>Change Password
+        </button>
+
+          <!-- Change Password Modal -->
+          <div class="modal fade" id="changePassModal" tabindex="-1" aria-labelledby="changePassModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addPaymentModalLabel">Create new ticket</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <!-- Add your form elements and input fields here for capturing payment details -->
+                        <form method="POST" action='{% url 'customUserProfile'  %}' enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="{{ form.old_password.id_for_label }}" class="form-label float-start">Old Password <span class="text-danger">*</span></label>
+                                    {{ form.old_password }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.new_password1.id_for_label }}" class="form-label float-start">New Password <span class="text-danger">*</span></label>
+                                    {{ form.new_password1 }}
+                                </div>
+                                <div class="col-md-6">
+                                  <label for="{{ form.new_password2.id_for_label }}" class="form-label float-start">Confirm Password <span class="text-danger">*</span></label>
+                                  {{ form.new_password2 }}
+                              </div>
+                            </div>
+                            
+                            
+                            <div class="modal-footer justify-content-end">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-primary" type="submit">Change</button>
+                            </div>
+                        </form>                                          
+                    </div>
+                </div>
+            </div>
+        </div> <!--Modal End -->
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<!--/ Header -->
+
+<!-- Navbar pills -->
+<div class="row">
+<div class="col-md-12">
+<ul class="nav nav-pills flex-column flex-sm-row mb-4">
+  <li class="nav-item"><a class="nav-link active" href="javascript:void(0);"><i class="bx bx-user me-1"></i> Profile</a></li>
+  <li class="nav-item"><a class="nav-link" href="#projectsc"><i class="bx bx-grid-alt me-1"></i> Projects</a></li>
+</ul>
+</div>
+</div>
+<!--/ Navbar pills -->
+
+<!-- User Profile Content -->
+<div class="row">
+<div class="col-xl-4 col-lg-5 col-md-5">
+<!-- About User -->
+<div class="card mb-4">
+  <div class="card-body">
+    <small class="text-muted text-uppercase">About</small>
+    <ul class="list-unstyled mb-4 mt-3">
+      <li class="d-flex align-items-center mb-3"><i class="bx bx-user"></i><span class="fw-medium mx-2">Full Name:</span> <span>{{ request.user.userprofile.name }}</span></li>
+      <li class="d-flex align-items-center mb-3"><i class="bx bx-check"></i><span class="fw-medium mx-2">Status:</span> <span>Active</span></li>
+      <li class="d-flex align-items-center mb-3"><i class="bx bx-star"></i><span class="fw-medium mx-2">Role:</span> <span>{{ request.user.role }}/Client</span></li>
+      <li class="d-flex align-items-center mb-3"><i class="bx bx-flag"></i><span class="fw-medium mx-2">Country:</span> <span>{{ request.user.userprofile.country }}</span></li>
+    </ul>
+    <small class="text-muted text-uppercase">Contacts</small>
+    <ul class="list-unstyled mb-4 mt-3">
+      <li class="d-flex align-items-center mb-3"><i class='bx bxl-facebook-circle'></i><span class="fw-medium mx-2"><a href="{{ request.user.userprofile.facebook }}">Facebook</a></span></li>
+      <li class="d-flex align-items-center mb-3"><i class='bx bxl-instagram-alt'></i><span class="fw-medium mx-2"><a href="{{ request.user.userprofile.instagram }}">Instagram</a></span></li>
+      <li class="d-flex align-items-center mb-3"><i class='bx bxl-linkedin-square'></i><span class="fw-medium mx-2"><a href="{{ request.user.userprofile.linkedin }}">Linkedin</a></span></li>
+      <li class="d-flex align-items-center mb-3"><i class="bx bx-phone"></i><span class="fw-medium mx-2">Phone:</span> <span>{{ request.user.userprofile.phone }}</span></li>
+      <li class="d-flex align-items-center mb-3"><i class="bx bx-envelope"></i><span class="fw-medium mx-2">Email:</span> <span>{{ request.user.userprofile.email }}</span></li>
+    </ul>
+  </div>
+</div>
+<!--/ About User -->
+<!-- Profile Overview -->
+<div class="card mb-4">
+  <div class="card-body">
+    <small class="text-muted text-uppercase">Overview</small>
+    <ul class="list-unstyled mt-3 mb-0">
+      <li class="d-flex align-items-center mb-3"><i class="bx bx-briefcase"></i><span class="fw-medium mx-2">Projects:</span> <span>{{projects_count.count}}</span></li>
+      <li class="d-flex align-items-center mb-3"><i class="bx bx-food-menu"></i><span class="fw-medium mx-2">Invoices:</span> <span>{{invoices.count}}</span></li>
+      <li class="d-flex align-items-center"><i class="bx bx-paper-plane"></i><span class="fw-medium mx-2">Tickets:</span> <span>{{tickets.count}}</span></li>
+    </ul>
+  </div>
+</div>
+<!--/ Profile Overview -->
+</div>
+<div class="col-xl-8 col-lg-7 col-md-7">
+<!-- Activity Timeline -->
+<div class="card card-action mb-4">
+  <div class="card-header align-items-center">
+    <h5 class="card-action-title mb-0"><i class="bx bx-list-ul me-2"></i>Tickets Overview</h5>
+    <div class="card-action-element">
+    </div>
+  </div>
+  <div class="card-body">
+    <ul class="timeline ms-2">
+        {% for ticket in tickets %}
+      <li class="timeline-item timeline-item-transparent">
+        <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-{{ticket.statusBadge}}"></span></span>
+        <div class="timeline-event">
+            <div class="timeline-header mb-1">
+            <div class="d-flex">
+                <div>
+                    <img src="{{ticket.client.userprofile.getUserImage}}" style="border-radius:500px; width:40px; height:40px; margin-right:10px" alt="...">
+                </div>
+                <div>
+                    <h6 class="mb-0"><a href="{% url 'userticketView' id=ticket.id %}">{{ticket.title}}</a></h6>
+                   
+                    <p class="mb-2">{{ticket.description}}</p>
+                </div>
+                
+            </div>
+            <small class="text-muted">{{ticket.created_at}}</small>
+          </div>
+
+        </div>
+      </li>
+      {% endfor %}
+
+   
+      <li class="timeline-end-indicator">
+        <i class="bx bx-check-circle"></i>
+      </li>
+    </ul>
+  </div>
+</div>
+<!--/ Activity Timeline -->
+
+    <!-- Projects table -->
+    <div class="card mb-4" id="projectsc">
+        <div class="card table-responsive">
+            <div class="card-header align-items-center">
+                <h5 class="card-action-title mb-0"><i class="bx bx-list-ul me-2"></i>Projects Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="card-datatable table-responsive">
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                      </div>
+                      <!-- Your button -->
+                      <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                        <thead>
+                          <tr>
+                          <th style="width: 0px;" >#</th>
+                           <th style="width: 130px;" >Title</th>
+                           <th style="width: 150px;">Deadline</th>
+                           <th style="width: 180px;">Progress</th>
+                           <th style="width: 100px;">Status</th>                      
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for project in projects %}
+                          <tr class="odd">
+                              <td>{{ forloop.counter }}</td>
+                              <td><span class="emp_name text-truncate"><a href="{% url 'userProjectDetail' slug=project.slug %}">{{ project.title }}</a></span></td>
+                              <td class="text-danger">{{ project.deadline }}</td>
+                              <td>
+                                <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="{{project.progress}}" aria-valuemin="0" aria-valuemax="100">
+                                  <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{project.progress}}%">{{project.progress}}%</div>
+                                </div>
+                              </td>
+                              <td>{{ project.get_label_display }}</td>
+                          </tr>
+                      {% endfor %}
+                          <!-- ... more table rows ... -->
+                        </tbody>
+                        
+                      </table>
+                      <div class="row">
+                        <div class="col-12">
+                            <div class="m-3">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
+                                            Showing {{ projects.start_index }} to {{ projects.end_index }} of {{ projects.paginator.count }} entries
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 text-end">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+                                            <ul class="pagination justify-content-end">
+                                                {% if projects.has_previous %}
+                                                    <li class="paginate_button page-item previous">
+                                                        <a href="?page={{ projects.previous_page_number }}" aria-controls="DataTables_Table_0" data-dt-idx="previous" tabindex="0" class="page-link">Previous</a>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="paginate_button page-item previous disabled">
+                                                        <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="previous" tabindex="0" class="page-link">Previous</a>
+                                                    </li>
+                                                {% endif %}
+                    
+                                                <!-- Pagination numbers -->
+                                                {% for i in projects.paginator.page_range %}
+                                                    {% if projects.number == i %}
+                                                        <li class="paginate_button page-item active">
+                                                            <a href="?page={{ i }}" aria-controls="DataTables_Table_0" data-dt-idx="{{ i }}" tabindex="0" class="page-link">{{ i }}</a>
+                                                        </li>
+                                                    {% else %}
+                                                        <li class="paginate_button page-item">
+                                                            <a href="?page={{ i }}" aria-controls="DataTables_Table_0" data-dt-idx="{{ i }}" tabindex="0" class="page-link">{{ i }}</a>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                    
+                                                {% if projects.has_next %}
+                                                    <li class="paginate_button page-item next">
+                                                        <a href="?page={{ projects.next_page_number }}" aria-controls="DataTables_Table_0" data-dt-idx="next" tabindex="0" class="page-link">Next</a>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="paginate_button page-item next disabled">
+                                                        <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="next" tabindex="0" class="page-link">Next</a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+            </div>
+        </div> 
+    </div>
+    <!--/ Projects table -->
+</div>
+</div>
+<!--/ User Profile Content -->
+
+        
+      </div>
+      <!-- / Content -->
+
+      
+    </div>
+    <!-- Content wrapper -->
+
+{% endblock content %}

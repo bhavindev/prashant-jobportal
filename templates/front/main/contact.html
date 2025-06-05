@@ -1,0 +1,392 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{meta.meta_title}} - {{meta.meta_description}}{% endblock title %}
+{% block title1 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{meta.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+<style>
+   /* CONTACT PAGE */
+   .contant-section-page {
+   padding: 90px 0;
+   border-bottom: 1px solid #222227;
+   border-top: 1px solid #222227;
+   }
+   .active-dark-mode .contant-section-page .contact-element-wrapper {
+   box-shadow: rgb(100 100 111 / 10%) 0px 7px 29px 0px;
+   background: #222227;
+   padding: 40px;
+   border-radius: 12px;
+   -webkit-transition: all .3s cubic-bezier(.645,.045,.355,1);
+   transition: all .3s cubic-bezier(.645,.045,.355,1);
+   border: 1px solid #222227;
+   }
+   .contant-section-page .contact-element-wrapper {
+   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+   background: #ffffff;
+   padding: 40px;
+   border-radius: 12px;
+   -webkit-transition: all .3s cubic-bezier(.645,.045,.355,1);
+   transition: all .3s cubic-bezier(.645,.045,.355,1);
+   border: none;
+   }
+   .contant-section-page .contact-element-wrapper:hover {
+   background: {{ settings.primary_color }};
+   box-shadow: 0 10px 25px 10px rgb(0 0 0 / 10%);
+   -webkit-transform: translateY(-5px);
+   transform: translateY(-5px);
+   }
+   .contant-section-page .contact-element {
+   display: flex;
+   }
+   .active-dark-mode .contant-section-page .icon {
+   display: inline-flex;
+   font-size: 40px;
+   font-weight: 400;
+   margin-bottom: 23px;
+   display: inline-flex;
+   margin-right: 20px;
+   color: #bdbdbd;
+   }
+   .active-dark-mode .blktitle {
+   color: white !important;
+   }
+   .blktitle {
+   color: #353535 !important;
+   }
+   .active-dark-mode p a{
+   color: white !important;
+   }
+   p a{
+   color: #171717 !important;
+   }
+   .contant-section-page .icon {
+   display: inline-flex;
+   font-size: 40px;
+   font-weight: 400;
+   margin-bottom: 23px;
+   display: inline-flex;
+   margin-right: 20px;
+   color: #424242;
+   }
+   .contant-section-page .content h3 {
+   font-size: 24px;
+   line-height: 36px;
+   letter-spacing: 0;
+   font-weight: 500;
+   color: #bdbdbd;
+   margin-top: 0;
+   margin-bottom: 10px;
+   }
+   .content p {
+   margin: 0;
+   }
+   .content p a {
+   margin: 0;
+   font-size: 15px;
+   line-height: 28px;
+   color: #bdbdbd;
+   display: block;
+   }
+   .contant-section-page .contact-element-wrapper h3,
+   .contant-section-page .contact-element-wrapper .icon,
+   .contant-section-page .contact-element-wrapper p,
+   .contant-section-page .contact-element-wrapper a {
+   -webkit-transition: all .3s cubic-bezier(.645,.045,.355,1);
+   transition: all .3s cubic-bezier(.645,.045,.355,1);
+   }
+   .contant-section-page .contact-element-wrapper:hover h3,
+   .contant-section-page .contact-element-wrapper:hover .icon,
+   .contant-section-page .contact-element-wrapper:hover a {
+   color: #fff !important;   
+   }
+   .active-dark-mode .iframe-contact form {
+   padding: 20px;
+   border-radius: 12px;
+   box-shadow: none;
+   border: 1px solid #232323;
+   }
+   .iframe-contact form {
+   padding: 20px;
+   border-radius: 12px;
+   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+   }
+   .active-dark-mode .iframe-contact .form-control {
+   display: block;
+   width: 100%;
+   padding: 0 20px;
+   font-size: 16px;
+   line-height: 1;
+   color: #fff;
+   background-color: #222227;
+   background-clip: padding-box;
+   border: 1px solid #222227;
+   border-radius: 12px;
+   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+   height: 50px;
+   }
+   .iframe-contact .form-control {
+   display: block;
+   width: 100%;
+   padding: 0 20px;
+   font-size: 16px;
+   line-height: 1;
+   color: #000;
+   background-color: #00000000;
+   background-clip: padding-box;
+   border: 1px solid #9d9d9d;
+   border-radius: 12px;
+   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+   height: 50px;
+   }
+   .iframe-contact input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+   color: #bdbdbd;
+   }
+   .iframe-contact input::-moz-placeholder { /* Firefox 19+ */
+   color: #bdbdbd;
+   }
+   .iframe-contact input:-ms-input-placeholder { /* IE 10+ */
+   color: #bdbdbd;
+   }
+   .iframe-contact input:-moz-placeholder { /* Firefox 18- */
+   color: #bdbdbd;
+   }
+   .iframe-contact textarea::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+   color: #bdbdbd;
+   }
+   .iframe-contact textarea::-moz-placeholder { /* Firefox 19+ */
+   color: #bdbdbd;
+   }
+   .iframe-contact textarea:-ms-input-placeholder { /* IE 10+ */
+   color: #bdbdbd;
+   }
+   .iframe-contact textarea:-moz-placeholder { /* Firefox 18- */
+   color: #bdbdbd;
+   }
+   .iframe-contact textarea {
+   padding: 20px !important;
+   min-height: 120px;
+   }
+   .iframe-contact iframe {
+   -webkit-filter: grayscale(100%);
+   -moz-filter: grayscale(100%);
+   -ms-filter: grayscale(100%);
+   -o-filter: grayscale(100%);
+   filter: grayscale(100%);
+   border-radius: 12px;
+   }
+   .active-dark-mode .iframe-contact {
+   padding: 90px 0;
+   background: #151616;
+   border-bottom: 1px solid #222227;
+   }
+   .iframe-contact {
+   padding: 90px 0;
+   background: white;
+   border-bottom: 1px solid #222227;
+   }
+   .iframe-contact h3 {
+   font-size: 32px;
+   line-height: 44px;
+   font-weight: 500;
+   color: #fff;
+   margin-top: 15px;
+   margin-bottom: 20px;
+   }
+   .iframe-contact .form-group {
+   margin-bottom: 25px !important;
+   }
+   .iframe-contact span.text-danger {
+   display: block;
+   margin-top: 10px;
+   }
+   .page-content {
+   padding: 90px 0 70px;
+   border-top: 1px solid rgba(0,0,0,.1);
+   }
+   .page-content p {
+   font-size: 16px;
+   line-height: 28px;
+   color: #bdbdbd;
+   margin-bottom: 20px;
+   }
+   .page-content li {
+   font-size: 16px;
+   line-height: 28px;
+   color: #bdbdbd;
+   }
+   .page-content a {
+   color: #6164ff;
+   }
+   .active-dark-mode h3{
+   color:white !important;
+   }
+   h3{
+   color:black !important;
+   }
+   :dir(rtl) .content {
+   margin-right: 17px !important;
+   }
+   /* Style for the file upload field */
+
+#id_uploaded_file {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #6c757d;
+    border: 1px solid #222227;
+    background-clip: padding-box;
+    border-radius: 12px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    height: 50px;
+}
+
+#id_uploaded_file:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Optional: Style the file selector button within the input */
+#id_uploaded_file::file-selector-button {
+    padding: 8px 12px;
+    margin-right: 10px;
+    font-size: 14px;
+    color: #fff;
+    background-color: {{ settings.primary_color }};
+    border: 1px solid {{ settings.primary_color }};
+    border-radius: 5px;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+
+</style>
+<!--=====================================-->
+<!--=       Breadcrumb Area Start       =-->
+<!--=====================================-->
+<div class="breadcrum-area">
+   <div class="container">
+      <div class="breadcrumb">
+         <h1 class="title h2">{{meta.meta_title}}</h1>
+      </div>
+   </div>
+   <ul class="shape-group-8 list-unstyled">
+      <li class="shape shape-1" data-sal="slide-right" data-sal-duration="500" data-sal-delay="100">
+         <img src="{% static 'front/assets/media/others/bubble-9.png'  %}" alt="Bubble">
+      </li>
+      <li class="shape shape-3" data-sal="slide-up" data-sal-duration="500" data-sal-delay="300">
+         <img src="{% static 'front/assets/media/others/line-4.png'  %}" alt="Line">
+      </li>
+   </ul>
+</div>
+<!--=====================================-->
+<!--=       Contact  Area Start        =-->
+<!--=====================================-->
+<div class="contant-section-page">
+   <div class="container">
+      <div class="row">
+         {% if info.box1_title %}
+         <div class="col-md-4 mb-3">
+            <div class="contact-element-wrapper">
+               <div class="contact-element">
+                  <div class="icon"> <i class="{{info.box1_icon}}"></i></div>
+                  <div class="content">
+                     <h3 class="title blktitle">{{info.box1_title}}</h3>
+                     {{info.box1_description|safe}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         {% endif %}
+         {% if info.box2_title %}
+         <div class="col-md-4 mb-3">
+            <div class="contact-element-wrapper">
+               <div class="contact-element">
+                  <div class="icon"> <i class="{{info.box2_icon}}"></i></div>
+                  <div class="content">
+                     <h3 class="title blktitle">{{info.box2_title}}</h3>
+                     {{info.box2_description|safe}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         {% endif %}
+         {% if info.box3_title %}
+         <div class="col-md-4 mb-3">
+            <div class="contact-element-wrapper">
+               <div class="contact-element">
+                  <div class="icon"> <i class="{{info.box3_icon}}"></i></div>
+                  <div class="content">
+                     <h3 class="title blktitle">{{info.box3_title}}</h3>
+                     <p><a href="#">{{info.box3_description|safe}}</a></p>
+                  </div>
+               </div>
+            </div>
+         </div>
+         {% endif %}
+      </div>
+   </div>
+</div>
+<div class="iframe-contact">
+   <div class="container">
+      <div class="row">
+         <div class="col-md-6">
+            <h3> {{info.iframe_title}} </h3>
+            {{info.map_iframe|safe}}
+         </div>
+         <div class="col-md-6">
+            <h3>{{info.form_title}}</h3>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+               <strong>{{ message.tags}}!</strong> {{ message|safe }}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+               <strong>Error!</strong> There was an error in your form submission. Please check the following fields:
+               <ul>
+                  {% for field, errors in form.errors.items %}
+                  {% for error in errors %}
+                  <li>{{ field }}: {{ error }}</li>
+                  {% endfor %}
+                  {% endfor %}
+               </ul>
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            {% endif %}
+            <form action="" method="post" enctype="multipart/form-data">
+               {% csrf_token %}
+               <p>
+                  <label for="id_name">{{info.name_field_label}}:</label>
+                  <input type="text" name="name" class="form-control" placeholder="{{info.name_field_placeholder}}" maxlength="255" required="" id="id_name">
+               </p>
+               <p>
+                  <label for="id_email">{{info.email_field_label}}:</label>
+                  <input type="email" name="email" class="form-control" placeholder="{{info.email_field_placeholder}}" maxlength="500" required="" id="id_email">
+               </p>
+               <p>
+                  <label for="id_phone">{{info.phone_field_label}}:</label>
+                  <input type="number" name="phone" class="form-control" placeholder="{{info.phone_field_placeholder}}" required="" id="id_phone">
+               </p>
+               <p>
+                  <label for="id_message">{{info.message_field_label}}:</label>
+                  <textarea name="message" cols="40" rows="10" class="form-control" placeholder="{{info.message_field_placeholder}}" id="id_message"></textarea>
+               </p>
+               <p style="margin-top:-10px;">
+                  <label for="id_uploaded_file">{{info.upload_field_label}}:</label>
+                  <input type="file" name="uploaded_file" class="form-control" id="id_uploaded_file">
+               </p>
+               <button type="submit" class="axil-btn btn-fill-primary btn-fluid btn-primary" name="submit-btn">{{info.submit_button_text}}</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}

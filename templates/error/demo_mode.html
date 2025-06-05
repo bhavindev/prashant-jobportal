@@ -1,0 +1,80 @@
+{% if demo_mode_enabled %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script>
+  // Initialize Toastr
+  toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut",
+      "toastContainerId": "toastr-container"
+  };
+
+  $(document).ready(function() {
+      $("form").submit(function(event) {
+          event.preventDefault(); 
+
+          setTimeout(function() {
+              var response = {
+                  status: 'error',
+                  message: 'Modifications are not allowed in demo mode.'
+              };
+
+              if (response.status === 'error') {
+                  toastr.error(response.message);
+              } else {
+                  $(event.target).unbind('submit').submit();
+              }
+          }, 1000); 
+      });
+  });
+</script>
+<script>
+  // Initialize Toastr
+  toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut",
+      "toastContainerId": "toastr-container"
+  };
+
+  // This function will be called when the page loads
+  $(document).ready(function() {
+      // Intercept clicks on links
+      $("a").click(function(event) {
+          // Check if the link's href contains "delete"
+          if ($(this).attr("href").includes("delete")) {
+              // Prevent the default behavior (navigating to the link)
+              event.preventDefault();
+              
+              // Display a Toastr error message
+              toastr.error('Deletion is not allowed in demo mode');
+          }
+      });
+  });
+</script>
+{% endif %}

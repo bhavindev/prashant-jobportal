@@ -1,0 +1,186 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{blog.title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+        <!--=====================================-->
+        <!--=       Breadcrumb Area Start       =-->
+        <!--=====================================-->
+        <div class="breadcrum-area">
+            <div class="container">
+                <div class="breadcrumb">
+                    <ul class="list-unstyled">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">Blog</li>
+                    </ul>
+                    <h1 class="title h2">{{ blog.title }}</h1>
+                </div>
+            </div>
+            <ul class="shape-group-8 list-unstyled">
+                <li class="shape shape-1" data-sal="slide-right" data-sal-duration="500" data-sal-delay="100"><img src="{% static 'front/assets/media/others/bubble-9.png'  %}" alt="Bubble"></li>
+                <li class="shape shape-2" data-sal="slide-left" data-sal-duration="500" data-sal-delay="200"><img src="{% static 'front/assets/media/others/bubble-11.png'  %}" alt="Bubble"></li>
+                <li class="shape shape-3" data-sal="slide-up" data-sal-duration="500" data-sal-delay="300"><img src="{% static 'front/assets/media/others/line-4.png'  %}" alt="Line"></li>
+            </ul>
+        </div>
+        <!--=====================================-->
+        <!--=        Blog Area Start       	    =-->
+        <!--=====================================-->
+        <section class="section-padding-equal">
+            <div class="container">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %} 
+                <div class="row row-40">
+                    <div class="col-lg-8">
+                        <div class="single-blog">
+                            <div class="single-blog-content blog-grid">
+                                <div class="post-thumbnail">
+                                    {% if blog.thumbnail %}
+                                        <img src="{{ blog.thumbnail.url }}" alt="Blog">
+                                    {% endif %}
+                                </div>
+                                <div class="author">
+                                    <div class="info">
+                                        <h6 class="author-name">{{ blog.author }}</h6>
+                                        <ul class="blog-meta list-unstyled">
+                                            <li>{{ blog.created_at }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                {{ blog.description|safe }}
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="axil-sidebar">
+                            <div class="widget widget-search">
+                                <h4 class="widget-title">Search</h4>
+                                <form action="{% url 'blogs' %}" method="GET" class="blog-search">
+                                    <input type="text" placeholder="Search…" value="{{request.GET.search}}" name="search">
+                                    <button class="search-button"><i class="fal fa-search"></i></button>
+                                </form>
+                            </div>
+                            <div class="widget widge-social-share">
+                                <div class="blog-share">
+                                    <h5 class="title">Follow:</h5>
+                                    <ul class="social-list list-unstyled">
+                                        <li>
+                                            {% if header_footer.facebook %}
+                                                <a href="{{ header_footer.facebook }}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="100">
+                                                    <i class="fab fa-facebook-f"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="https://facebook.com/"><i class="fab fa-facebook-f"></i></a>
+                                            {% endif %}
+                                        </li>
+                                        <li>
+                                            {% if header_footer.twitter %}
+                                                <a href="{{ header_footer.twitter }}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="200">
+                                                    <i class="fab fa-twitter"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="https://twitter.com/"><i class="fab fa-twitter"></i></a>
+                                            {% endif %}
+                                        </li>
+                                        <li>
+                                            {% if header_footer.instagram %}
+                                                <a href="{{ header_footer.instagram }}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="500">
+                                                    <i class="fab fa-instagram"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                                            {% endif %}
+                                        </li>
+                                        <li>
+                                            {% if header_footer.linkedin %}
+                                                <a href="{{ header_footer.linkedin }}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="400">
+                                                    <i class="fab fa-linkedin-in"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a>
+                                            {% endif %}
+                                        </li>
+                                        <li>
+                                            {% if header_footer.youtube %}
+                                                <a href="{{ header_footer.youtube }}" data-sal="slide-up" data-sal-duration="500" data-sal-delay="500">
+                                                    <i class="fab fa-youtube"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
+                                            {% endif %}
+                                        </li>      
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="widget widget-recent-post">
+                                <h4 class="widget-title">Recent post</h4>
+                                <div class="post-list-wrap">
+                                    {% for blog in blogs|slice:":5" %}
+                                        <div class="single-post">
+                                            <div class="post-thumbnail">
+                                                <a href="{% url 'blogDetail' blog.slug %}">
+                                                    {% if blog.thumbnail %}
+                                                        <img src="{{ blog.thumbnail.url }}" width="100" alt="Blog">
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                            <div class="post-content">
+                                                <h6 class="title"><a href="{% url 'blogDetail' blog.slug %}">{{ blog.title }}</a></h6>
+                                                <ul class="blog-meta list-unstyled">
+                                                    <li>{{ blog.created_at }}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--=====================================-->
+        <!--=       Recent Post Area Start      =-->
+        <!--=====================================-->
+        <section class="section section-padding-equal pt-0 related-blog-area">
+            <div class="container">
+                <div class="section-heading heading-left">
+                    <h3 class="title">Recent Posts</h3>
+                </div>
+                <div class="slick-slider recent-post-slide" data-slick='{"infinite": true, "autoplay": true, "arrows": false, "dots": false, "slidesToShow": 2,
+        "responsive": [
+            {
+                "breakpoint": 1199,
+                "settings": {
+                    "slidesToShow": 1
+                }
+            }
+        ]
+        }'>
+                {% for blog in blogs %}
+                    <div class="slick-slide">
+                        <div class="blog-list">
+                            <div class="post-thumbnail">
+                                <a href="{% url 'blogDetail' blog.slug %}">
+                                    {% if blog.thumbnail %}
+                                        <img src="{{ blog.thumbnail.url }}" width="300" alt="Blog Post">
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="post-content">
+                                <h5 class="title"><a href="{% url 'blogDetail' blog.slug %}">{{ blog.title }}</a></h5>
+                                <a href="{% url 'blogDetail' blog.slug %}" class="more-btn">Learn more<i class="far fa-angle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </section>
+{% endblock %}

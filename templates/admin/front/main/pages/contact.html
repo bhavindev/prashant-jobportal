@@ -1,0 +1,360 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+.currentImg{
+  width: 100px !important;
+  margin-bottom: 10px;
+}
+</style>
+
+        <div class="page-body  dark-only">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3> Edit Contact Page</h3>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item"><a class="text-white" href="">Contact</a> </li>
+                    <li class="breadcrumb-item active">Edit</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            {% include "admin/components/lang.html" %}
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                <strong>Error:</strong>
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %} 
+        {% if seoForm.errors %}
+        <div class="alert alert-danger">
+            <strong>Error:</strong>
+            <ul>
+                {% for field, errors in seoForm.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}  
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}  
+            <div class="row project-cards">
+              <div class="container">
+
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="justify-content-start">
+                                  <strong>Contact Page:&nbsp;</strong><a target="_blank" href="{% if request.is_secure %}https://{{ request.get_host }}/contact-us/{% else %}http://{{ request.get_host }}/contact-us/{% endif %}">{% if request.is_secure %}https://{{ request.get_host }}/contact-us/{% else %}http://{{ request.get_host }}/contact-us/{% endif %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+
+                    <form method="POST" action="" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      {{ form.media }}  
+                      <div class="text-center mb-4"><h5>─── Info Cards ───</h5></div>
+                      <div class="row mb-3">
+                          <div class="col-md-4">
+                              <div class="card">
+                                  <div class="card-body">
+                                      <label for="{{ form.box1_icon.id_for_label }}" class="form-label">Box 1 Icon Class <i class="{{info.box1_icon}}"></i>  </label>
+                                      {{ form.box1_icon }}
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-md-4">
+                              <div class="card">
+                                  <div class="card-body">
+                                      <label for="{{ form.box2_icon.id_for_label }}" class="form-label">Box 2 Icon Class <i class="{{info.box2_icon}}"></i> </label>
+                                      {{ form.box2_icon }}
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.box3_icon.id_for_label }}" class="form-label">Box 3 Icon Class <i class="{{info.box3_icon}}"></i> </label>
+                                    {{ form.box3_icon }}
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.box1_title.id_for_label }}" class="form-label">Box 1 Title </label>
+                                    {{ form.box1_title }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.box2_title.id_for_label }}" class="form-label">Box 2 Title </label>
+                                    {{ form.box2_title }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="card">
+                              <div class="card-body">
+                                  <label for="{{ form.box3_title.id_for_label }}" class="form-label">Box 3 Title </label>
+                                  {{ form.box3_title }}
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.box1_description.id_for_label }}" class="form-label">Box 1 Description </label>
+                                    <div class="form-control ckf">{{ form.box1_description }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.box2_description.id_for_label }}" class="form-label">Box 2 Description </label>
+                                    <div class="form-control ckf">{{ form.box2_description }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="card">
+                              <div class="card-body">
+                                  <label for="{{ form.box3_description.id_for_label }}" class="form-label">Box 3 Description </label>
+                                  <div class="form-control ckf">{{ form.box3_description }}</div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="text-center mb-4"><h5>─── Map Iframe ───</h5></div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.iframe_title.id_for_label }}" class="form-label">Iframe Title </label>
+                                    {{ form.iframe_title }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.map_iframe.id_for_label }}" class="form-label">Map Iframe Code (Use width="100%" height="450") </label>
+                                    {{ form.map_iframe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mb-4"><h5>─── Form Labels Customizer ───</h5></div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.form_title.id_for_label }}" class="form-label">Form Title </label>
+                                    {{ form.form_title }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.name_field_label.id_for_label }}" class="form-label">Form Name Field Label </label>
+                                    {{ form.name_field_label }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.name_field_placeholder.id_for_label }}" class="form-label">Form Name Field Placeholder </label>
+                                    {{ form.name_field_placeholder }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.email_field_label.id_for_label }}" class="form-label">Form Email Field Label </label>
+                                    {{ form.email_field_label }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.email_field_placeholder.id_for_label }}" class="form-label">Form Email Field Placeholder </label>
+                                    {{ form.email_field_placeholder }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.phone_field_label.id_for_label }}" class="form-label">Form Phone Field Label </label>
+                                    {{ form.phone_field_label }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.phone_field_placeholder.id_for_label }}" class="form-label">Form Phone Field Placeholder </label>
+                                    {{ form.phone_field_placeholder }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.message_field_label.id_for_label }}" class="form-label">Form Message Field Label </label>
+                                    {{ form.message_field_label }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.message_field_placeholder.id_for_label }}" class="form-label">Form Message Field Placeholder </label>
+                                    {{ form.message_field_placeholder }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.upload_field_label.id_for_label }}" class="form-label">Upload File Field Label </label>
+                                    {{ form.upload_field_label }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.submit_button_text.id_for_label }}" class="form-label">Submit Button Text </label>
+                                    {{ form.submit_button_text }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  
+                      <button class="btn btn-primary mb-5" type="submit">Save</button>
+                  </form>
+
+
+                  <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="mb-3">SEO</h5>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            {% if SeoForm.errors %}
+                                                <div class="alert alert-danger">
+                                                    <strong>Error:</strong>
+                                                    <ul>
+                                                        {% for field, errors in SeoForm.errors.items %}
+                                                            {% for error in errors %}
+                                                                <li>{{ field }}: {{ error }}</li>
+                                                            {% endfor %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            {% endif %}    
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12">
+                                                    <label for="{{ seoForm.meta_title.id_for_label }}">Meta Title </label>
+                                                    {{ seoForm.meta_title }}
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <label for="{{ seoForm.meta_description.id_for_label }}">Meta Description </label>
+                                                    {{ seoForm.meta_description }}
+                                                </div>
+                                            </div>
+                                            <!-- Ensure proper indentation for the closing </form> tag -->
+                                            <button type="submit" class="btn btn-primary mt-3 w-100">Save</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+
+                
+                  
+            </div>
+            </div>
+              </div>
+              
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+          
+        </div>
+
+        
+        
+
+{% endblock content %}

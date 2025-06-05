@@ -1,0 +1,174 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+.currentImg{
+  width: 100px !important;
+  margin-bottom: 10px;
+}
+</style>
+
+        <div class="page-body  dark-only">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3> Edit Portfolio Page</h3>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Portfolio Page</li>
+                    <li class="breadcrumb-item active">Edit</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            {% include "admin/components/lang.html" %}
+        {% if seoForm.errors %}
+        <div class="alert alert-danger">
+            <strong>Error:</strong>
+            <ul>
+                {% for field, errors in seoForm.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}  
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}  
+            <div class="row project-cards">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-12">  
+
+                    <div class="row mb-2">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                                  <div class="justify-content-start">
+                                    <strong>Portfolio/Project Page:&nbsp;</strong><a target="_blank" href="{% if request.is_secure %}https://{{ request.get_host }}/projects/{% else %}http://{{ request.get_host }}/projects/{% endif %}">{% if request.is_secure %}https://{{ request.get_host }}/projects/{% else %}http://{{ request.get_host }}/projects/{% endif %}</a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                                  <h5 class="mb-3">Projects</h5>
+                                  <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="project_section_title">
+                                    <div class="row mb-3">
+                                      <div class="col-md-6">
+                                        <label for="{{ project_section_title_form.title_small.id_for_label }}" class="form-label">Section Title 1</label>
+                                        {{ project_section_title_form.title_small }}
+                                      </div>
+                                      <div class="col-md-6">
+                                        <label for="{{ project_section_title_form.title_big.id_for_label }}" class="form-label">Section Title 2</label>
+                                        {{ project_section_title_form.title_big }}
+                                      </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                      <div class="col-md-12">
+                                        <label for="{{ project_section_title_form.all_work_text.id_for_label }}" class="form-label">All Work Text ( This text will be shown at the first of the project category filter )</label>
+                                        {{ project_section_title_form.all_work_text }}
+                                      </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mb-3">Save</button>
+                                  </form>
+                                  <div class="d-flex justify-content-start">
+                                    <a href="{% url 'projects' %}" class="btn btn-primary" style='margin-right:5px;'>View</a>
+                                    <a href="{% url 'createProject' %}" class="btn btn-primary">Create</a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                                  <h5 class="mb-3">Project Categories</h5>
+                                  <div class="d-flex justify-content-start">
+                                    <a href="{% url 'projectCategories' %}" class="btn btn-primary" style='margin-right:5px;'>View</a>
+                                    <a href="{% url 'createProjectCategory' %}" class="btn btn-primary">Create</a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                                  <h5 class="mb-3">SEO</h5>
+                                  <div class="row">
+                                      <div class="col-12">
+                                          <form method="post">
+                                              {% csrf_token %}
+                                              {% if SeoForm.errors %}
+                                                  <div class="alert alert-danger">
+                                                      <strong>Error:</strong>
+                                                      <ul>
+                                                          {% for field, errors in SeoForm.errors.items %}
+                                                              {% for error in errors %}
+                                                                  <li>{{ field }}: {{ error }}</li>
+                                                              {% endfor %}
+                                                          {% endfor %}
+                                                      </ul>
+                                                  </div>
+                                              {% endif %}    
+                                              <div class="row">
+                                                  <div class="col-md-6 col-sm-12">
+                                                      <label for="{{ seoForm.meta_title.id_for_label }}">Meta Title <span class="text-danger">*</span></label>
+                                                      {{ seoForm.meta_title }}
+                                                  </div>
+                                                  <div class="col-md-6 col-sm-12">
+                                                      <label for="{{ seoForm.meta_description.id_for_label }}">Meta Description <span class="text-danger">*</span></label>
+                                                      {{ seoForm.meta_description }}
+                                                  </div>
+                                              </div>
+                                              <!-- Ensure proper indentation for the closing </form> tag -->
+                                              <button type="submit" class="btn btn-primary mt-3 w-100">Save</button>
+                                          </form>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+
+                    
+                    
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+          
+      </div>
+
+        
+        
+
+{% endblock content %}

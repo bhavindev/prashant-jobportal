@@ -1,0 +1,212 @@
+{% extends 'hrm/admin/base.html' %}
+{% load static %}
+{% load bootstrap_tags %}
+{% block title %}{{title}} {{employee}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+</style>
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">HRM /</span> <a href="{% url 'hrmEmployeeList' %}">Employee</a> / {{employee.userprofile.name}}
+              </h4>
+            <!--Table Card-->
+            <div class="">
+                <form method="POST" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Display form errors -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <p><strong>{{ field }}:</strong> {{ error }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                        <div class="row mb-3">
+                        <div class="col-md-12 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Profile Picture </label>
+                                    {% if profile.profile_picture %}
+                                    <br>
+                                    <img class="currentImg" width="100" src="{{ profile.profile_picture.url }}" alt="Current Image">
+                                    <br>
+                                    {% endif %}
+                                    {{ form.profile_picture }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label">Name </label>
+                                    {{ form.name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">Email </label>
+                                    {{ form.email}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.phone.id_for_label }}" class="form-label">Phone </label>
+                                    {{ form.phone}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-3 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.branch.id_for_label }}" class="form-label">Branch </label>
+                                    {{ form.branch }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.department.id_for_label }}" class="form-label">Depratment </label>
+                                    {{ form.department}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.designation.id_for_label }}" class="form-label">Designation </label>
+                                    {{ form.designation}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.job_type.id_for_label }}" class="form-label">Job Type </label>
+                                    {{ form.job_type}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.address.id_for_label }}" class="form-label">Address </label>
+                                    {{ form.address }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.city.id_for_label }}" class="form-label">City </label>
+                                    {{ form.city }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.state.id_for_label }}" class="form-label">State </label>
+                                    {{ form.state }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.zipcode.id_for_label }}" class="form-label">Zipcode </label>
+                                    {{ form.zipcode }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.country.id_for_label }}" class="form-label">Country </label>
+                                    {{ form.country }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.facebook.id_for_label }}" class="form-label">Facebook </label>
+                                    {{ form.facebook }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.instagram.id_for_label }}" class="form-label">Instagram </label>
+                                    {{ form.instagram }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.linkedin.id_for_label }}" class="form-label">Linkedin </label>
+                                    {{ form.linkedin }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add more form fields as needed -->
+                    
+                    <button class="btn btn-primary mb-5" type="submit">Save</button>
+                </form>
+              
+            </div>  
+
+          </div>
+        <!-- / Content -->
+
+
+    </div>
+    <!-- Content wrapper -->
+
+{% endblock content %}

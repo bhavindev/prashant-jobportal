@@ -1,0 +1,201 @@
+<style>
+    .tcg_ln {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        visibility: visible !important;
+        z-index: 9 !important;
+    }
+
+    .tcg_ln-btn {
+        display: inline-flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.2); 
+        backdrop-filter: blur(10px); 
+        -webkit-backdrop-filter: blur(10px);
+        padding: 20px 20px 20px 20px;
+        height: 36px;
+        border-radius: 18px;
+    }
+
+    :dir(rtl) .tcg_ln-btn {
+        padding: 20px 14px 20px 26px !important;
+    }
+
+    .tcg_ln-btn img {
+        width: 20px;
+        height: auto;
+        margin-right: 8px;
+        border-radius: 50%;
+    }
+
+    .rtl .tcg_ln-btn img {
+        margin-right: 0px;
+        margin-left: 8px;
+    }
+
+    .tcg_ln-btn span {
+        color: #bdbdbd;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 400;
+        transition: color 0.5s ease;
+    }
+
+    :dir(rtl) .tcg_ln-btn span {
+        margin-right: 5px;
+    }
+
+    .tcg_ln-btn:hover span {
+        color: #fff;
+    }
+
+    .tcg_ln-dropdown {
+        display: none; /* Initially hide the dropdown */
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.2); 
+        backdrop-filter: blur(10px); 
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 16px;
+        min-width: 100px;
+        transition: opacity 0.5s ease;
+        border: 1px solid #222227;
+        margin-top: 5px;
+    }
+
+    .tcg_ln-dropdown li {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .tcg_ln-dropdown li:last-child {
+        margin-bottom: 0;
+    }
+
+    .tcg_ln-dropdown a {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .tcg_ln-dropdown a img {
+        width: 20px;
+        height: auto;
+        margin-right: 8px;
+        border-radius: 50%;
+    }
+
+    .rtl .tcg_ln-dropdown a img {
+        margin-right: 0px;
+        margin-left: 8px;
+    }
+
+    .tcg_ln-dropdown a span {
+        color: #bdbdbd;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 400;
+        transition: color 0.5s ease;
+    }
+
+    :dir(rtl) .tcg_ln-dropdown a span {
+        margin-right:5px;
+    }
+
+    .tcg_ln-dropdown a:hover span {
+        color: #fff;
+    }
+
+    :dir(ltr) .tcg_ln-dropdown.show {
+        display: block; /* Show the dropdown when 'show' class is applied */
+        z-index: 1000;
+        pointer-events: auto;
+        opacity: 1;
+        padding-right: 52px !important;
+        padding-left: 25px !important;
+    }
+
+    :dir(rtl) .tcg_ln-dropdown.show {
+        display: block;
+        z-index: 1000;
+        pointer-events: auto;
+        opacity: 1;
+        padding-right: 22px !important;
+        padding-left: 50px !important;
+    }
+    
+</style>
+
+<div class="tcg_ln">
+    <a class="tcg_ln-btn" href="#" role="button" id="dropdownLang">
+        <img width="16" height="16" src="{{ selected_language.getFlag }}" alt="flag">
+        <span>{{ selected_language }}</span>
+    </a>
+
+    <ul class="dropdown-menu tcg_ln-dropdown" aria-labelledby="dropdownLang">
+        {% for language in languages %}
+        <li>
+            <a title="{{ language.name }}" href="#" data-lang="{{ language.code }}">
+                <img width="16" height="16" src="{{ language.getFlag }}" alt="flag">
+                <span>{{ language.name }}</span>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the dropdown button and dropdown menu
+        var dropdownBtn = document.getElementById("dropdownLang");
+        var dropdownMenu = document.querySelector(".tcg_ln-dropdown");
+
+        // When the dropdown button is clicked
+        dropdownBtn.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent the default action of the anchor element
+            event.stopPropagation(); // Prevent the click event from bubbling up
+
+            // Toggle the 'show' class for the dropdown menu
+            dropdownMenu.classList.toggle("show");
+        });
+
+        // Handle language selection from dropdown
+        var dropdownItems = document.querySelectorAll(".tcg_ln-dropdown li a");
+        dropdownItems.forEach(function(item) {
+            item.addEventListener("click", function(event) {
+                event.preventDefault();
+                var selectedLanguageCode = this.getAttribute("data-lang");
+
+                // Update the dropdown button text with the selected language name
+                dropdownBtn.querySelector("span").textContent = this.textContent;
+
+                // Create a form and submit the selected language code
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = ''; // Adjust the form action as per your application's routing logic
+                var csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+                form.innerHTML = `<input type="hidden" name="language" value="${selectedLanguageCode}">
+                                  <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">`;
+                document.body.appendChild(form);
+                form.submit();
+            });
+        });
+
+        // Close the dropdown menu if the user clicks outside of it
+        document.addEventListener("click", function(event) {
+            // If the clicked element is not inside the dropdown
+            if (!dropdownBtn.contains(event.target)) {
+                // Hide the dropdown menu
+                dropdownMenu.classList.remove("show");
+            }
+        });
+    });
+</script>

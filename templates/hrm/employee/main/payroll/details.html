@@ -1,0 +1,203 @@
+{% extends 'hrm/employee/base.html' %}
+{% load static %}
+{% block title %}
+{{ payroll.employee.userprofile.name }}'s {{ title }} - {{ settings.name }}
+{% endblock title %}
+{% block content %}
+<style>
+   .btn-group-sm>.btn-icon.btn,
+   .btn-icon.btn-sm {
+   font-size: 1.2rem !important;
+   height: calc(1.625rem + 2px);
+   width: calc(1.625rem + 2px);
+   }
+   @media (min-width: 992px) {
+   .card-datatable.table-responsive {
+   overflow-x: hidden;
+   }
+   }
+   .dt-buttons.btn-group.flex-wrap {
+   margin-top: -32px;
+   }
+   .card{
+   padding:20px 20px 20px 20px !important;
+   }
+   .card-title{
+   padding:10px 10px 10px 10px !important;
+   }
+</style>
+<!-- Content wrapper -->
+<div class="content-wrapper">
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+   <h4 class="fw-bold py-3 mb-4">
+      <span class="text-muted fw-light">HRM /</span> Payroll / {{ payroll.employee.userprofile.name }}
+   </h4>
+   {% if messages %}
+   {% for message in messages %}
+   <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+   </div>
+   {% endfor %}
+   {% endif %}
+   <div class="row">
+      <div class="col-md-6 mt-2">
+         <div class="card" style="">
+            <div class="card-datatable table-responsive">
+               <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                  <div class="card-title d-flex justify-content-between align-items-center mb-4">
+                     <h5 class="mb-0">Basic Salary</h5>
+                  </div>
+                  <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                     <thead>
+                        <tr>
+                           <th style="width: 0px;">#</th>
+                           <th style="width: 100px;">Amount</th>
+                           <th style="width: 100px;">Type</th>
+                           <th style="width: 180px;">Added At</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% if salary %}
+                        <tr class="odd">
+                           <td>1</td>
+                           <td><a href="#" data-bs-toggle="modal" data-bs-target="#salaryEditModal{{ salary.id }}">{{ settings.currency_symbol }}{{ salary.amount }}</a></td>
+                           <td>{{ salary.type }}</td>
+                           <td>{{ salary.created_at }}</td>
+                        </tr>
+                        {% endif %}
+                        <!-- ... more table rows ... -->
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-6 mt-2">
+         <div class="card">
+            <div class="card-datatable table-responsive">
+               <div class="card-title d-flex justify-content-between align-items-center mb-4">
+                  <h5 class="mb-0">Allowances</h5>
+               </div>
+               <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_1" aria-describedby="DataTables_Table_1_info">
+                  <thead>
+                     <tr>
+                        <th style="width: 0px;">#</th>
+                        <th style="width: 100px;">Title</th>
+                        <th style="width: 150px;">Amount</th>
+                        <th style="width: 150px;">Added At</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for allowance in allowances %}
+                     <tr class="odd">
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#allowanceEditModal{{ allowance.id }}">{{ allowance.title }}</a></td>
+                        <td>{{ settings.currency_symbol }}{{ allowance.amount }}</td>
+                        <td>{{ allowance.created_at }}</td>
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+                  {% if total_allowance > 0 %}
+                  <tr>
+                     <td></td>
+                     <td>Total</td>
+                     <td>{{ settings.currency_symbol }}{{ total_allowance }}</td>
+                     <td></td>
+                     <td></td>
+                  </tr>
+                  {% endif %}
+               </table>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-6 mt-3">
+         <div class="card">
+            <div class="card-datatable table-responsive">
+               <div class="card-title d-flex justify-content-between align-items-center mb-4">
+                  <h5 class="mb-0">Deduction</h5>
+               </div>
+               <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_2" aria-describedby="DataTables_Table_2_info">
+                  <thead>
+                     <tr>
+                        <th style="width: 0px;">#</th>
+                        <th style="width: 100px;">Title</th>
+                        <th style="width: 100px;">Amount</th>
+                        <th style="width: 1800px;">Added At</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for deduction in deductions %}
+                     <tr class="odd">
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#deductionEditModal{{ deduction.id }}">{{ deduction.title }}</a></td>
+                        <td>{{ settings.currency_symbol }}{{ deduction.amount }}</td>
+                        <td>{{ deduction.created_at }}</td>
+                     </tr>
+                     {% endfor %}
+                     <!-- ... more table rows ... -->
+                  </tbody>
+                  {% if total_deduction %}
+                  <tr>
+                     <td></td>
+                     <td>Total</td>
+                     <td>{{ settings.currency_symbol }}{{ total_deduction }}</td>
+                     <td></td>
+                     <td></td>
+                  </tr>
+                  {% endif %}
+               </table>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-6 mt-3">
+         <div class="card">
+            <div class="card-datatable table-responsive">
+               <div class="card-title d-flex justify-content-between align-items-center mb-4">
+                  <h5 class="mb-0">Summary</h5>
+               </div>
+               <table class="table-responsive table-bordered table table-striped table-hover">
+                  <tr>
+                     <td>Name :</td>
+                     <td>{{ payroll.employee.userprofile.name }} ( {{payroll.employee.username}} )</td>
+                  </tr>
+                  <tr>
+                     <td>Basic Salary :</td>
+                     <td>+{{ settings.currency_symbol }}{% if salary %}{{ salary.amount }}{% else %}0.0{% endif %}</td>
+                  </tr>
+                  <tr>
+                     <td>Total Allowance :</td>
+                     <td>+{{ settings.currency_symbol }}{{ total_allowance }}</td>
+                  </tr>
+                  <tr>
+                     <td>Total Deduction :</td>
+                     <td>-{{ settings.currency_symbol }}{{ total_deduction }}</td>
+                  </tr>
+                  <tr>
+                     <td>Net Salary :</td>
+                     <td>{{ settings.currency_symbol }}{{ net_salary }}</td>
+                  </tr>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- / Content -->
+</div>
+<!-- / Content wrapper -->
+
+<script>
+   $(document).ready(function() {
+     $('.table').DataTable({
+       pageLength: 10,
+       lengthMenu: [
+         [10, 25, 50, -1],
+         [10, 25, 50, "All"]
+       ],
+       info: true,
+       search: true
+     });
+   });
+</script>
+{% endblock content %}

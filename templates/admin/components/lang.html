@@ -1,0 +1,58 @@
+<form id="languageForm" method="GET" class="mb-4">
+    <div class="row">
+        <div class="col-md-9"></div>
+        <div class="col-md-3">
+            <select name="language" id="languageSelect" class="form-select">
+                {% for language in all_languages %}
+                <option value="{{ language.code }}" {% if language.code == selected_language or language.code == default_language_code %} selected {% endif %}>
+                    {{ language.name }} ({{ language.code }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</form>
+
+<script>
+    // JavaScript to handle form submission and update URL
+    document.getElementById("languageForm").addEventListener("change", function(event) {
+        // Prevent the default form submission
+        event.preventDefault();
+        
+        // Get the selected language code
+        var languageCode = document.getElementById("languageSelect").value;
+        
+        // Get the current URL
+        var url = window.location.href;
+        
+        // Remove any existing language parameter from the URL
+        url = url.replace(/[\?&]language=[^&]+/, '');
+        
+        // Check if the URL already contains a query string
+        var queryString = url.includes('?') ? '&' : '?';
+        
+        // Append the language code to the URL
+        url += queryString + "language=" + languageCode;
+        
+        // Redirect to the updated URL
+        window.location.href = url;
+    });
+
+    // JavaScript to set selected language in the dropdown
+    window.onload = function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var selectedLanguage = urlParams.get('language');
+        if (!selectedLanguage) {
+            // If no language is selected from the URL, set the default language
+            var defaultLanguage = "{{ default_language_code }}"; // Get the default language code from the context
+            if (defaultLanguage) {
+                document.getElementById("languageSelect").value = defaultLanguage;
+                
+                // Append the default language parameter to the URL
+                var url = window.location.href;
+                var queryString = url.includes('?') ? '&' : '?';
+                window.history.replaceState({}, document.title, url + queryString + "language=" + defaultLanguage);
+            }
+        }
+    };
+</script>

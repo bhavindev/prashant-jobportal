@@ -1,0 +1,89 @@
+{% load static %}
+<li class="nav-item me-2 me-xl-0">
+   <a class="nav-link dropdown-toggle hide-arrow" href="{% url "hrmAttendance" %}">
+     <i class="bx bx-stopwatch bx-sm"></i>
+   </a>
+ </li>
+<!-- Notification -->
+<li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
+   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+   <i class="bx bx-bell bx-sm"></i>
+   {% if notification_count > 0 %}
+   <span class="badge bg-danger rounded-pill badge-notifications">{{notification_count}}</span>
+   {% endif %}
+   </a>
+   <ul class="dropdown-menu dropdown-menu-end py-0">
+      <li class="dropdown-menu-header border-bottom">
+         <div class="dropdown-header d-flex align-items-center py-3">
+            <h5 class="text-body mb-0 me-auto">Notifications</h5>
+         </div>
+      </li>
+      <li class="dropdown-notifications-list scrollable-container">
+         <ul class="list-group list-group-flush">
+            {% if notifications %}
+            {% for notification in notifications|slice:":10" %}
+            <li class="list-group-item list-group-item-action dropdown-notifications-item">
+               <div class="d-flex">
+                  <div class="flex-shrink-0 me-3">
+                     <div class="avatar">
+                        <img src="{% static "hrm/img/notification.png" %}" alt class="w-px-40 h-auto rounded-circle">
+                     </div>
+                  </div>
+                  <div class="flex-grow-1">
+                     <h6 class="mb-1">{{notification.title}}</h6>
+                     <p class="mb-0">{{notification.description}}</p>
+                     <small class="text-muted">{{notification.created_at}}</small>
+                  </div>
+                  <form method='POST'>
+                     <div class="flex-shrink-0 dropdown-notifications-actions">
+                        {% if request.user not in notification.readed_by.all %}
+                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Mark as read" data-bs-original-title="Mark as read" class="dropdown-notifications-all text-body" onclick="markNotificationAsRead('{{ notification.id }}')" id="unread-notification-{{ notification.id }}">
+                        <i class="bx fs-4 bx-envelope"></i>
+                        </a>
+                        <a href="#" class="dropdown-notifications-all text-body" style="display: none;" id="read-notification-{{ notification.id }}">
+                        <i class="bx fs-4 bx-envelope-open"></i>
+                        </a>
+                        {% else %}
+                        <a href="#" class="dropdown-notifications-all text-body">
+                        <i class="bx fs-4 bx-envelope-open"></i>
+                        </a>
+                        {% endif %}
+                     </div>
+                  </form>
+               </div>
+            </li>
+            {% endfor %}
+            {% else %}
+            <li  class="list-group-item list-group-item-action dropdown-notifications-item">
+               <p>You don't have any notifications</p>
+            </li>
+            {% endif %}
+         </ul>
+      </li>
+   </ul>
+</li>
+<!--/ Notification -->
+<script>
+   function markNotificationAsRead(notificationId) {
+       $.ajax({
+           url: '/notification/' + notificationId + '/mark_as_read/',
+           method: 'POST',
+           dataType: 'json',
+           beforeSend: function(xhr) {
+               xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+               xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest"); 
+           },
+           success: function(response) {
+               console.log(response.message);
+               // Hide the unread notification icon
+               document.getElementById('unread-notification-' + notificationId).style.display = 'none';
+   
+               // Show the read notification icon by removing the display: none property
+               document.getElementById('read-notification-' + notificationId).style.display = '';
+           },
+           error: function(xhr, status, error) {
+               console.error('Error:', error);
+           }
+       });
+   }
+</script>

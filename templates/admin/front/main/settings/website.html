@@ -1,0 +1,686 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    #cke_id_description {
+        width: 990px !important;
+    }
+.currentImg{
+  width: 187px !important;
+  margin-bottom: 10px;
+}
+img.currentImg2 {
+    width: 55px;
+    margin-bottom: 10px;
+}
+.currentImg3{
+    width: 75px !important;
+    margin-bottom: 10px;
+}
+label.switch {
+    margin-top: -35px;
+}
+@media only screen and (max-width: 600px) {
+  #ver-pills-tab {
+     display: -webkit-box;
+     margin-bottom: 18px;
+ }
+ .nav-link {
+    display: inline-block;
+    margin-bottom: 10px !important;
+    /* margin-top: 10px !important; */
+}
+}
+#primary_color_picker,
+    #link_color_picker,
+    #wp_button_shed_color_picker {
+        width: 100%;
+        height: 50px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .color-picker-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    #primary_color_picker,
+   #link_color_picker,
+   #wp_button_shed_color_picker {
+       width: 300px;  /* Adjust as needed */
+       height: 30px;  /* Adjust as needed */
+       border: 1px solid #ccc;
+       border-radius: 5px;
+       padding: 5px;
+       font-family: monospace;
+   }
+
+   .color-picker-label {
+       display: block;
+       margin-bottom: 5px;
+       font-weight: bold;
+   }
+   .sp-preview {
+      width: 200px !important;
+      height: 30px !important;
+  }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.js"></script>
+
+<div class="page-body">
+    <div class="container-fluid">
+       <div class="page-title">
+          <div class="row">
+             <div class="col-6">
+                <h3>System Settings</h3>
+             </div>
+             <div class="col-6">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Settings</li>
+                    <li class="breadcrumb-item active">System</li>
+                  </ol>
+             </div>
+          </div>
+       </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+      {% include "admin/components/lang.html" %}
+       <div class="row project-cards">
+          <div class="col-md-12 project-list">
+          </div>
+          <div class="container">
+             <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form.media}}   
+                {% if messages %}
+                     {% for message in messages %}
+                         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                             {{ message }}
+                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                         </div>
+                     {% endfor %}
+                 {% endif %} 
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                   <strong>Error:</strong>
+                   <ul>
+                      {% for field, errors in form.errors.items %}
+                      {% for error in errors %}
+                      <li>{{ field }}: {{ error }}</li>
+                      {% endfor %}
+                      {% endfor %}
+                   </ul>
+                </div>
+                {% endif %}
+                <div class="row mb-2">
+                   <div class="col-sm-12 col-xxl-12">
+                      <div class=" height-equal">
+                        <div class="">
+                        </div>
+                        <div class="">
+                          <div class="row">    
+                            <div class="col-md-2 col-xs-12">
+                               <div class="nav flex-column nav-pills nav-primary" id="ver-pills-tab" role="tablist" aria-orientation="vertical">
+                               
+                                  <a class="nav-link active" id="ver-pills-home-tab" data-bs-toggle="pill" href="#ver-pills-home" role="tab" aria-controls="ver-pills-home" aria-selected="true">General</a>
+
+                                  <a class="nav-link" id="ver-pills-logo-tab" data-bs-toggle="pill" href="#ver-pills-logo" role="tab" aria-controls="ver-pills-logo" aria-selected="false">Logo</a>
+                                  
+                                  <a class="nav-link" id="ver-pills-colors-tab" data-bs-toggle="pill" href="#ver-pills-colors" role="tab" aria-controls="ver-pills-colors" aria-selected="true">Colors</a>
+
+                                  <a class="nav-link" id="ver-pills-contact-tab" data-bs-toggle="pill" href="#ver-pills-contact" role="tab" aria-controls="ver-pills-contact" aria-selected="false">Contact</a>
+
+                                  <a class="nav-link" id="ver-pills-order-tab" data-bs-toggle="pill" href="#ver-pills-order" role="tab" aria-controls="ver-pills-order" aria-selected="false">Order Settings</a>
+                                 
+                                  <a class="nav-link" id="ver-pills-attendance-tab" data-bs-toggle="pill" href="#ver-pills-attendance" role="tab" aria-controls="ver-pills-attendance" aria-selected="false">HRM Settings</a>
+
+                                  <a class="nav-link" id="ver-pills-sms-tab" data-bs-toggle="pill" href="#ver-pills-sms" role="tab" aria-controls="ver-pills-sms" aria-selected="false">SMS</a>
+                                  
+                                  <a class="nav-link" id="ver-pills-analytics-tab" data-bs-toggle="pill" href="#ver-pills-analytics" role="tab" aria-controls="ver-pills-analytics" aria-selected="false">Social</a>
+ 
+                                  <a class="nav-link" id="ver-pills-others-tab" data-bs-toggle="pill" href="#ver-pills-others" role="tab" aria-controls="ver-pills-others" aria-selected="false">Others</a>
+                               </div>
+                            </div>
+                            <div class="col-md-10 col-xs-12">
+                              <div class="tab-content" id="ver-pills-tabContent">
+                                 <!-- ================= -->
+                                 <!-- General -->
+                                 <!-- ================= -->
+                                <div class="tab-pane fade show active" id="ver-pills-home" role="tabpanel" aria-labelledby="ver-pills-home-tab">
+                                  <div class="row mb-2">
+                                     <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.name.id_for_label }}" class="form-label">Application Name<span class="text-danger">*</span></label>
+                                              {{ form.name }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.author.id_for_label }}" class="form-label">Author<span class="text-danger">*</span></label>
+                                             {{ form.author }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                  </div>
+ 
+                                  <div class="row mb-1">
+                                      <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.default_menu_is_active.id_for_label }}" class="form-label">Default Menu</label>
+                                              <div class="media-body text-end icon-state">
+                                                <label class="switch">
+                                                  {{ form.default_menu_is_active }}<span class="switch-state"></span>
+                                                </label>
+                                              </div>
+                                              <p>After turning it off your website's default navigation menu will be disappear then you can add your custom menu from <a href="{% url "menuSettingsadm" %}">here.</a></p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.is_search_active.id_for_label }}" class="form-label">Search Feature</label>
+                                             <div class="media-body text-end icon-state">
+                                               <label class="switch">
+                                                 {{ form.is_search_active }}<span class="switch-state"></span>
+                                               </label>
+                                             </div>
+                                             <p>After turning it on it will enable a search feature in the front website. Which user can use to search across services, projects and blogs.</p>
+                                          </div>
+                                       </div>
+                                     </div>
+                                  </div>
+
+                                  <div class="row mb-1">
+                                    <div class="col-md-6">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.whatsapp_button_direction.id_for_label }}" class="form-label">Whatsapp Button Direction</label>
+                                             {{ form.whatsapp_button_direction }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                   <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.scroll_to_top_direction.id_for_label }}" class="form-label">Scroll To Top Direction</label>
+                                             {{ form.scroll_to_top_direction }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                </div>
+ 
+                                </div>
+                                <!-- ================= -->
+                                 <!-- Logo -->
+                                 <!-- ================= -->
+                                <div class="tab-pane fade " id="ver-pills-logo" role="tabpanel" aria-labelledby="ver-pills-logo-tab">
+                                  <div class="row mb-1">
+                                     <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.logo.id_for_label }}" class="form-label">Logo Light<span class="text-danger">*</span></label>
+                                              <br>
+                                              {% if settings.logo %}
+                                                     <img class="mb-2" src="{{ settings.logo.url }}" width="160" alt="Current Image">
+                                             {% endif %}
+                                             <br>
+                                              {{ form.logo }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.logo_dark.id_for_label }}" class="form-label">Logo Dark<span class="text-danger">*</span></label>
+                                             <br>
+                                              {% if settings.logo_dark %}
+                                                     <img class="mb-2" src="{{ settings.logo_dark.url }}" width="160" alt="Current Image">
+                                             {% endif %}
+                                             <br>
+                                             {{ form.logo_dark }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                     <div class="card">
+                                        <div class="card-body">
+                                           <label for="{{ form.favicon.id_for_label }}" class="form-label">Favicon<span class="text-danger">*</span></label>
+                                           <br>
+                                              {% if settings.favicon %}
+                                                     <img class="mb-2" src="{{ settings.favicon.url }}" width="30" alt="Current Image">
+                                             {% endif %}
+                                             <br>
+                                           {{ form.favicon }}
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="card">
+                                       <div class="card-body">
+                                          <label for="{{ form.invoice_logo.id_for_label }}" class="form-label">Invoice Logo</label>
+                                          <br>
+                                             {% if settings.invoice_logo %}
+                                                    <img class="mb-2" src="{{ settings.invoice_logo.url }}" width="30" alt="Current Image">
+                                             {% endif %}
+                                            <br>
+                                          {{ form.invoice_logo }}
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <div class="card">
+                                       <div class="card-body">
+                                          <label for="{{ form.logo_width.id_for_label }}" class="form-label">Website Logo Width</label>
+                                          {{ form.logo_width }}
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <div class="card">
+                                       <div class="card-body">
+                                          <label for="{{ form.invoice_logo_width.id_for_label }}" class="form-label">Invoice Logo Width</label>
+                                          {{ form.invoice_logo_width }}
+                                       </div>
+                                    </div>
+                                 </div>
+
+                                  </div>
+                                </div>
+                                <div class="tab-pane fade" id="ver-pills-contact" role="tabpanel" aria-labelledby="ver-pills-contact-tab">
+                                  <div class="row mb-2">
+                                     <div class="col-md-4">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.email_address.id_for_label }}" class="form-label">Email</label>
+                                              {{ form.email_address }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-4">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.phone_or_whatsapp.id_for_label }}" class="form-label">Phone ( What's App )</label>
+                                              {{ form.phone_or_whatsapp }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-4">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.price_ragne.id_for_label }}" class="form-label">Price Range</label>
+                                             {{ form.price_ragne }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                  </div>
+                  
+                                  <div class="row mb-1">
+                                     <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
+                                              {{ form.address }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.state.id_for_label }}" class="form-label">State</label>
+                                              {{ form.state }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                  </div>
+                   
+                                  <div class="row mb-1">
+                                   <div class="col-md-6">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.Zip.id_for_label }}" class="form-label">Postal</label>
+                                            {{ form.Zip }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                   <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.country.id_for_label }}" class="form-label">Country</label>
+                                             {{ form.country }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                </div>
+                              
+ 
+                                </div>
+
+                                <!-- ================= -->
+                                 <!-- Colors Settings -->
+                                 <!-- ================= -->
+                                 <div class="tab-pane fade" id="ver-pills-colors" role="tabpanel" aria-labelledby="ver-pills-colors-tab">
+                                    <div class="alert bg-info">This colors will be applied in the front website.</div>
+                                    <div class="row mb-2">
+                                       <div class="col-md-12">
+                                             <div class="card">
+                                                <div class="card-body">
+                                                   <label for="{{ form.default_mode.id_for_label }}" class="form-label">Default Color Mode</label>
+                                                   {{ form.default_mode }}
+                                                </div>
+                                             </div>
+                                       </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <label for="{{ form.primary_color.id_for_label }}" class="form-label color-picker-label">Primary Color</label>
+                                                    {{ form.primary_color }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <label for="{{ form.link_color.id_for_label }}" class="form-label color-picker-label">Primary Hover & Link Color</label>
+                                                    {{ form.link_color }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <label for="{{ form.wp_button_shed_color.id_for_label }}" class="form-label color-picker-label">WhatsApp Button Shed Color</label>
+                                                    {{ form.wp_button_shed_color }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+
+
+                                 <!-- ================= -->
+                                 <!-- Order Settings -->
+                                 <!-- ================= -->
+                                 <div class="tab-pane fade" id="ver-pills-order" role="tabpanel" aria-labelledby="ver-pills-order-tab">
+                                    <div class="row mb-2">
+                                       <div class="col-md-6">
+                                           <div class="card">
+                                              <div class="card-body">
+                                                 <label for="{{ form.currency_name.id_for_label }}" class="form-label">Currency Name (Must Be Uppercase)<span class="text-danger">*</span></label>
+                                                 {{ form.currency_name }}
+                                              </div>
+                                           </div>
+                                        </div>
+                                       <div class="col-md-6">
+                                          <div class="card">
+                                             <div class="card-body">
+                                                <label for="{{ form.currency_symbol.id_for_label }}" class="form-label">Currency Symbol<span class="text-danger">*</span></label>
+                                                {{ form.currency_symbol }}
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                       <div class="col-md-6">
+                                          <div class="card">
+                                             <div class="card-body">
+                                                <label for="{{ form.is_purchasing_enable.id_for_label }}" class="form-label">Enable Purchasing</label>
+                                                <div class="media-body text-end icon-state">
+                                                   <label class="switch">
+                                                     {{ form.is_purchasing_enable }}<span class="switch-state"></span>
+                                                   </label>
+                                                </div>
+                                                <p>If enabled users or clients can place orders, make payments and can checkout from their dashboard by them self.</p>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="card">
+                                             <div class="card-body">
+                                                <label for="{{ form.is_auto_invoice_enable.id_for_label }}" class="form-label">Enable Auto Invoicing</label>
+                                                <div class="media-body text-end icon-state">
+                                                   <label class="switch">
+                                                     {{ form.is_auto_invoice_enable }}<span class="switch-state"></span>
+                                                   </label>
+                                                </div>
+                                                <p>If enabled when users or clients place an order an automatic Invoice, Project & Payment will be created for them.</p>
+                                             </div>
+                                          </div>
+                                       </div>
+
+                                    </div>
+                                 </div>
+
+                                 <!-- ================= -->
+                                 <!-- Attendacne Settings -->
+                                 <!-- ================= -->
+                                 <div class="tab-pane fade" id="ver-pills-attendance" role="tabpanel" aria-labelledby="ver-pills-attendance-tab">
+                                    <div class="row mb-2">
+                                       <div class="col-md-6">
+                                           <div class="card">
+                                              <div class="card-body">
+                                                 <label for="{{ form.hrm_attendance_clock_in_max_time.id_for_label }}" class="form-label">HRM Attendance Clock In Max Time<span class="text-danger">*</span></label>
+                                                 {{ form.hrm_attendance_clock_in_max_time }}
+                                                 <br>
+                                                 <p>User can still clock in if the maximum time exceed. The exceed time will be count as late.</p>
+                                              </div>
+                                           </div>
+                                        </div>
+                                       <div class="col-md-6">
+                                          <div class="card">
+                                             <div class="card-body">
+                                                <label for="{{ form.hrm_attendance_clock_out_min_time.id_for_label }}" class="form-label">HRM Attendacne Clock Out Min Time<span class="text-danger">*</span></label>
+                                                {{ form.hrm_attendance_clock_out_min_time }}
+                                                <br>
+                                                <p>User can clock out after the minimum time exceed. The rest time will be count as over time.</p>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>                                 
+                                    
+                                 
+                                 <!-- ================= -->
+                                 <!-- SMS -->
+                                 <!-- ================= -->
+                                <div class="tab-pane fade" id="ver-pills-sms" role="tabpanel" aria-labelledby="ver-pills-sms-tab">
+                                  <div class="row mb-2">
+                                     <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.twilio_sid.id_for_label }}" class="form-label">Twilio SID</label>
+                                              {{ form.twilio_sid }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.twilio_auth_token.id_for_label }}" class="form-label">Auth Token</label>
+                                              {{ form.twilio_auth_token }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-12">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.twilio_from_number.id_for_label }}" class="form-label">Twilio Number</label>
+                                             {{ form.twilio_from_number }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                  </div>
+                               </div>
+                               
+                               <!-- ================= -->
+                                 <!-- Social -->
+                                 <!-- ================= -->
+                                <div class="tab-pane fade" id="ver-pills-analytics" role="tabpanel" aria-labelledby="ver-pills-analytics-tab">
+                                  <div class="row mb-2">
+                                     <div class="col-md-12">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.analytics_code.id_for_label }}" class="form-label">Google Analytics Measurement Code</label>
+                                              {{ form.analytics_code }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                  </div>
+                     
+                                  <div class="row mb-2">
+                                     <div class="col-md-6">
+                                         <div class="card">
+                                            <div class="card-body">
+                                               <label for="{{ form.facebook_pixel_code.id_for_label }}" class="form-label">Facebook Pixel Code</label>
+                                               {{ form.facebook_pixel_code }}
+                                            </div>
+                                         </div>
+                                      </div>
+                                     <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.facebook_chat_code.id_for_label }}" class="form-label">Facebook Chat Code</label>
+                                              {{ form.facebook_chat_code }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="row mb-1">
+                                     <div class="col-md-6">
+                                         <div class="card">
+                                            <div class="card-body">
+                                               <label for="{{ form.whatsapp_is_active.id_for_label }}" class="form-label">Whats App Button</label>
+                                               <div class="media-body text-end icon-state">
+                                                 <label class="switch">
+                                                   {{ form.whatsapp_is_active }}<span class="switch-state"></span>
+                                                 </label>
+                                               </div>
+                                            </div>
+                                         </div>
+                                      </div>
+                                     <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.messenger_is_active.id_for_label }}" class="form-label">Facebook Chat Button</label>
+                                              <div class="media-body text-end icon-state">
+                                                 <label class="switch">
+                                                   {{ form.messenger_is_active }}<span class="switch-state"></span>
+                                                 </label>
+                                               </div>
+                                           </div>
+                                        </div>
+                                     </div>
+                                  </div>
+                                </div>
+                                
+                                <!-- ================= -->
+                                 <!-- Others -->
+                                 <!-- ================= -->
+                                <div class="tab-pane fade " id="ver-pills-others" role="tabpanel" aria-labelledby="ver-pills-others-tab">
+                                  
+                                  <div class="row mb-1">
+                                     <div class="col-md-6">
+                                         <div class="card">
+                                            <div class="card-body">
+                                               <label for="{{ form.custom_css.id_for_label }}" class="form-label">Custom CSS</label>
+                                               {{ form.custom_css }}
+                                            </div>
+                                         </div>
+                                      </div>
+                                     <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.custom_css.id_for_label }}" class="form-label">Custom JS</label>
+                                              {{ form.custom_js }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                  </div>
+                                  
+                                </div>
+                                <button class="btn btn-primary mb-5" type="submit">Save</button>
+ 
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>                
+                
+             </form>
+          </div>
+       </div>
+    </div>
+ </div>
+ <script>
+   document.getElementById('dpkr').addEventListener('focus', function() {
+      this.showPicker();
+  });
+   document.getElementById('dpkr2').addEventListener('focus', function() {
+      this.showPicker();
+   });
+</script>   
+<script>
+   $(document).ready(function() {
+       $("#primary_color_picker").spectrum({
+           showInput: true,
+           showAlpha: true,
+           preferredFormat: "rgba",
+           allowEmpty: true,
+           showInitial: true,
+           clickoutFiresChange: true,
+           move: function(color) {
+               $(this).val(color.toRgbString());
+           },
+           change: function(color) {
+               $(this).val(color.toRgbString());
+           }
+       });
+
+       $("#link_color_picker").spectrum({
+           showInput: true,
+           showAlpha: true,
+           preferredFormat: "rgba",
+           allowEmpty: true,
+           showInitial: true,
+           clickoutFiresChange: true,
+           move: function(color) {
+               $(this).val(color.toRgbString());
+           },
+           change: function(color) {
+               $(this).val(color.toRgbString());
+           }
+       });
+
+       $("#wp_button_shed_color_picker").spectrum({
+           showInput: true,
+           showAlpha: true,
+           preferredFormat: "rgba",
+           allowEmpty: true,
+           showInitial: true,
+           clickoutFiresChange: true,
+           move: function(color) {
+               $(this).val(color.toRgbString());
+           },
+           change: function(color) {
+               $(this).val(color.toRgbString());
+           }
+       });
+   });
+</script>
+
+
+{% endblock content %}

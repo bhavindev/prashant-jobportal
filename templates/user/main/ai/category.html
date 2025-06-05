@@ -1,0 +1,322 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{settings.name}}{% endblock title %}
+{% block content %}
+  <style>
+    .custom-btn {
+      background: linear-gradient(to right, #4c3ae2, #e74c3c);
+      color: #fff;
+    }
+    .custom-btn:hover {
+      color: #fff;
+    }
+    .card-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .card-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+  </style>    
+<!-- Content wrapper -->
+<div class="content-wrapper">
+   <!-- Content -->
+   <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row align-items-center">
+         <div class="col-md-6">
+            <h4 class="fw-bold py-3 mb-2">
+               <span class="text-muted fw-light">Dashboard /</span> AI Assistant
+            </h4>
+         </div>
+      </div>
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+               {{ message }} &nbsp; <a href="{% url "view_cart" %}" style="color: #f3f579;">View Cart</a>
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+         {% endfor %}
+      {% endif %}
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-edit-alt card-icon"></i>
+              <h5 class="card-title">Blog Generator</h5>
+              <p class="card-text">Generate unique blog contents</p>
+              <a href="{% url "useropenAiContentGeneration" category='blog'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+    
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bxs-star card-icon"></i>
+              <h5 class="card-title">Product Review Generator</h5>
+              <p class="card-text">Create amazing review for products</p>
+              <a href="{% url "useropenAiContentGeneration" category='review'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-reply card-icon"></i>
+              <h5 class="card-title">Review Reply Generator</h5>
+              <p class="card-text">Response to review of our customers</p>
+              <a href="{% url "useropenAiContentGeneration" category='reply'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+          
+          <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-repost card-icon"></i>
+              <h5 class="card-title">Social Media Post</h5>
+              <p class="card-text">Create engaging social media post</p>
+              <a href="{% url "useropenAiContentGeneration" category='social-media-post'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-envelope card-icon"></i>
+              <h5 class="card-title">Email Generator</h5>
+              <p class="card-text">Write email that impresses & get replies</p>
+              <a href="{% url "useropenAiContentGeneration" category='email'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bxl-facebook-circle card-icon"></i>
+              <h5 class="card-title">Facebook Ads Generator</h5>
+              <p class="card-text">Response to review of our customers</p>
+              <a href="{% url "useropenAiContentGeneration" category='facebook-ads'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+          
+          <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bxl-google card-icon"></i>
+              <h5 class="card-title">Google Ads Generator</h5>
+              <p class="card-text">Create customer convertible ads</p>
+              <a href="{% url "useropenAiContentGeneration" category='google-ads'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bxs-book card-icon"></i>
+              <h5 class="card-title">Guide Generator</h5>
+              <p class="card-text">Step-by-step guide generator</p>
+              <a href="{% url "useropenAiContentGeneration" category='guide'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-spreadsheet card-icon"></i>
+              <h5 class="card-title">Proposal Generator</h5>
+              <p class="card-text">Create catchy proposal for buyers</p>
+              <a href="{% url "useropenAiContentGeneration" category='proposal'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-spreadsheet card-icon"></i>
+              <h5 class="card-title">Product Description</h5>
+              <p class="card-text">Create crative product description</p>
+              <a href="{% url "useropenAiContentGeneration" category='product-description'%}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add missing categories -->
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-news card-icon"></i>
+              <h5 class="card-title">Newsletter Generator</h5>
+              <p class="card-text">Craft an engaging newsletter</p>
+              <a href="{% url 'useropenAiContentGeneration' category='newsletter' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-chat card-icon"></i>
+              <h5 class="card-title">Interview Transcript Generator</h5>
+              <p class="card-text">Create an interview transcript</p>
+              <a href="{% url 'useropenAiContentGeneration' category='interview' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-question-mark card-icon"></i>
+              <h5 class="card-title">FAQs Generator</h5>
+              <p class="card-text">Compile a comprehensive set of faqs</p>
+              <a href="{% url 'useropenAiContentGeneration' category='faqs' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-video-recording card-icon"></i>
+              <h5 class="card-title">Script Generator</h5>
+              <p class="card-text">Write a script for a short video</p>
+              <a href="{% url 'useropenAiContentGeneration' category='script' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-file-find card-icon"></i>
+              <h5 class="card-title">Case Study Generator</h5>
+              <p class="card-text">Develop a detailed case study</p>
+              <a href="{% url 'useropenAiContentGeneration' category='case-study' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-bar-chart card-icon"></i>
+              <h5 class="card-title">Infographic Generator</h5>
+              <p class="card-text">Design an informative infographic</p>
+              <a href="{% url 'useropenAiContentGeneration' category='infographic' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-microphone card-icon"></i>
+              <h5 class="card-title">Podcast Episode Generator</h5>
+              <p class="card-text">Produce a podcast episode</p>
+              <a href="{% url 'useropenAiContentGeneration' category='podcast-episode' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-check-square card-icon"></i>
+              <h5 class="card-title">Quiz Questions Generator</h5>
+              <p class="card-text">Generate a series of quiz questions</p>
+              <a href="{% url 'useropenAiContentGeneration' category='quiz-questions' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-book-open card-icon"></i>
+              <h5 class="card-title">Tutorial Generator</h5>
+              <p class="card-text">Create a step-by-step tutorial</p>
+              <a href="{% url 'useropenAiContentGeneration' category='tutorial' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-message-square-edit card-icon"></i>
+              <h5 class="card-title">Motivational Quote Generator</h5>
+              <p class="card-text">Craft an inspiring motivational quote</p>
+              <a href="{% url 'useropenAiContentGeneration' category='motivational-quote' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-briefcase card-icon"></i>
+              <h5 class="card-title">Career Advice Generator</h5>
+              <p class="card-text">Offer valuable career advice</p>
+              <a href="{% url 'useropenAiContentGeneration' category='career-advice' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-calendar-event card-icon"></i>
+              <h5 class="card-title">Event Invitation Generator</h5>
+              <p class="card-text">Design an attractive event invitation</p>
+              <a href="{% url 'useropenAiContentGeneration' category='event-invitation' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-book-heart card-icon"></i>
+              <h5 class="card-title">Book Review Generator</h5>
+              <p class="card-text">Write a thoughtful review of a book</p>
+              <a href="{% url 'useropenAiContentGeneration' category='book-review' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body card-container">
+              <i class="bx bx-money card-icon"></i>
+              <h5 class="card-title">Financial Planning Advice Generator</h5>
+              <p class="card-text">Provide practical financial planning advice</p>
+              <a href="{% url 'useropenAiContentGeneration' category='financial-planning' %}" class="btn custom-btn">Create</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+   </div>
+   <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+<script>
+   function validateQuantity(input) {
+      if (input.value < 1) {
+          input.value = 1;
+      }
+  }
+  
+</script>
+{% endblock content %}

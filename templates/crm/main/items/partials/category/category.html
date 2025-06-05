@@ -1,0 +1,108 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+</style>
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">CRM /</span> Items / Categories
+              </h4>
+            <!--Table Card-->
+            <div class="card">
+                <div class="card-datatable table-responsive">
+                  <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="card-header flex-column flex-md-row">
+                      <div class="head-label">
+                        <h5 class="card-title mb-0">All Item Categories</h5>
+                      </div>
+                      <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                        <div class="dt-buttons btn-group flex-wrap">
+                          <a class="btn btn-secondary create-new btn-primary" href="{% url 'crmItemCategoryCreate' %}" tabindex="0" aria-controls="DataTables_Table_0" type="button">
+                            <span><i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Category</span></span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Your button -->
+                    <div class="container mb-4">
+                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr>
+                        <th style="width: 0px;" >Id</th>
+                         <th style="width: 150px;" >Name</th>
+                         <th style="width: 202px;">Slug</th>
+                         <th style="width: 0px;" class="sorting_disabled dtr-hidden">Actions</th>                           
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for category in categories %}
+                            <tr class="odd">
+                                <td>{{ category.id }}</td>
+                                <td><span class="emp_name text-truncate">{{ category.name }}</span></td>
+                                <td>{{ category.slug }}</td>
+                                <td class="dtr-hidden" style="">
+                                    <a href="{% url 'crmItemCategoryEdit' slug=category.slug %}" class="btn btn-sm btn-icon item-edit">
+                                        <i class="bx bxs-edit"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-icon category-delete" data-slug="{{ category.slug }}" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal{{ category.slug }}">
+                                      <i class='bx bxs-x-circle'></i>
+                                  </button>                                   
+                                  <div class="modal fade" id="deleteConfirmationModal{{ category.slug }}" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <h5 class="modal-title" id="deleteConfirmationModalLabel{{ category.slug }}">Confirm Deletion</h5>
+                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                                  Are you sure you want to delete {{category.name}}?
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                  <a type="button" href="{% url "crmItemCategoryDelete" slug=category.slug %}" class="btn btn-danger" id="confirmDelete">Delete</a>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <!-- ... more table rows ... -->
+                      </tbody>
+                    </table>
+                </div>
+              </div> <!--Table Card-->         
+
+          </div>
+        <!-- / Content -->
+
+
+    </div>
+    <!-- Content wrapper -->
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                pageLength: 10, // Set the initial page length to 10
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Allow changing page length
+                info: true, // Show the item count
+                search: true // Enable search
+            });
+        });
+    </script>
+{% endblock content %}

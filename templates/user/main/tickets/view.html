@@ -1,0 +1,163 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ settings.name }}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn,
+    .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+
+    @media (min-width: 992px) {
+        .card-datatable.table-responsive {
+            overflow-x: hidden;
+        }
+    }
+    .sform {
+        margin-top: -25px;
+    }
+</style>
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h4 class="fw-bold py-3 mb-4">
+                    <span class="text-muted fw-light">CRM /</span> <a href="/user/dashboard/tickets">Tickets</a> / {{ticket.title}}
+                </h4>
+            </div>
+            <div class="col-md-6 sform">
+
+            </div>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <!--Ticket View Card-->
+        <div class="row">
+            <div class="col-md-6 col-lg-9 col-sm-12">
+        <div class="card">
+            <div class="page-title mt-4 ml-2 d-flex space-between container ticket-view-title">
+               <h3>Ticket #{{ticket.id}} - {{ticket.title}}</h3>
+            </div>
+            <div class="card-body ticket-card">
+               <div id="ticket-comment-container-1" class="b-b p10 m0 text-break comment-container  ticket-comment-container ">
+                  <div class="d-flex">
+                     <div class="flex-shrink-0 mr10">
+                        <span class=" avatar-sm">
+                        <img src="{{ticket.client.userprofile.getUserImage}}" style="border-radius:500px; width:48px; height:48px; margin-right:10px" alt="...">
+                        </span>
+                     </div>
+                     <div class="w-100">
+                        <div>
+                           <a href="" class="text-uppercase strong">{{ticket.client.username}}</a>                
+                           <small><span class="text-off">{{ticket.created_at}}</span></small>
+                        </div>
+   
+                        <p>{{ticket.description}}</p>
+                        <div class="comment-image-box clearfix">
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <br>
+               <div id="replies" class="b-b p10 m0 text-break comment-container mb-3 ticket-comment-container ">
+               {% for reply in replies %}
+               <div id="replies" class="b-b p10 m0 text-break comment-container mb-3 ticket-comment-container ">
+                  <div class="d-flex">
+                     <div class="flex-shrink-0 mr10">
+                        <span class=" avatar-sm">
+                        <img src="{{reply.user.userprofile.getUserImage}}" style="border-radius:500px; width:53px; height:53px; margin-right:10px" alt="...">
+                        </span>
+                     </div>
+                     <div class="w-100">
+                        <div>
+                           <a href="" class="text-uppercase strong">{{ reply.user.username }} {% if reply.user.is_Vrified %}<i class='bx bxs-check-circle'></i>{% endif %}</a>                
+                           <small><span class="text-off">{{reply.created_at}}</span></small>
+                        </div>
+   
+                        <p>{{ reply.reply }}</p>
+                        <div class="comment-image-box clearfix">
+                        </div>
+                     </div>
+                  </div>
+                  </div>
+               {% endfor %}
+            </div>
+            {% if ticket.status == "open" or ticket.status == "in_progress" %}
+               <div id="comment-form-container mt-2">
+                  <form id="reply-form" class="general-form" role="form" method="post" action='{% url "TicketReply" ticket.id %}' accept-charset="utf-8">
+                      {% csrf_token %}   
+                      <div class="p15 d-flex">
+                          <div class="flex-shrink-0 hidden-xs">
+                              <div class="avatar avatar-md pr15">
+                                  <img src="{{request.user.userprofile.getUserImage}}" style="border-radius:500px; width:40px; height:40px;" alt="...">
+                              </div>
+                          </div>
+                          <div class="w-100">
+                              <div id="ticket-comment-dropzone" class="post-dropzone form-group">
+                                  <input type="hidden" name="ticket_id" value="1">
+                                  <input type="hidden" id="is-note" name="is_note" value="0">
+                                  {{ replyform.reply }}
+                                  <div class="post-file-dropzone-scrollbar hide">
+                                      <div class="post-file-previews clearfix b-t" id="gfuzmxoepwklewi"> 
+                                      </div>
+                                  </div>
+                                  <footer class="card-footer b-a clearfix ticket-view-footer-button">
+                                      <div class="float-end">
+                                          <button id="save-ticket-comment-button" class="btn btn-primary ml5" type="submit">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send icon-16">
+                                                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                                                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                              </svg>
+                                              &nbsp;Send Reply
+                                          </button>
+                                      </div>
+                                  </footer>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+              {% else %}
+              <div>
+                <p class="text-muted"><b>Can't reply ticket is resolved or closed. Create new ticket if any query.</b></p>
+              </div>
+              {% endif %}
+            </div>
+         </div>
+        </div>
+        <div class="col-md-6 col-lg-3 col-sm-12 mt-2">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Ticket Info</h4>
+                    <div id="ticket-title-section">
+                        <div class="p15 pt0 b-b">
+                           <span class="mr15"> </span>
+                           <span class="text-off">Status: </span> <span class="badge bg-{{ticket.statusBadge}}">{{ticket.get_status_display}}</span> <br><br>  
+                           <span class="text-off ml15">Priority: </span></span> <span class="badge bg-{{ticket.priorityBadge}}">{{ticket.priority}}</span> <br><br>          
+                           <span class="text-off ml15">Client: </span> <span class="text-uppercase">{{ticket.client.username}}</span> <br><br> 
+                           <span class="text-off ml15">Project: </span> <span class="">{{ticket.project}}</span> <br><br>        
+                           <span class="text-off ml15">Created: </span> {{ticket.created_at}}<br><br>  
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <!-- / Content -->
+
+
+    </div>
+    <!-- Content wrapper -->
+{% endblock content %}

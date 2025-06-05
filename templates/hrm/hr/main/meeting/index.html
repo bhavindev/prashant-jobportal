@@ -1,0 +1,337 @@
+{% extends 'hrm/hr/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+.dt-buttons.btn-group.flex-wrap {
+    margin-top: -32px;
+}
+.selectize-input.items.required.invalid.not-full.has-options {
+  background: transparent;
+  border: none !important;
+  margin-bottom: 8px;
+  padding: 10px 0px 0px 12px;
+}
+.selectize-input {
+  margin-bottom: 8px !important;
+  padding: 10px 0px 0px 12px !important;
+}
+
+.option.active{
+  background-color:#696cff !important;
+  color: white !important;
+}
+.selectize-control.form-control.single {
+  padding: 0px !important;
+  height: 38px !important;
+}
+.selectize-input.full {
+  background-color: transparent !important;
+}
+.dark-style #yourSelectInput-selectized {
+  color: #cdcdcd;
+}
+.dark-style #yourSelectInput1-selectized {
+  color: #cdcdcd;
+}
+.dark-style #yourSelectInput2-selectized {
+  color: #cdcdcd;
+}
+.dark-style #yourSelectInput3-selectized {
+  color: #cdcdcd;
+}
+.dark-style .selectize-dropdown.single.form-control {
+  background: #31324b;
+  color: #cdcdcd !important;
+  border: none !important;
+  border-radius: 0px 0px 5px 5px;
+  padding: 0px 0px 10px 0px!important;
+  margin-top:10px !important;
+}
+.selectize-dropdown.single.form-control {
+  border: none !important;
+  border-radius: 0px 0px 5px 5px;
+  padding: 0px 0px 10px 0px!important;
+  margin-top:10px !important;
+}
+
+.selectize-input {
+  border: none !important;
+}
+
+.selectize-control.single .selectize-input:before{
+  border:none !important;
+  background: transparent !important;
+
+}
+
+.selectize-control.single .selectize-input:after {
+  margin-top: 3px !important;
+}
+.selectize-control.single .selectize-input.input-active, .selectize-input {
+  background: none !important;
+}
+.dark-style .item {
+  color: #cdcdcd !important;
+}
+</style>
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">HRM /</span> Meeting
+              </h4>
+              {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            <!--Table Card-->
+            <div class="card">
+                <div class="card-datatable table-responsive">
+                  <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="card-header flex-column flex-md-row">
+                      <div class="head-label">
+                        <h5 class="card-title mb-0">All Meetings</h5>
+                      </div>
+                    </div>
+                    <!-- Your button -->
+                    <div class="container mb-4">
+                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr>
+                            <th style="width: 0px;" >#</th>
+                            <th style="width: 130px;">Title</th>
+                            <th style="width: 130px;">Branch</th>
+                            <th style="width: 150px;">Date</th>
+                            <th style="width: 130px;">Time</th>
+                            <th style="width: 130px;">Type</th>                      
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for meeting in meetings %}
+                            <tr class="odd">
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="#" data-slug="{{ meeting.id }}" data-bs-toggle="modal" data-bs-target="#detailMeetingModal{{ meeting.id }}">{{ meeting.title|truncatewords:3 }}</a></td>
+                                    <!-- Department Details Modal -->
+                                    <div class="modal fade" id="detailMeetingModal{{ meeting.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary">
+                                                    <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{meeting.title|truncatewords:3}}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <ul class="list-group">
+                                                      <li class="list-group-item">
+                                                          <strong>Title:</strong> {{ meeting.title }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Branch:</strong> {{ meeting.branch }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Department:</strong> {% if meeting.department %}{{ meeting.department }}{% else %}All{% endif %}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Description:</strong> {{ meeting.description }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Date:</strong> {{ meeting.meeting_date }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Time:</strong> {{ meeting.meeting_time }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Meeting Type:</strong> {{ meeting.meeting_type }}
+                                                      </li>
+                                                      {% if meeting.meeting_type == 'Online' %}
+                                                        <li class="list-group-item">
+                                                            <strong>Meeting Link:</strong> <a href="{{ meeting.meeting_link }}">{{ meeting.meeting_link }}</a>
+                                                        </li>
+                                                      {% endif %}
+                                                      <li class="list-group-item">
+                                                        <strong>Created By:</strong> {{ meeting.created_by.userprofile.name }} ( {{ meeting.created_by.username }} )
+                                                      </li>
+                                                  </ul>
+                                              </div>                                              
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- / Modal -->
+                                <td>{{ meeting.branch }}</td>
+                                <td>{{ meeting.meeting_date }}</td>
+                                <td>{{ meeting.meeting_time }}</td>
+                                <td>{{ meeting.meeting_type }}</td>
+                            </tr>
+                        {% endfor %}
+                        <!-- ... more table rows ... -->
+                      </tbody>
+                    </table>
+                </div>
+              </div> <!--Table Card-->         
+
+          </div>
+        <!-- / Content -->
+
+      </div>
+    </div>
+    <!-- Content wrapper -->
+
+    <!-- Department Add Bootstrap Modal -->
+    <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-primary">
+            <h5 class="modal-title text-white mb-3" id="exampleModalLabel">Add New Meeting</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+          </div>
+          <div class="modal-body">
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="create_meeting">
+              <div class="row mt-2">
+                <div class="col-md-12 mt-1">
+                    <label for="" class="form-label">TItle</label>
+                    {{form.title}}
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-6 mt-1">
+                    <label for="" class="form-label">Branch</label>
+                    <select name="branch" class="form-control selectized" id="branchadd" tabindex="-1" style="display: none;">
+                      {% for branch in branches %}
+                        <option value="{{branch.id}}">{{branch.name}}</option>
+                      {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mt-1">
+                    <label for="" class="form-label">Department</label>
+                    {{form.department}}
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-6 mt-1">
+                    <label for="" class="form-label">Date</label>
+                    {{form.meeting_date}}
+                </div>
+                <div class="col-md-6 mt-1">
+                  <label for="" class="form-label">Time</label>
+                  {{form.meeting_time}}
+              </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12 mt-1">
+                    <label for="" class="form-label">Description</label>
+                    {{form.description}}
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12 mt-1">
+                    <label for="" class="form-label">Meeting Type</label>
+                    {{ form.meeting_type }}
+                </div>
+            </div>
+            
+            <div class="row mt-2" id="meetingLinkField">
+                <div class="col-md-12 mt-1">
+                    <label for="" class="form-label">Meeting Link</label>
+                    {{ form.meeting_link }}
+                </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-12 mt-1">
+                  <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="add-to-calendar" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">
+                          Add to Event Calendar
+                          <span class="info-icon" data-toggle="tooltip" data-placement="top" title="After checking this, the meeting will be added to the event calendar.">
+                              <i class="fa fa-info-circle ml-1" aria-hidden="true"></i>
+                          </span>
+                      </label>
+                  </div>
+              </div>
+          </div>
+          
+            
+              <!-- Your form fields go here -->
+              <button type="submit" class="btn btn-primary mt-4">Add Meeting</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- /Bootstrap Modal -->
+
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                info: true, 
+                search: true 
+            });
+            $('#branchadd').selectize();
+            $('#departmentadd').selectize();
+            {% for meeting in meetings %}
+            $('#brancheditlist{{meeting.id}}').selectize();
+            $('#departmenteditlist{{meeting.id}}').selectize();
+            {% endfor %} 
+
+        });
+    </script>
+    <script>
+        var meetingTypeSelect = document.getElementById("mtadd");
+        var meetingLinkField = document.getElementById("meetingLinkField");
+    
+        function toggleMeetingLinkField() {
+            if (meetingTypeSelect.value === "Offline") {
+                meetingLinkField.style.display = "none";
+            } else {
+                meetingLinkField.style.display = "block";
+            }
+        }
+    
+        toggleMeetingLinkField();
+    
+        meetingTypeSelect.addEventListener("change", function() {
+            toggleMeetingLinkField();
+        });
+    </script>
+    <script>
+        {% for meeting in meetings %}
+        var meetingTypeSelectedit{{ meeting.id }} = document.getElementById("mtedit{{ meeting.id }}");
+        var meetingLinkFieldedit{{ meeting.id }} = document.getElementById("meetingLinkField{{ meeting.id }}");
+    
+        function toggleMeetingLinkField{{ meeting.id }}() {
+            if (meetingTypeSelectedit{{ meeting.id }}.value === "Offline") {
+                meetingLinkFieldedit{{ meeting.id }}.style.display = "none";
+            } else {
+                meetingLinkFieldedit{{ meeting.id }}.style.display = "block";
+            }
+        }
+    
+        toggleMeetingLinkField{{ meeting.id }}();
+    
+        meetingTypeSelectedit{{ meeting.id }}.addEventListener("change", function() {
+            toggleMeetingLinkField{{ meeting.id }}();
+        });
+        {% endfor %}
+    </script>
+{% endblock content %}

@@ -1,0 +1,90 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}SMS Marketing - {{settings.name}}{% endblock title %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<div class="page-body  dark-only">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-sm-6">
+               <h3> Bulk SMS Send</h3>
+            </div>
+            <div class="col-sm-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                  <li class="breadcrumb-item"> Marketing </li>
+                  <li class="breadcrumb-item active">SMS Marketing</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   
+
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+    <div class="row project-cards">
+       <div class="col-md-12 project-list">
+       </div>
+       <div class="container">
+          <div class="alert alert-primary fade show" role="alert" id="emailAlert">
+              <b>Note:</b> Before sending sms, configure twillio from <b><a href="{% url "websiteSettingsadm" %}" class="text-light">settings</a></b> to avoid errors.
+          </div>
+          <form method="POST" enctype="multipart/form-data">
+             {% csrf_token %}
+             {{form.media}}   
+              {% if messages %}
+                  {% for message in messages %}
+                      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                          {{ message }}
+                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                  {% endfor %}
+              {% endif %} 
+             {% if form.errors %}
+             <div class="alert alert-danger">
+                <strong>Error:</strong>
+                <ul>
+                   {% for field, errors in form.errors.items %}
+                   {% for error in errors %}
+                   <li>{{ field }}: {{ error }}</li>
+                   {% endfor %}
+                   {% endfor %}
+                </ul>
+             </div>
+             {% endif %}                   
+
+              <div class="row mb-1">
+                  <div class="col-md-12">
+                      <div class="card">
+                          <div class="card-body">
+                              <label for="{{ form.subject.id_for_label }}" class="form-label">Add Numbers With Country Code <span class="text-danger"> ( Must be COMMA separated )</span> <span class="text-danger">*</span> </label>
+                              <br>
+                              <textarea rows="6" name="numbers" placeholder="eg. +88012345678,+15458454112,+8452154874" class="form-control"></textarea>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row mb-1">
+                  <div class="col-md-12">
+                      <div class="card">
+                          <div class="card-body">
+                              <label for="{{ form.subject.id_for_label }}" class="form-label">Message<span class="text-danger">*</span> </label>
+                              <br>
+                              <textarea rows="3" name="message" class="form-control"></textarea>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+             <button class="btn btn-primary mb-3" type="submit">Send</button>
+          </form>
+       </div>
+    </div>
+ </div>
+   <!-- Container-fluid Ends-->
+</div>
+{% endblock content %}

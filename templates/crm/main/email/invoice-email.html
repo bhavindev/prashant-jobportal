@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+{% load bootstrap_tags %}
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+            color: #333;
+        }
+
+        .invoice-container {
+            max-width: 100%;
+            margin: 2em auto;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice-header {
+            background-color: #007bff;
+            background-image: linear-gradient(135deg, #007bff, #00a8ff);
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 6px 6px 0 0;
+            text-align: center;
+        }
+
+        .invoice-body {
+            padding: 15px;
+            border-right: 1px solid #dbdbdb;
+            border-left: 1px solid #dbdbdb;
+        }
+
+        .invoice-table {
+            width: 100%;
+        }
+
+        .invoice-table th, .invoice-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        .invoice-table th {
+            background-color: #f7f7f7;
+            font-weight: 600;
+        }
+
+        .invoice-total {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .invoice-footer {
+            text-align: center;
+            background-color: #efefef;
+            padding: 15px;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .footer-name {
+            font-size: 13px;
+            color: #777373;
+        }
+
+        .footer-email {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .data {
+            text-align: center;
+        }
+
+        .dates {
+            margin-top: 20px;
+            font-size: 15px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.35em 0.75em;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .success {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        .warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .danger {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        .info {
+            background-color: #057f7f;
+            color: #ffffff;
+        }
+
+        h2, p {
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .invoice-container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .invoice-header {
+                border-radius: 0;
+            }
+            .invoice-table th, .invoice-table td {
+                padding: 8px;
+                font-size: 14px;
+            }
+            .invoice-total {
+                font-size: 16px;
+            }
+            .dates {
+                font-size: 13px;
+            }
+            .status-badge {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <h2>Invoice #{{invoice_number}}</h2>
+        </div>
+        <div class="invoice-body">
+            <p><span style="font-size: 16px;">Hello, <b>{{ client_name }}</b></span></p>
+            <p style="margin-top: 15px;">Below is the summary of your invoice:</p>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Unit</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in invoice.products.all %}
+                    <tr>
+                        <td class="data">{{ product.name }}</td>
+                        {% for invoice_item in product.invoiceitem_set.all %}
+                            {% if invoice_item.invoice == invoice %}
+                            <td class="data">{{ invoice_item.unit_type }}</td>
+                            <td class="data">{{ invoice_item.quantity }}</td>
+                            <td class="data">{{ settings.currency_symbol }}{{ invoice_item.unit_price }}</td>
+                            <td class="data">{{ settings.currency_symbol }}{{ invoice_item.sub_total }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="data"><b>Sub Total</b></td>
+                        <td class="data"><b>{{ settings.currency_symbol }}{{ invoice.sub_total }}</b></td>
+                    </tr>
+                    {% if discount > 0 %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="data"><b>Discount</b></td>
+                            <td class="data"><b>-{{ settings.currency_symbol }}{{ discount }}</b></td>
+                        </tr>
+                    {% endif %}
+                    {% if tax > 0 %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="data"><b>Tax</b></td>
+                            <td class="data"><b>+{{ settings.currency_symbol }}{{ tax }}</b></td>
+                        </tr>
+                    {% endif %}
+                    {% if other_fee_amount > 0 %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="data"><b>{{other_fee_name}}</b></td>
+                            <td class="data"><b>+{{ settings.currency_symbol }}{{ other_fee_amount }}</b></td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="data"><b>Total</b></td>
+                        <td class="data"><b>{{ settings.currency_symbol }}{{ total }}</b></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="data"><b>Paid</b></td>
+                        <td class="data"><b>{{ settings.currency_symbol }}{{ payment_amount }}</b></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="dates">
+                <p><b>Billing Date:</b> {{ invoice.billDate }}</p>
+                <p><b>Due Date:</b> {{ invoice.dueDate }}</p>
+                {% with invoice_status=invoice.get_status %}
+                    {% if invoice_status.status == "PAID" %}
+                        <span class="status-badge success">{{ invoice_status.status_display }}</span>
+                        {% if invoice_status.balance < 0 %}
+                            <span class="status-badge warning">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                        {% endif %}
+                    {% elif invoice_status.status == "OVERDUE" %}
+                        <span class="status-badge danger">{{ invoice_status.status_display }}</span>
+                        {% if invoice_status.balance < 0 %}
+                            <span class="status-badge warning">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                        {% endif %}
+                    {% elif invoice_status.status == "PARTIALLY_PAID" %}
+                        <span class="status-badge info">{{ invoice_status.status_display }}</span>
+                        {% if invoice_status.balance < 0 %}
+                            <span class="status-badge warning">Overpayment: {{ invoice_status.balance }}{{settings.currency_symbol}}</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="status-badge warning">{{ invoice_status.status_display }}</span>
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <p style="margin-top: 20px;">We value your business. Thank you for choosing us.</p>
+        </div>
+        <div class="invoice-footer">
+            <div class="footer-name">
+                <p><b>{{footer.footer_copyright|safe}}</b></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

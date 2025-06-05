@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        /* Enhanced CSS styles */
+        body {
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #555;
+        }
+
+        .email-container {
+            max-width: 650px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .email-header {
+            background-color: #2c3e50;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .email-header h2 {
+            margin: 0;
+            color: white;
+            font-weight: bold;
+        }
+
+        .email-body {
+            padding: 30px;
+            border-right: 1px solid #dbdbdb;
+            border-left: 1px solid #dbdbdb;
+        }
+
+        .email-footer {
+            padding: 20px;
+            background-color: #ecf0f1;
+            text-align: center;
+        }
+
+        .footer {
+            color: #7f8c8d;
+            font-size: 13px;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        b {
+            color: #333;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h2>Agreement Signed Successfully</h2>
+        </div>
+        <div class="email-body">
+            <p><b>Service:</b> {{ agreement.service.title }} - {{ agreement.service.price }} {{settings.currency_name}}</p>
+            <p><b>Name:</b> {{ agreement.name }}</p>
+            <p><b>Email:</b> {{ agreement.email }}</p>
+            <p><b>Phone:</b> {{ agreement.phone }}</p>
+            <p><b>Address:</b> {{ agreement.address }}</p>
+            <p><b>City:</b> {{ agreement.city }}, <b>State:</b> {{ agreement.state }}, <b>Postal Code:</b> {{ agreement.postal }}</p>
+            <p><b>Signature:</b> You signed this agreement as <b>"{{ agreement.client.username }}"</b> and agreed with the <a href="{{ terms_page_url }}">Terms & Conditions</a>.</p>
+            <p><b>Status:</b> Your agreement is under review. We will get back to you soon. Thanks for your patience.</p>
+        </div>
+        <div class="email-footer">
+            <p class="footer">{{ footer.footer_copyright }}</p>
+        </div>
+    </div>
+</body>
+
+</html>

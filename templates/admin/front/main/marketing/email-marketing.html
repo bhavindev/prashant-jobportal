@@ -1,0 +1,198 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+   .xtox {
+   margin-right: 10px;
+   }
+   ul.pagination {
+   margin-right: 5px;
+   }
+   body.dark-only  .choices__input {
+   background-color: #10101c !important;
+   color: white !important;
+   }
+   .choices__input {
+   background-color: #ffffff !important;
+   color: #10101c !important;
+   }
+   body.dark-only .choices__inner {
+   background-color: #10101c !important;
+   border: 1px solid #323347 !important;
+   }
+   body.dark-only .is-open .choices__list--dropdown, .is-open .choices__list[aria-expanded] {
+   border-color: #2a2a2a !important;
+   }
+   .is-open .choices__list--dropdown, .is-open .choices__list[aria-expanded] {
+   border-color: #dbdbdb !important;
+   }
+   body.dark-only .choices__list {
+   background: none;
+   }
+   .choices__list {
+   background: white;
+   }
+   body.dark-only .choices__list--dropdown, .choices__list[aria-expanded] {
+   background-color: #161616 !important;
+   }
+   body.dark-only .choices__list--dropdown .choices__item--selectable.is-highlighted, .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+   background-color: #3e3e3e !important;
+   }
+   .choices__list--dropdown .choices__item--selectable.is-highlighted, .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+   background-color: #e3e3e3 !important;
+   }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<div class="page-body  dark-only">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-sm-6">
+               <h3> Bulk Email Send</h3>
+            </div>
+            <div class="col-sm-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                  <li class="breadcrumb-item"> Marketing </li>
+                  <li class="breadcrumb-item active">Email Marketing</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   
+
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+    {% if form.errors %}
+    <div class="alert alert-danger">
+       <strong>Error:</strong>
+       <ul>
+          {% for field, errors in form.errors.items %}
+          {% for error in errors %}
+          <li>{{ field }}: {{ error }}</li>
+          {% endfor %}
+          {% endfor %}
+       </ul>
+    </div>
+    {% endif %}   
+
+    {% if messages %}
+        {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+        {% endfor %}
+    {% endif %}
+
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+            <div class="alert alert-primary fade show" role="alert" id="emailAlert">
+                <b>Note:</b> Before sending emails, configure gmail credentials from <b>.env</b> file to avoid errors.
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form.media}}                   
+                 <div class="text-center mb-3 d-none d-sm-block"><h5>─── Or ───</h5></div>
+ 
+                 <div class="row mb-1">
+                     <div class="col-md-6">
+                         <div class="card">
+                             <div class="card-body">
+                                 <label for="{{ form.subscribers.id_for_label }}" class="form-label">Select Subscribers </label>
+                                 {{ form.subscribers }}
+                             </div>
+                         </div>
+                         <div class="text-center mb-3 d-sm-none d-block"><h5>─── Or ───</h5></div>
+                     </div>
+                 
+                     <div class="col-md-6">
+                         <div class="card">
+                             <div class="card-body">
+                                 <div class="d-flex mt-3 mb-3">
+                                     <label class="col-form-label m-r-10">
+                                         <h5 class="stall">Send to all subscribers</h5>
+                                     </label>
+                                     <div class="flex-grow-1 text-end icon-state">
+                                         <label class="switch detail-text" for="{{ form.select_all.id_for_label }}">
+                                             {{ form.select_all }}<span class="switch-state"></span>
+                                         </label>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+ 
+                 <div class="text-center mb-3"><h5>─── Or ───</h5></div>
+                 <div class="row mb-1">
+                     <div class="col-md-12">
+                         <div class="card">
+                             <div class="card-body">
+                                 <div class="form-group">
+                                     <label for="{{ form.manually_added_emails.id_for_label }}" class="form-label mb-2">Manually Add Emails <span class="text-danger">( Must be COMMA separated )</span> 
+ 
+                                     <a href="{% url "emailFormator" %}">You Can Use Email Formator</a> </label>
+                                     {{ form.manually_added_emails }}
+                                 </div>
+                                 
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+ 
+                 <div class="row mb-1">
+                     <div class="col-md-12">
+                         <div class="card">
+                             <div class="card-body">
+                                 <label for="{{ form.subject.id_for_label }}" class="form-label">Subject <span class="text-danger">*</span> </label>
+                                 {{ form.subject }}
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+ 
+                 <div class="row mb-1">
+                     <div class="col-md-12">
+                         <div class="card">
+                             <div class="card-body">
+                                 <label for="{{ form.subject.id_for_label }}" class="form-label">Message ( You can use HTML template with inline CSS) <span class="text-danger">*</span> </label>
+                                 <br>
+                                 <div class="form-control ckf">{{ form.message }}</div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                <button class="btn btn-primary mb-3" type="submit">Send</button>
+             </form>
+
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid Ends-->
+</div>
+<script>
+   $(document).ready(function() {
+       $('.table').DataTable({
+           pageLength: 10, // Set the initial page length to 10
+           lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Allow changing page length
+           info: true, // Show the item count
+           search: true // Enable search
+       });
+   });
+</script>
+<script>
+   const element = document.querySelector('select[name="subscribers"]');
+   const choices = new Choices(element, {
+       searchEnabled: true,
+       removeItemButton: true,
+       placeholderValue: 'Select Subscribers...',
+   });
+</script>
+{% endblock content %}

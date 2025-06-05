@@ -1,0 +1,353 @@
+{% extends 'hrm/hr/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn, .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+@media (min-width: 992px) {
+  .card-datatable.table-responsive {
+    overflow-x: hidden;
+  }
+}
+.dt-buttons.btn-group.flex-wrap {
+    margin-top: -32px;
+}
+
+</style>
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">HRM /</span> Leaves
+              </h4>
+              {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+          <!-- Card Border Shadow -->
+          <div class="row">
+            <div class="col-sm-6 col-lg-4 mb-4">
+              <div class="card card-border-shadow-warning h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2 pb-1">
+                    <div class="avatar me-2">
+                      <span class="avatar-initial rounded bg-label-warning"><i class='bx bx-loader'></i></span>
+                    </div>
+                    <h4 class="ms-1 mb-0">{{pending_requests}}</h4>
+                  </div>
+                  <p class="mb-1">Pending</p>
+                  <p class="mb-0">
+                    <small class="text-muted">Total pending leave requests</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 mb-4">
+              <div class="card card-border-shadow-success h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2 pb-1">
+                    <div class="avatar me-2">
+                      <span class="avatar-initial rounded bg-label-success"><i class='bx bxs-check-circle'></i></span>
+                    </div>
+                    <h4 class="ms-1 mb-0">{{approved_requests}}</h4>
+                  </div>
+                  <p class="mb-1">Approved</p>
+                  <p class="mb-0">
+                    <small class="text-muted">Total approved leave requests</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 mb-4">
+              <div class="card card-border-shadow-info h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2 pb-1">
+                    <div class="avatar me-2">
+                      <span class="avatar-initial rounded bg-label-danger"><i class='bx bxs-x-circle'></i></span>
+                    </div>
+                    <h4 class="ms-1 mb-0">{{rejected_requests}}</h4>
+                  </div>
+                  <p class="mb-1">Rejected</p>
+                  <p class="mb-0">
+                    <small class="text-muted">Total rejected leave requests</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--/ Card Border Shadow -->
+            <!--Table Card-->
+            <div class="card">
+                <div class="card-datatable table-responsive">
+                  <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="card-header flex-column flex-md-row">
+                      <div class="head-label">
+                        <h5 class="card-title mb-0">All Leaves</h5>
+                      </div>
+                      <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                        <div class="dt-buttons btn-group flex-wrap">
+                          <a class="btn btn-secondary create-new btn-primary" href="#" tabindex="0" aria-controls="DataTables_Table_0" type="button" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+                            <span><i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Leave</span></span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Your button -->
+                    <div class="container mb-4">
+                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr>
+                            <th style="width: 0px;" >#</th>
+                            <th style="width: 100px;">Employee</th>
+                            <th style="width: 100px;">Leave Type</th>
+                            <th style="width: 140px;">Start Date</th>
+                            <th style="width: 140px;">End Date</th>
+                            <th style="width: 100px;">Status</th>
+                            <th style="width: 100px;" class="sorting_disabled dtr-hidden">Actions</th>                           
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for leave in leaves %}
+                            <tr class="odd">
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="#" data-slug="{{ leave.id }}" data-bs-toggle="modal" data-bs-target="#detailLeaveModal{{ leave.id }}">{{ leave.employee.userprofile.name|truncatewords:3 }}</a></td>
+                                    <!-- Department Details Modal -->
+                                    <div class="modal fade" id="detailLeaveModal{{ leave.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary">
+                                                    <h5 class="modal-title text-white mb-3" id="exampleModalLabel">{{leave.employee.userprofile.name|truncatewords:3}}'s Leave Request</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <ul class="list-group">
+                                                      <li class="list-group-item">
+                                                          <strong>Employee:</strong> {{ leave.employee.userprofile.name }} ( {{leave.employee.username}} )
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Leave Type:</strong> {{ leave.leave_type }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Reason:</strong> {{ leave.reason }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Start Date:</strong> {{ leave.start_date }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>End Date:</strong> {{ leave.end_date }}
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Status:</strong> <span class="badge bg-{{leave.get_status}}">{{ leave.status }}</span>
+                                                      </li>
+                                                      <li class="list-group-item">
+                                                        <strong>Created By:</strong> {{ leave.created_by.userprofile.name }} ( {{ leave.created_by.username }} )
+                                                      </li>
+                                                  </ul>
+                                              </div>                                              
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- / Modal -->
+                                <td>{{ leave.leave_type|truncatewords:3 }}</td>
+                                <td>{{ leave.start_date }}</td>
+                                <td>{{ leave.end_date }}</td>
+                                <td><span class="badge bg-{{leave.get_status}}">{{ leave.status }}</span></td>
+                                <td class="dtr-hidden" style="">
+                                    <a class="btn btn-sm btn-icon" href="{% url "hrmLeaveMarkApproved" leave.id %}">
+                                      <i class='bx bx-check-circle'></i>
+                                    </a>  
+                                    <button class="btn btn-sm btn-icon item-edit" data-slug="{{ leave.id }}" data-bs-toggle="modal" data-bs-target="#updateLeaveModal{{ leave.id }}">
+                                        <i class="bx bxs-edit"></i> 
+                                    </button>
+                                    <!-- Update Bootstrap Modal -->
+                                    <div class="modal fade" id="updateLeaveModal{{ leave.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary">
+                                                    <h5 class="modal-title text-white mb-3" id="exampleModalLabel">Edit {{ leave.employee.userprofile.name|truncatewords:3 }}'s Leave Request</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="post" action="{% url "hrmLeaveEdit" leave.id %}">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="update_leave">
+                                                        <div class="row mt-2">
+                                                            <div class="col-md-6 mt-1">
+                                                                <label for="" class="form-label">Employee</label>
+                                                                <select name="employee" class="form-control selectized" id="employeeeditlist{{leave.id}}" tabindex="-1" style="display: none;">
+                                                                  <option value="{{leave.employee.id}}" selected="selected">{{leave.employee.username}}</option>
+                                                                  {% for employee in employees %}
+                                                                    <option value="{{employee.id}}">{{employee.username}}</option>
+                                                                  {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mt-1">
+                                                              <label for="" class="form-label">Leave Type</label>
+                                                              <select name="leave_type" class="form-control selectized" id="lteditlist{{leave.id}}" tabindex="-1" style="display: none;">
+                                                                <option value="{{leave.leave_type.id}}" selected="selected">{{leave.leave_type}}</option>
+                                                                {% for type in types %}
+                                                                  <option value="{{type.id}}">{{type.name}}</option>
+                                                                {% endfor %}
+                                                              </select>
+                                                            </div>
+                                                          </div>
+                                                          <div class="row mt-2">
+                                                            <div class="col-md-12 mt-1">
+                                                                <label for="" class="form-label">Reason</label>
+                                                                <textarea name="reason" class="form-control"  rows="4">{{ leave.reason }}</textarea>
+                                                            </div>
+                                                          </div>
+                                                          <div class="row mt-2">
+                                                            <div class="col-md-12 mt-1">
+                                                                <label for="" class="form-label">Status</label>
+                                                                <select name="status" class="form-control selectized" id="statuseditlist{{leave.id}}" tabindex="-1" style="display: none;">
+                                                                  <option value="Pending" {% if leave.status == 'Pending' %}selected="selected"{% endif %}>Pending</option>
+                                                                  <option value="Approved" {% if leave.status == 'Approved' %}selected="selected"{% endif %}>Approved</option>
+                                                                  <option value="Rejected" {% if leave.status == 'Rejected' %}selected="selected"{% endif %}>Rejected</option>
+                                                                </select>
+                                                            </div>
+                                                          </div>
+                                                          <div class="row mt-2">
+                                                            <div class="col-md-6 mt-1">
+                                                                <label for="" class="form-label">Start</label>
+                                                                <input type="date" class="form-control"  name="start_date" value="{{ leave.start_date|date:"Y-m-d" }}">
+                                                            </div>
+                                                            <div class="col-md-6 mt-1">
+                                                              <label for="" class="form-label">End</label>
+                                                              <input type="date" class="form-control"  name="end_date" value="{{ leave.end_date|date:"Y-m-d" }}">
+                                                          </div>
+                                                        </div>
+                                                  
+                                                        <button type="submit" class="btn btn-primary mt-4">Save Leave</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /Bootstrap Modal -->
+                                    <button class="btn btn-sm btn-icon invoice-delete" data-slug="{{ leave.id }}" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal{{ leave.id }}">
+                                      <i class='bx bxs-x-circle'></i>
+                                    </button>                                   
+                                    <div class="modal fade" id="deleteConfirmationModal{{ leave.id }}" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteConfirmationModalLabel{{ leave.id }}">Confirm Deletion</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <a type="button" href="{% url "hrmLeaveDelete" leave.id %}" class="btn btn-danger" id="confirmDelete">Delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <!-- ... more table rows ... -->
+                      </tbody>
+                    </table>
+                </div>
+              </div> <!--Table Card-->         
+
+          </div>
+        <!-- / Content -->
+
+      </div>
+    </div>
+    <!-- Content wrapper -->
+
+    <!-- Department Add Bootstrap Modal -->
+    <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-primary">
+            <h5 class="modal-title text-white mb-3" id="exampleModalLabel">Add New Leave</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff !important;"></button>
+          </div>
+          <div class="modal-body">
+            <form method="post" action='{% url "hrmLeaves" %}'>
+              {% csrf_token %}
+              <input type="hidden" name="create_leave">
+              <div class="row mt-2">
+                <div class="col-md-6 mt-1">
+                    <label for="" class="form-label">Employee</label>
+                    <select name="employee" class="form-control selectized" id="employeeadd" tabindex="-1" style="display: none;">
+                      {% for employee in employees %}
+                        <option value="{{employee.id}}">{{employee.username}}</option>
+                      {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mt-1">
+                  <label for="" class="form-label">Leave Type</label>
+                  {{form.leave_type}}
+              </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-12 mt-1">
+                    <label for="" class="form-label">Reason</label>
+                    {{form.reason}}
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-12 mt-1">
+                    <label for="" class="form-label">Status</label>
+                    {{form.status}}
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-6 mt-1">
+                    <label for="" class="form-label">Start</label>
+                    {{form.start_date}}
+                </div>
+                <div class="col-md-6 mt-1">
+                  <label for="" class="form-label">End</label>
+                  {{form.end_date}}
+              </div>
+            </div>
+          
+              <button type="submit" class="btn btn-primary mt-4">Add Leave</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- /Bootstrap Modal -->
+
+    <script>
+      $(document).ready(function() {
+          $('.table').DataTable({
+              pageLength: 10,
+              lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+              info: true, 
+              search: true 
+          });
+          $('#employeeadd').selectize();
+          $('#statusadd').selectize();
+          $('#ltadd').selectize();
+          {% for leave in leaves %}
+          $('#employeeeditlist{{leave.id}}').selectize();
+          $('#lteditlist{{leave.id}}').selectize();
+          $('#statuseditlist{{leave.id}}').selectize();
+          {% endfor %} 
+      });
+  </script>
+{% endblock content %}

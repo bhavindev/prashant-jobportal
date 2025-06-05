@@ -1,0 +1,154 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+  .xtox {
+    margin-right: 10px;
+}
+ul.pagination {
+  margin-right: 5px;
+}
+</style>
+        <div class="page-body  dark-only">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3> Contact Submissions </h3>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Contact</li>
+                    <li class="breadcrumb-item active">Submissions</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %} 
+            <div class="row project-cards">
+              <div class="col-md-12 project-list">
+                <div class="card">
+                  <div class="row">
+                    <div class="col-md-6 p-0 d-flex">
+                      <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="top-home-tab" data-bs-toggle="tab" href="#top-home" role="tab" aria-controls="top-home" aria-selected="true"><i data-feather="target"></i>All Contact Submissions</a></li>
+                       </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="container">
+                <div class="col-sm-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4>Manage your all contact form submissions</h4>
+                    </div>
+                    <div class="table-responsive theme-scrollbar container mb-3">
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">View</th>
+                            <th scope="col">Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for data in page_obj %}
+                          <tr>
+                            <th scope="row">{{ data.id }}</th>
+                            <td>{{ data.name }}</td>
+                            <td>{{ data.email }}</td>
+                            <td>{{ data.phone }}</td>
+                            <td>{{ data.message|slice:":50" }}</td>
+                            <td>
+                              <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#viewModalCenter{{ data.id }}">View</button>
+                              <div class="modal fade" id="viewModalCenter{{ data.id }}" tabindex="-1" role="dialog" aria-labelledby="viewModalCenter{{ data.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">{{ data.name }}'s submission</h5>
+                                      <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <p class="mb-1"><b>Name:</b> {{ data.name }}</p>
+                                      <p class="mb-1"><b>Email:</b> {{ data.email }}</p>
+                                      <p class="mb-1"><b>Phone:</b> {{ data.phone }}</p>
+                                      <p class="mb-1"><b>Message:</b> {{ data.message }}</p>
+                                      {% if data.uploaded_file %}
+                                      <p class="mb-1"><b>Attachment:</b> <a href="{{ data.uploaded_file.url }}" target="_blank">view</a></p>
+                                      {% endif %}
+                                      <p class="mb-0"><b>Submitted at:</b> {{ data.created_at }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <button class="btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter{{ data.id }}">Delete</button>
+                              <div class="modal fade" id="exampleModalCenter{{ data.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter{{ data.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Warning</h5>
+                                      <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <p class="mb-0">Are you sure you want to delete {{ data.name }}'s submission?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                      <a href="{% url 'deleteSubmissionadm' id=data.id %}" class="btn btn-danger" type="button">Delete</a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                     
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              
+              
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+          
+        </div>
+        <script>
+          $(document).ready(function() {
+              $('.table').DataTable({
+                  pageLength: 10, // Set the initial page length to 10
+                  lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Allow changing page length
+                  info: true, // Show the item count
+                  search: true // Enable search
+              });
+          });
+      </script>
+
+{% endblock content %}

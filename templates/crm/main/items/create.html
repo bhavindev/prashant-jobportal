@@ -1,0 +1,75 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ settings.name }}{% endblock title %}
+{% block content %}
+<div class="container mb-5">
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.media}}
+        <!-- Add Product -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 mt-4">
+
+            <div class="d-flex flex-column justify-content-center">
+            <h4 class="mb-1 mt-3">Add a new Item/Product</h4>
+            <p class="text-muted">Clients can purchase this product</p>
+            </div>
+            <div class="d-flex align-content-center flex-wrap gap-3">
+            <button type="submit" class="btn btn-primary">Publish Now</button>
+            </div>
+
+        </div>
+        <div class="row mt-2 mb-5">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mt-1">
+                                <label for="" class="mb-1">Name<span class="text-danger">*</span></label>
+                                {{form.name}}
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <label for="" class="mb-1">Category (<a href="{% url "crmItemCategoryCreate" %}">Add New</a>)</label>
+                                {{form.category}}
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <label for="" class="mb-1">Description<span class="text-danger">*</span></label>
+                                <div class="form-control ckf">
+                                    {{form.description}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mt-1">
+                                <label for="" class="mb-1">Image</label>
+                                {{form.image}}
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <label for="" class="mb-1">Unit Type<span class="text-danger">*</span></label>
+                                {{form.unit_type}}
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <label for="" class="mb-1">Rate/Price<span class="text-danger">*</span></label>
+                                {{form.rate}}
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <label for="" class="mb-1">Fake Sales (Leave blank to not show)</label>
+                                {{form.fake_sales}}
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <label for="" class="mb-1">Fake Star Rating (Leave blank to not show)</label>
+                                {{form.fake_stars}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

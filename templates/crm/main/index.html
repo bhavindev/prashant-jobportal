@@ -1,0 +1,351 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+  body{
+    overflow-x:hidden;
+  }
+  div#revenueExpenseChart {
+    margin-bottom: 11px;
+}
+div#taskStatusChart {
+  margin-left: -50px;
+}
+.payment-icon , .expense-icon {
+  width: 35px;
+  height: 35px;
+  margin-top: 5px;
+}
+.ppm, .expm{
+  font-size:16px;
+}
+/* Media query for mobile devices */
+@media (max-width: 767px) {
+  div#taskStatusChart {
+    margin: auto;
+  }
+
+}
+</style>
+      <!-- Content wrapper -->
+      <div class="content-wrapper">
+
+        <!-- Content -->
+                  <div class="container-xxl flex-grow-1 container-p-y">
+            
+            <div class="row">
+  <div class="col-lg-8 mb-4 order-0">
+    <div class="card">
+      <div class="d-flex align-items-end row">
+        <div class="col-sm-7">
+          <div class="card-body">
+            <h5 class="card-title text-primary">Welcome {{user_profile.name}}! 🎉</h5>
+            {% if result == "Profitable" %}
+                <p class="mb-4">Congratulations! Your business is running on profit. Keep up the great work!.</p>
+            {% elif result == "Loss" %}
+                <p class="mb-4">Unfortunately, your business incurred in loss. Keep striving for better results.</p>
+            {% endif %}
+
+            <a href="{% url 'crmProjectCreate' %}" class="btn btn-sm btn-label-primary">Start Project</a>
+          </div>
+        </div>
+        <div class="col-sm-5 text-center text-sm-left">
+          <div class="card-body pb-0 px-0 px-md-4">
+            <img src="{% static 'crm/assets/img/man-with-laptop-dark.png' %}" height="140">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-4 order-1">
+    <div class="row">
+      <div class="col-lg-6 col-md-12 col-6 mb-4">
+        <div class="card d-flex align-items-center justify-content-center">
+          <div class="card-body pb-0" style="text-align: center;">
+              <div id="revenueExpenseChart" style="max-width: 100%;"></div>
+          </div>
+      </div>
+      
+      
+                 
+      </div>
+      <div class="col-lg-6 col-md-12 col-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <div class="avatar flex-shrink-0">
+                <img src="https://demos.themeselection.com/sneat-bootstrap-html-laravel-admin-template/demo/assets/img/icons/unicons/wallet-info.png" alt="Credit Card" class="rounded">
+              </div>
+            </div>
+            <span>Profit</span>
+            <h4 class="card-title text-nowrap mb-2 mt-2">{{settings.currency_symbol}} {{profit}}</h4>
+            <small class="fw-semibold">
+              {% if result == "Profitable" %}
+                  <span class="text-success"><i class="bx bx-up-arrow-alt"></i> Profitable</span> 
+              {% elif result == "Loss" %}
+                  <span class="text-danger"><i class="bx bx-down-arrow-alt"></i> Loss</span>
+              {% endif %}
+            </small>          
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Total Revenue -->
+  <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+    <div class="card">
+      <div class="row row-bordered g-0">
+        <div class="col-md-8">
+          <h5 class="card-header m-0 me-2 pb-3">Total Profit</h5>
+          <div id="profitStatusChart" class="px-2"></div>
+        </div>
+        <div class="col-md-4">
+          <div class="card-body">
+            <div class="text-center">
+            </div>
+          </div>
+          <div id="invoiceStatusChart"></div>
+          <div class="text-center fw-semibold pt-3 mb-2">Invoice Status</div>
+
+          <div class="d-flex px-xxl-4 px-lg-2 p-4 gap-xxl-3 gap-lg-1 gap-3 justify-content-between">
+            <div class="d-flex">
+              <div class="me-2">
+                <span class="badge bg-label-success p-2"><i class="bx bx-dollar text-success"></i></span>
+              </div>
+              <div class="d-flex flex-column">
+                <small>Paid</small>
+                <h6 class="mb-0">{{paid_invoice}}</h6>
+              </div>
+            </div>
+            <div class="d-flex">
+              <div class="me-2">
+                <span class="badge bg-label-warning p-2"><i class="bx bx-wallet text-warning"></i></span>
+              </div>
+              <div class="d-flex flex-column">
+                <small>Unpaid</small>
+                <h6 class="mb-0">{{unpaid_invoice}}</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/ Total Revenue -->
+  <div class="col-12 col-md-8 col-lg-4 order-3 order-md-2">
+    <div class="row">
+      <div class="col-6 mb-4">
+        <div class="card">
+          <div class="card-body align-items-center" style="height: 216px; padding: 35px 0px 0px 19px !important;">
+            <div class="card-title">
+                <div class="avatar">
+                    <img src="https://demos.themeselection.com/sneat-bootstrap-html-laravel-admin-template/demo/assets/img/icons/unicons/paypal.png" alt="Credit Card" class="rounded">
+                </div>
+            </div>
+            <div class=" ">
+                <span class="d-block mb-1">Payments</span>
+                <h3 class="card-title text-nowrap mb-2">{{settings.currency_symbol}} {{total_revenue}}</h3>
+                <small class="fw-semibold">
+                    {% if result == "Profitable" %}
+                        <span class="text-success"><i class="bx bx-up-arrow-alt"></i> Good Progress</span> 
+                    {% elif result == "Loss" %}
+                        <span class="text-danger"><i class="bx bx-down-arrow-alt"></i> Heavy Expense</span>
+                    {% endif %}
+                </small> 
+            </div>
+        </div>
+        
+      </div>
+      
+      </div>
+      <div class="col-6 mb-4">
+        <div class="card border-0 shadow-sm bg-transparent">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body pb-2 text-center">
+              <h5 class="text-muted">Revenue</h5>
+              <h5 class="font-weight-bold text-success">{{settings.currency_symbol}} {{total_revenue}}</h5>
+            </div>
+          </div>
+          <div class="card border-0 mt-2 shadow-sm">
+            <div class="card-body pb-2 text-center">
+              <h5 class="text-muted">Expense</h5>
+              <h5 class="font-weight-bold text-danger">{{settings.currency_symbol}} {{total_expense}}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+      
+      <!-- </div>
+    <div class="row"> -->
+      <div class="col-12 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
+              <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
+                <div class="card-title">
+                  <h5 class="text-nowrap mb-2">Task Report</h5>
+                  <span class="badge bg-label-warning rounded-pill">Status</span>
+                </div>
+                <div class="mt-sm-auto">
+                  <small class="mb-0 text-danger">{{to_do}} Task To Do</small> <br>
+                  <small class="mb-0 w-100 text-warning">{{in_progress}} In Progress</small> <br>
+                  <small class="mb-0 text-info">{{done}} Task Done</small>
+                </div>
+              </div>
+              <div id="taskStatusChart"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <!-- Order Statistics -->
+  <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between pb-0">
+        <div class="card-title mb-0">
+          <h5 class="m-0 me-2">Recent Invoices</h5>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="d-flex flex-column align-items-center gap-1">
+            <h2 class="mb-2">{{invoice.count}}</h2>
+            <span>Total Invoice</span>
+          </div>
+          <div id="invoiceWidgetChart"></div>
+        </div>
+        <ul class="p-0 m-0">
+          {% for inv in invoice|slice:":4" %}
+          <li class="d-flex mb-4 pb-1">
+            <div class="avatar flex-shrink-0 me-3">
+              <span class="avatar-initial rounded bg-label-primary"><i class='bx bx-food-menu'></i></span>
+            </div>
+            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+              <div class="me-2">
+                <h6 class="mb-0"><a href="{% url 'create-build-invoice' inv.slug %}">#{{inv.number}}</a></h6>
+                <small class="text-muted">{{inv.billDate}}</small>
+              </div>
+              <div class="user-progress">
+                <small class="fw-bold">
+                  {% if inv.status == 'PAID' %}
+                            <span class="badge p-2 bg-success">{{ inv.get_status_display }}</span>
+                  {% elif inv.status == 'UNPAID' %}
+                            <span class="badge p-2 bg-warning">{{ inv.get_status_display }}</span>
+                  {% elif inv.status == 'PARTIALLY_PAID' %}
+                            <span class="badge p-2 bg-info">{{ inv.get_status_display }}</span>
+                  {% elif inv.status == 'OVERDUE' %}
+                            <span class="badge p-2 bg-danger">{{ inv.status }}</span>
+                  {% else %}
+                            <span class="badge p-2 bg-primary">{{ inv.get_status_display }}</span>
+                  {% endif %}
+                </small>
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!--/ Order Statistics -->
+
+  <!-- Payments -->
+  <div class="col-md-6 col-lg-4 order-2 mb-4">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="card-title m-0 me-2">Recent Payments</h5>
+      </div>
+      <div class="card-body">
+        <ul class="p-0 m-0">
+          {% for payment in payments|slice:":6" %}
+          <li class="d-flex mb-4 pb-1">
+            <div class="avatar flex-shrink-0 me-3">
+              <span class="badge bg-label-success p-2 payment-icon"><i class="bx bx-wallet ppm text-success"></i></span>
+            </div>
+            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+              <div class="me-2">
+                <small class="text-muted d-block mb-1">{{payment.payment_date}}</small>
+                <h6 class="mb-0"><a href="{% url 'paymentEdit' slug=payment.slug %}">{{payment.title|truncatewords:1}}</a></h6>
+              </div>
+              <div class="user-progress d-flex align-items-center gap-1">
+                <h6 class="mb-0"><i class='bx bx-plus'></i>{{payment.payment_ammount}}</h6> <span class="text-muted">{{settings.currency_name}}</span>
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!--/ Payments  -->
+
+  <!-- Expense -->
+  <div class="col-md-6 col-lg-4 order-2 mb-4">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="card-title m-0 me-2">Recent Expenses</h5>
+      </div>
+      <div class="card-body">
+        <ul class="p-0 m-0">
+          {% for expense in expenses|slice:":6" %}
+          <li class="d-flex mb-4 pb-1">
+            <div class="avatar flex-shrink-0 me-3">
+              <span class="badge bg-label-danger p-2 expense-icon"><i class="bx bx-money expm text-danger"></i></span>
+            </div>
+            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+              <div class="me-2">
+                <small class="text-muted d-block mb-1">{{expense.date_of_expense}}</small>
+                <h6 class="mb-0"><a href="{% url 'expenseEdit' slug=expense.slug %}">{{expense.title|truncatewords:1}}</a></h6>
+              </div>
+              <div class="user-progress d-flex align-items-center gap-1">
+                <h6 class="mb-0"><i class='bx bx-minus'></i>{{expense.amount}}</h6> <span class="text-muted">{{settings.currency_name}}</span>
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!--/ Expense -->
+
+</div>
+
+            <!-- pricingModal -->
+                        <!--/ pricingModal -->
+
+          </div>
+          <!-- / Content -->
+
+          <script>
+            var totalRevenue = parseInt("{{ total_revenue }}");
+            var totalExpense = parseInt("{{ total_expense }}");
+            var profit = totalRevenue - totalExpense;
+            var maxProfit = Math.max(totalRevenue, totalExpense);
+            maxProfit = Math.ceil(maxProfit / 2) * 2;
+          </script>
+
+          <script>
+            var paidInvoice = parseInt("{{paid_invoice}}");
+            var partiallyPaidInvoice = parseInt("{{partially_paid_invoice}}");
+            var unpaidInvoice = parseInt("{{unpaid_invoice}}");
+            var overdueInvoice = parseInt("{{overdue_invoice}}");
+          </script>
+
+          <script>
+            // Get the counts for each task status
+            var toDoCount = parseInt("{{to_do}}"); 
+            var inProgressCount = parseInt("{{in_progress}}");
+            var doneCount = parseInt("{{done}}");
+          </script>
+          
+          <script>
+            currency = "{{settings.currency_symbol}}"
+          </script>
+          {% endblock content %}

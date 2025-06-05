@@ -1,0 +1,90 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ settings.name }}{% endblock title %}
+{% block content %}
+<style>
+    .btn-group-sm>.btn-icon.btn,
+    .btn-icon.btn-sm {
+        font-size: 1.2rem !important;
+        height: calc(1.625rem + 2px);
+        width: calc(1.625rem + 2px);
+    }
+
+    @media (min-width: 992px) {
+        .card-datatable.table-responsive {
+            overflow-x: hidden;
+        }
+    }
+</style>
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h4 class="fw-bold py-3 mb-4">
+                    <span class="text-muted fw-light">Dashboard /</span> Payments
+                </h4>
+            </div>
+        </div>
+        <!--Table Card-->
+        <div class="card">
+            <div class="card-datatable table-responsive">
+                <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="card-header flex-column flex-md-row">
+                        <div class="head-label">
+                            <h5 class="card-title mb-0">All Payments</h5>
+                        </div>
+                        <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                        </div>
+                    </div>
+                    <div class="container mb-4">
+                    <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                        <thead>
+                            <tr>
+                                <th style="width: 0px;">#</th>
+                                <th style="width: 130px;">Title</th>
+                                <th style="width: 0px;">Invoice</th>
+                                <th style="width: 150px;">Payment Method</th>
+                                <th style="width: 130px;">Payment Amount</th>
+                                <th style="width: 130px;">Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                            <tr class="odd">
+                                <td>{{ forloop.counter}}</td>
+                                <td><span class="emp_name text-truncate">{{ payment.title }}</span></td>
+                                <td>{{ payment.invoice }}</td>
+                                <td>{{ payment.payment_method }}</td>
+                                <td>{{settings.currency_symbol}} {{ payment.payment_ammount }}</td>
+                                <td>{{ payment.payment_date }}</td>
+                            </tr>
+                            {% endfor %}
+                            <!-- ... more table rows ... -->
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+
+            </div> <!--Table Card-->
+
+        </div>
+        <!-- / Content -->
+
+
+    </div>
+    <!-- Content wrapper -->
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                pageLength: 10, // Set the initial page length to 10
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Allow changing page length
+                info: true, // Show the item count
+                search: true // Enable search
+            });
+        });
+    </script>
+{% endblock content %}

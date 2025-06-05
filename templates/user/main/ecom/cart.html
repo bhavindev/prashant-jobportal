@@ -1,0 +1,124 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}Cart - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+    .ui-w-40 {
+        width: 40px !important;
+        height: auto;
+    }
+    
+    .card{
+        box-shadow: 0 1px 15px 1px rgba(52,40,104,.08);    
+    }
+    
+
+    .text-right.mt-4.mr-5 {
+      margin-right: 49px;
+  }
+</style>
+<!-- Content wrapper -->
+<div class="content-wrapper">
+   <!-- Content -->
+   <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row align-items-center">
+         <div class="col-md-6">
+            <h4 class="fw-bold py-3 mb-2">
+               <span class="text-muted fw-light">Dashboard /</span> Cart
+            </h4>
+         </div>
+      </div>
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+               {{ message }}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+         {% endfor %}
+      {% endif %} 
+
+      <div class="card">
+        <div class="card-header">
+            <h2>Shopping Cart</h2>
+        </div>
+        <div class="card-body">
+          {% if user_order %}
+            <div class="table-responsive">
+              <table class="table table-bordered m-0">
+                <thead>
+                  <tr>
+                    <!-- Set columns width -->
+                    <th class="text-center py-3 px-4" style="min-width: 200px;">Product ( Total: {{user_cart.count}} )</th>
+                    <th class="text-right py-3 px-4" style="width: 150px;">Unit</th>
+                    <th class="text-right py-3 px-4" style="width: 150px;">Price</th>
+                    <th class="text-center py-3 px-4" style="width: 140px;">Quantity</th>
+                    <th class="text-right py-3 px-4" style="width: 150px;">Total</th>
+                    <th class="text-center align-middle py-3 px-0" style="width: 80px;"><a href="#" class="shop-tooltip float-none text-light" title="" data-original-title="Clear cart"><i class="ino ion-md-trash"></i></a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for cart in user_cart %}
+                  <tr>
+                    <td class="p-4">
+                      <div class="media align-items-center">
+                        <img src="{% if cart.product.image %}{{cart.product.image.url}}{% else %}{% static 'crm/assets/img/placeholder.webp'%}{% endif %}" style="width:80px; margin-bottom:6px; border-radius:7px;" alt="">
+                        <div class="media-body">
+                          <span class="d-block">{{cart.product.name}}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-right font-weight-semibold align-middle p-3">{{cart.product.unit_type}}</td>
+                    <td class="text-right font-weight-semibold align-middle p-3">{{settings.currency_symbol}}{{cart.product.rate}}</td>
+                    <td class="align-middle p-3"><input type="text" readonly class="form-control text-center" value="{{cart.quantity}}"></td>
+                    <td class="text-right font-weight-semibold align-middle p-3">{{settings.currency_symbol}}{{cart.subtotal}}</td>
+                    <td class="text-center align-middle px-0 "><a href="{% url "cart_delete" cart.id %}" class="text-danger"><i class="bx bx-trash"></i></a></td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td>Total price</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right font-weight-semibold align-middle">{{settings.currency_symbol}}{{user_order.total_amount}}</td>
+                    <td></td>
+                  </tr>
+        
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- / Shopping cart table -->
+        
+            <div class="d-flex flex-wrap justify-content-between align-items-center pb-4 mt-4">
+              <a href="{% url 'product_list' %}" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3 d-md-none w-100" style="border: 1px solid; margin-right: 10px;">Back to shopping</a>
+              <a href="{% url "checkout" %}" class="btn btn-lg btn-primary mt-2 d-md-none w-100">Checkout</a>
+              
+              <!-- For desktop -->
+              <a href="{% url 'product_list' %}" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3 d-none d-md-inline" style="border: 1px solid; margin-right: 10px;">Back to shopping</a>
+              <a href="{% url "checkout" %}" class="btn btn-lg btn-primary mt-2 d-none d-md-inline">Checkout</a>
+              
+            </div>
+          
+            {% else %}
+            <div class="d-flex align-items-center justify-content-center mb-5" style="height:50vh">
+                <div class="text-center">
+                    <i class='bx bx-meh-blank' style="font-size:100px"></i>
+                    <p class="text-warning mt-2">Cart is Empty</p>
+                    <a href="{% url 'product_list' %}" class="btn btn-lg btn-default mt-2" style="border: 1px solid;">Back to shopping</a>
+                </div>
+            </div>          
+            {% endif %}
+        
+            
+        
+          </div>
+      </div>
+
+
+
+   </div>
+   <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+
+{% endblock content %}

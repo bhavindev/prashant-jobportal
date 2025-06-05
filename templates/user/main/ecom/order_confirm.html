@@ -1,0 +1,103 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}Order Confirmation - {{settings.name}}{% endblock title %}
+{% block content %}
+<!-- Content wrapper -->
+<div class="content-wrapper">
+   <!-- Content -->
+   <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row align-items-center">
+         <div class="col-md-6">
+            <h4 class="fw-bold py-3 mb-2">
+               <span class="text-muted fw-light">Dashboard /</span> Order Confirmation
+            </h4>
+         </div>
+      </div>
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+               {{ message }}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+         {% endfor %}
+      {% endif %} 
+
+      <div class="card">
+        <div class="card-header">
+            <h2></h2>
+        </div>
+        <div class="card-body">
+          
+            <div class="d-flex align-items-center justify-content-center mb-5" style="padding-top:20px; padding-bottom:20px;">
+                <div class="text-center">
+                    <img src="{% static 'crm/assets/img/order-confirm.png' %}" alt="" width="100px" srcset="">
+                    <h3 class="text-warning mt-2">Order Placed Successfully</h3>
+                    <h4>Your Order Details</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Paid Amount</th>
+                                <th>Paid By</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#{{ order.order_id }}</td>
+                                {% if order.promo %}
+                                  <td>{{settings.currency_symbol}}{{order.total_amount_after_discount}}</td>
+                                {% else %}
+                                  <td>{{settings.currency_symbol}}{{ order.total_amount }}</td>
+                                {% endif %}
+                                <td>{{ order.get_payment_method_display }}</td>
+                                <td>{{ order.get_status_display }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  
+                    <h3 class="mt-4">Ordered Items</h3>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th>Unit</th>
+                          <th>Unit Cost</th>
+                          <th>Quantity</th>
+                          <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for cart_item in cart_items %}
+                          <tr>
+                            <td>{{ cart_item.product.name }}</td>
+                            <td>{{ cart_item.unit_type }}</td>
+                            <td>{{settings.currency_symbol}}{{ cart_item.unit_price }}</td>
+                            <td>{{ cart_item.quantity }}</td> 
+                            <td>{{settings.currency_symbol}}{{ cart_item.subtotal }}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+
+                    <a href="{% url 'userOrders' %}" class="btn btn-lg btn-default mt-3" style="border: 1px solid;">All Orders</a>
+                </div>
+            </div>          
+        
+            
+        
+          </div>
+      </div>
+
+
+
+   </div>
+   <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+<script>
+    var currentUrl = window.location.href;
+    var newUrl = currentUrl.replace('?first_visit=true', '');
+    window.history.replaceState({}, document.title, newUrl);
+</script>
+{% endblock content %}

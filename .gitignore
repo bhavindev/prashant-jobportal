@@ -1,0 +1,11 @@
+.env
+.env.example
+venv
+apps/aboutpage/__pycache__
+apps/aboutpage/migrations/
+**/__pycache__
+**/migrations
+assets
+
+
+

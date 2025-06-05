@@ -1,0 +1,94 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{project.title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+        <!--=====================================-->
+        <!--=       Breadcrumb Area Start       =-->
+        <!--=====================================-->
+        <div class="breadcrum-area breadcrumb-banner single-breadcrumb">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="section-heading heading-left" data-sal="slide-right" data-sal-duration="1000" data-sal-delay="300">
+                            <h1 class="title h2">{{ project.title }}</h1>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="banner-thumbnail" data-sal="slide-up" data-sal-duration="1000" data-sal-delay="400">
+                            {% if project.image %}
+                                <img class="paralax-image" src="{{ project.image.url }}" alt="Illustration">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ul class="shape-group-8 list-unstyled">
+                <li class="shape shape-1" data-sal="slide-right" data-sal-duration="500" data-sal-delay="100">
+                    <img src="{% static 'front/assets/media/others/bubble-9.png'  %}" alt="Bubble">
+                </li>
+                <li class="shape shape-2" data-sal="slide-left" data-sal-duration="500" data-sal-delay="200">
+                    <img src="{% static 'front/assets/media/others/bubble-20.png'  %}" alt="Bubble">
+                </li>
+                <li class="shape shape-3" data-sal="slide-up" data-sal-duration="500" data-sal-delay="300">
+                    <img src="{% static 'front/assets/media/others/line-4.png'  %}" alt="Line">
+                </li>
+            </ul>
+        </div>
+        <!--=====================================-->
+        <!--=     Single Portfolio Area Start   =-->
+        <!--=====================================-->
+        <section class="section-padding single-portfolio-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="section-heading heading-left mb-0">
+                            <span class="subtitle">{{ project.category }}</span>
+                            <h3 class="title">{{ project.title }}</h3>
+                        </div>
+                        {{ project.description|safe }}
+                    </div>
+                    <div class="col-lg-6 offset-xl-1">
+                        <div class="why-choose-us">
+                            <div class="section-heading heading-left">
+                                <h3 class="title">Other Details</h3>
+                            </div>
+                            <div class="accordion" id="choose-accordion">
+                                {% if  project.client %}
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                <i class="far fa-user"></i> Client
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#choose-accordion">
+                                            <div class="accordion-body">
+                                                <b>Company/Person Name: </b>{{ project.client }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if project.duration %}
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingTwo">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                <i class="far fa-clock"></i>Duration
+                                            </button>
+                                        </h2>
+                                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#choose-accordion">
+                                            <div class="accordion-body">
+                                                <b>Project timeline :</b> {{ project.duration }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if project.button_text %}
+                        <a href="{{ project.button_url }}" class="axil-btn btn-fill-primary mt-4">{{ project.button_text }}</a>
+                        {% endif %}
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+{% endblock %}

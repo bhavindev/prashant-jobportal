@@ -1,0 +1,295 @@
+{% extends 'admin/front/base.html' %}
+{% load static %}
+{% block title %}{{title}} - {{settings.name}}{% endblock title %}
+{% block content %}
+<style>
+.currentImg{
+  width: 100px !important;
+  margin-bottom: 10px;
+}
+</style>
+
+        <div class="page-body  dark-only">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3> Edit About Page</h3>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_home' %}"><i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">About</li>
+                    <li class="breadcrumb-item active">Edit</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            {% include "admin/components/lang.html" %}
+            {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong>
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %} 
+                {% if seoForm.errors %}
+                <div class="alert alert-danger">
+                    <strong>Error:</strong>
+                    <ul>
+                        {% for field, errors in seoForm.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}  
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}  
+            <div class="row project-cards">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-12">  
+
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="justify-content-start">
+                                      <strong>About Page:&nbsp;</strong><a target="_blank" href="{% if request.is_secure %}https://{{ request.get_host }}/about-us/{% else %}http://{{ request.get_host }}/about-us/{% endif %}">{% if request.is_secure %}https://{{ request.get_host }}/about-us/{% else %}http://{{ request.get_host }}/about-us/{% endif %}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                      
+                      
+
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="mb-3">About Section</h5>
+                                    <form action="" method="post" enctype="multipart/form-data">
+                                      {% csrf_token %}
+                                      {{ form.media }}
+                                        
+                                      <div class="row mt-4">
+                                          <div class="col-md-6">
+                                              <label for="{{ form.title_white.id_for_label }}">Title White </label>
+                                              {{ form.title_white }}
+                                          </div>
+                                          <div class="col-md-6">
+                                              <label for="{{ form.title_blue.id_for_label }}">Title Red </label>
+                                              {{ form.title_red }}
+                                          </div>
+                                      </div>
+                                      
+                                      <div class="form-group mt-4">
+                                        <label for="{{ form.heading.id_for_label }}">Heading </label>
+                                        <br>
+                                        {{ form.heading }}
+                                      </div>
+
+                                      <div class="form-group mt-4">
+                                          <label for="{{ form.description.id_for_label }}">Description</label>
+                                          <br>
+                                          <div class="form-control ckf">{{ form.description }}</div>
+                                      </div>
+
+                                      <div class="row mt-4">
+                                        <div class="col-md-6">
+                                            <label for="{{ form.years_of_experience.id_for_label }}">Count 01 Title (Leave blank to not show)</label>
+                                            {{ form.count_title1 }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ form.years_of_experience.id_for_label }}">Count 01 (Leave blank to not show)</label>
+                                            {{ form.years_of_experience }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ form.years_of_experience.id_for_label }}">Count 02 Title (Leave blank to not show)</label>
+                                            {{ form.count_title2 }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ form.project_delivered.id_for_label }}">Count 02 (Leave blank to not show)</label>
+                                            {{ form.project_delivered }}
+                                        </div>
+                                    </div>
+
+                                      <div class="row mt-4">
+                                        <div class="col-md-6">
+                                            <label for="{{ form.button_text.id_for_label }}">Button Text (Leave blank to not show)</label>
+                                            {{ form.button_text }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ form.button_url.id_for_label }}">Button URL (Leave blank to not show)</label>
+                                            {{ form.button_url }}
+                                        </div>
+                                    </div>
+
+                                      <button type="submit" class=" mt-4 btn btn-primary">Save</button>
+                                  </form>
+                                  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                                  <h5 class="mb-3">Team Members</h5>
+                                  <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="team_section_title">
+                                    <div class="row mb-3">
+                                      <div class="col-md-6">
+                                        <label for="{{ team_section_title_form.title_small.id_for_label }}" class="form-label">Section Title 1</label>
+                                        {{ team_section_title_form.title_small }}
+                                      </div>
+                                      <div class="col-md-6">
+                                        <label for="{{ team_section_title_form.title_big.id_for_label }}" class="form-label">Section Title 2</label>
+                                        {{ team_section_title_form.title_big }}
+                                      </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mb-3">Save</button>
+                                  </form>
+                                  <div class="d-flex justify-content-start">
+                                    <a href="{% url 'teams' %}" class="btn btn-primary" style='margin-right:5px;'>View</a>
+                                    <a href="{% url 'createTeam' %}" class="btn btn-primary">Create</a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                                  <h5 class="mb-3">Testimonials</h5>
+                                  <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="testimonial_section_title">
+                                    <div class="row mb-3">
+                                      <div class="col-md-6">
+                                        <label for="{{ testimonial_section_title_form.title_small.id_for_label }}" class="form-label">Section Title 1</label>
+                                        {{ testimonial_section_title_form.title_small }}
+                                      </div>
+                                      <div class="col-md-6">
+                                        <label for="{{ testimonial_section_title_form.title_big.id_for_label }}" class="form-label">Section Title 2</label>
+                                        {{ testimonial_section_title_form.title_big }}
+                                      </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mb-3">Save</button>
+                                  </form>
+                                  <div class="d-flex justify-content-start">
+                                    <a href="{% url 'testimonials' %}" class="btn btn-primary" style='margin-right:5px;'>View</a>
+                                    <a href="{% url 'createTestimonial' %}" class="btn btn-primary">Create</a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                                  <h5 class="mb-3">Clients</h5>
+                                  <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="client_section_title">
+                                    <div class="row mb-3">
+                                      <div class="col-md-6">
+                                        <label for="{{ client_section_title_form.title_small.id_for_label }}" class="form-label">Section Title 1</label>
+                                        {{ client_section_title_form.title_small }}
+                                      </div>
+                                      <div class="col-md-6">
+                                        <label for="{{ client_section_title_form.title_big.id_for_label }}" class="form-label">Section Title 2</label>
+                                        {{ client_section_title_form.title_big }}
+                                      </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mb-3">Save</button>
+                                  </form>
+                                  <div class="d-flex justify-content-start">
+                                    <a href="{% url 'clients' %}" class="btn btn-primary" style='margin-right:5px;'>View</a>
+                                    <a href="{% url 'createClient' %}" class="btn btn-primary">Create</a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                          <div class="card">
+                              <div class="card-body">
+                                  <h5 class="mb-3">SEO</h5>
+                                  <div class="row">
+                                      <div class="col-12">
+                                          <form method="post">
+                                              {% csrf_token %}
+                                              {% if SeoForm.errors %}
+                                                  <div class="alert alert-danger">
+                                                      <strong>Error:</strong>
+                                                      <ul>
+                                                          {% for field, errors in SeoForm.errors.items %}
+                                                              {% for error in errors %}
+                                                                  <li>{{ field }}: {{ error }}</li>
+                                                              {% endfor %}
+                                                          {% endfor %}
+                                                      </ul>
+                                                  </div>
+                                              {% endif %}    
+                                              <div class="row">
+                                                  <div class="col-md-6 col-sm-12">
+                                                      <label for="{{ SeoForm.meta_title.id_for_label }}">Meta Title <span class="text-danger">*</span></label>
+                                                      {{ SeoForm.meta_title }}
+                                                  </div>
+                                                  <div class="col-md-6 col-sm-12">
+                                                      <label for="{{ SeoForm.meta_description.id_for_label }}">Meta Description <span class="text-danger">*</span></label>
+                                                      {{ SeoForm.meta_description }}
+                                                  </div>
+                                              </div>
+                                              <!-- Ensure proper indentation for the closing </form> tag -->
+                                              <button type="submit" class="btn btn-primary mt-3 w-100">Save</button>
+                                          </form>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                    
+                    
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+          
+      </div>
+
+        
+        
+
+{% endblock content %}

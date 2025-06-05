@@ -1,0 +1,350 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ settings.name }}{% endblock title %}
+{% block content %}
+<style>
+   .btn-group-sm>.btn-icon.btn,
+   .btn-icon.btn-sm {
+   font-size: 1.2rem !important;
+   height: calc(1.625rem + 2px);
+   width: calc(1.625rem + 2px);
+   }
+   @media (min-width: 992px) {
+   .card-datatable.table-responsive {
+   overflow-x: hidden;
+   }
+   }
+   .dt-buttons.btn-group.flex-wrap {
+   margin-top: -32px;
+   }
+
+      div#DataTables_Table_0_length {
+         margin-top: 10px;
+     }
+  
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+   color: #8b8b8b !important;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+   border-radius: 4px !important;
+   background: #00000017 !important;
+}
+  </style>
+  
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+
+  <!-- Include DataTables CSS, if not already included -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+
+
+
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+   <div class="row align-items-center">
+      <div class="col-md-6">
+         <h4 class="fw-bold py-3 mb-3">
+            <span class="text-muted fw-light">CRM /</span> Reports / Expense
+         </h4>
+      </div>
+   </div>
+   <!--Table Card-->
+   <div class="mb-5">
+      <div class="dropdown float-end">
+         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+         This Year
+         </button>
+         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="#" onclick="showContent('thisyear')">This Year</a></li>
+            <li><a class="dropdown-item" href="#" onclick="showContent('thismonth')">This Month</a></li>
+            <li><a class="dropdown-item" href="#" onclick="showContent('prevyear')">Previous Year</a></li>
+            <li><a class="dropdown-item" href="#" onclick="showContent('alltime')">All Time</a></li>
+         </ul>
+      </div>
+   </div>
+   <!-- This year report -->
+   <div id="thisyear">
+      <div class="row mt-5">
+         <div class="col-12 mt-3">
+            <div class="card">
+               <div class="card-body">
+                  <h3>{{current_year}} Total expense: {{settings.currency_symbol}} {{current_year_total_expense}}</h3>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+      <div class="card mt-4">
+         <div class="card-datatable table-responsive">
+             <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                 <div class="card-header flex-column flex-md-row">
+                     <div class="head-label">
+                         <h5 class="card-title mb-0">Expenses of {{current_year}}</h5>
+                     </div>
+                 </div>
+                 <div class="container mb-4">
+                  <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed display" style="width:100%">
+                     <thead>
+                        <tr>
+                            <th style="width: 0px;">#</th>
+                            <th style="width: 130px;">Title</th>
+                            <th style="width: 0px;">Category</th>
+                            <th style="width: 150px;">Date of Expense</th>
+                            <th style="width: 130px;">Amount</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                         {% for expense in expenses_this_year %}
+                         <tr class="odd">
+                            <td>{{ forloop.counter }}</td>
+                            <td><span class="emp_name text-truncate">{{ expense.title }}</span></td>
+                            <td>{{ expense.get_category_display  }}</td>
+                            <td>{{ expense.date_of_expense }}</td>
+                            <td>{{ expense.amount }}</td>
+                         </tr>
+                         {% endfor %}
+                         <!-- ... more table rows ... -->
+                         <tr>
+                           <th>Total</th>
+                           <td></td>
+                           <td></td>
+                           <td></td>
+                           <th>{{settings.currency_symbol}} {{current_year_total_expense}}</th>
+                         </tr>
+                     </tbody>
+                 </table>
+             </div>
+             </div>
+         </div> 
+     </div><!--Table Card-->
+
+   </div>
+
+   <!-- This month report -->
+   <div id="thismonth" style="display: none;">
+      <div class="row mt-5">
+         <div class="col-12 mt-3">
+            <div class="card">
+               <div class="card-body">
+                  <h3>{{current_month}}/{{current_year}} Total expense: {{settings.currency_symbol}} {{current_month_total_expense}}</h3>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+      <div class="card mt-4">
+         <div class="card-datatable table-responsive">
+             <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                 <div class="card-header flex-column flex-md-row">
+                     <div class="head-label">
+                         <h5 class="card-title mb-0">Expenses of {{current_month}}/{{current_year}}</h5>
+                     </div>
+                 </div>
+                 <div class="container mb-4">
+                  <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed display" style="width:100%">
+                     <thead>
+                        <tr>
+                            <th style="width: 0px;">#</th>
+                            <th style="width: 130px;">Title</th>
+                            <th style="width: 0px;">Category</th>
+                            <th style="width: 150px;">Date of Expense</th>
+                            <th style="width: 130px;">Amount</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                         {% for expense in expenses_this_month %}
+                         <tr class="odd">
+                            <td>{{ forloop.counter }}</td>
+                            <td><span class="emp_name text-truncate">{{ expense.title }}</span></td>
+                            <td>{{ expense.get_category_display  }}</td>
+                            <td>{{ expense.date_of_expense }}</td>
+                            <td>{{ expense.amount }}</td>
+                         </tr>
+                         {% endfor %}
+                         <!-- ... more table rows ... -->
+                         <tr>
+                            <th>Total</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <th>{{settings.currency_symbol}} {{current_month_total_expense}}</th>
+                         </tr>
+                     </tbody>
+                 </table>
+             </div>
+             </div>
+         </div> 
+     </div><!--Table Card-->
+   </div>
+
+   <!-- Previous year report -->
+   <div id="prevyear" style="display: none;">
+      <div class="row mt-5">
+         <div class="col-12 mt-3">
+            <div class="card">
+               <div class="card-body">
+                  <h3>{{previous_year}} Total expense: {{settings.currency_symbol}} {{previous_year_total_expense}}</h3>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+      <div class="card mt-4">
+         <div class="card-datatable table-responsive">
+             <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                 <div class="card-header flex-column flex-md-row">
+                     <div class="head-label">
+                         <h5 class="card-title mb-0">Expenses of {{previous_year}}</h5>
+                     </div>
+                 </div>
+                 <div class="container mb-4">
+                  <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed display" style="width:100%">
+                     <thead>
+                        <tr>
+                            <th style="width: 0px;">#</th>
+                            <th style="width: 130px;">Title</th>
+                            <th style="width: 0px;">Category</th>
+                            <th style="width: 150px;">Date of Expense</th>
+                            <th style="width: 130px;">Amount</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                         {% for expense in expenses_previous_year %}
+                         <tr class="odd">
+                            <td>{{ forloop.counter }}</td>
+                            <td><span class="emp_name text-truncate">{{ expense.title }}</span></td>
+                            <td>{{ expense.get_category_display  }}</td>
+                            <td>{{ expense.date_of_expense }}</td>
+                            <td>{{ expense.amount }}</td>
+                         </tr>
+                         {% endfor %}
+                         <!-- ... more table rows ... -->
+                         <tr>
+                            <th>Total</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <th>{{settings.currency_symbol}} {{previous_year_total_expense}}</th>
+                         </tr>
+                     </tbody>
+                 </table>
+             </div>
+             </div>
+         </div> 
+     </div><!--Table Card-->
+   </div>
+
+   <!-- All time report -->
+   <div id="alltime" style="display: none;">
+      <div class="row mt-5">
+         <div class="col-12 mt-3">
+            <div class="card">
+               <div class="card-body">
+                  <h3>All time total expense: {{settings.currency_symbol}} {{total_expense}}</h3>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="card mt-4">
+         <div class="card-datatable table-responsive">
+             <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                 <div class="card-header flex-column flex-md-row">
+                     <div class="head-label">
+                         <h5 class="card-title mb-0">Expenses of all time</h5>
+                     </div>
+                 </div>
+                 <div class="container mb-4">
+                  <table class="datatables-basic table border-top dataTable no-footer dtr-column collapsed display" style="width:100%">
+                     <thead>
+                        <tr>
+                            <th style="width: 0px;">#</th>
+                            <th style="width: 130px;">Title</th>
+                            <th style="width: 0px;">Category</th>
+                            <th style="width: 150px;">Date of Expense</th>
+                            <th style="width: 130px;">Amount</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                         {% for expense in all_time_expenses_table %}
+                         <tr class="odd">
+                            <td>{{ forloop.counter }}</td>
+                            <td><span class="emp_name text-truncate">{{ expense.title }}</span></td>
+                            <td>{{ expense.get_category_display  }}</td>
+                            <td>{{ expense.date_of_expense }}</td>
+                            <td>{{ expense.amount }}</td>
+                         </tr>
+                         {% endfor %}
+                         <!-- ... more table rows ... -->
+                         <tr>
+                            <th>Total</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <th>{{settings.currency_symbol}} {{total_expense}}</th>
+                         </tr>
+                     </tbody>
+                 </table>
+             </div>
+             </div>
+         </div> 
+     </div><!--Table Card-->
+   </div>
+   <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+<script>
+   const timePeriods = {
+      thisyear: "This Year",
+      thismonth: "This Month",
+      prevyear: "Previous Year",
+      alltime: "All Time"
+   };
+   function showContent(period) {
+       // Hide all content blocks
+       document.getElementById('thisyear').style.display = 'none';
+       document.getElementById('thismonth').style.display = 'none';
+       document.getElementById('prevyear').style.display = 'none';
+       document.getElementById('alltime').style.display = 'none';
+   
+       // Show the selected content block
+       document.getElementById(period).style.display = 'block';
+   
+       // Update the dropdown button text
+       document.getElementById('dropdownMenuButton').textContent = timePeriods[period];
+   }
+</script>
+<script>
+   $(document).ready(function() {
+      $('.datatables-basic').DataTable({
+          pageLength: 25,
+          lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+          search: true,
+          dom: '<"top"Bfi>rt<"bottom"lip><"clear">',
+          buttons: [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              {
+                  extend: 'pdfHtml5',
+                  orientation: 'portrait', // You can change this to 'portrait' if needed
+                  pageSize: 'A4', // You can adjust the page size as needed
+              },
+              'print'
+          ]
+      });
+  });  
+</script>
+
+{% endblock content %}

@@ -1,0 +1,90 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block title %}{{data.client}}'s Agreement{% endblock title %}
+{% block content %}
+<style>
+.icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .green {
+    background-color: green;
+    color: white;
+  }
+  
+  .red {
+    background-color: red;
+    color: white;
+  }
+</style>
+      <div class="container mt-5">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-12 col-md-8 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="mb-4">Details</h4>
+                            <p class="detail-text"><b>Service: </b>{{data.service}}</p>
+                            <p class="detail-text"><b>Name: </b>{{data.client.userprofile.name}}</p>
+                            <p class="detail-text"><b>Email: </b>{{data.email}}</p>
+                            <p class="detail-text"><b>Phone: </b>{{data.phone}}</p>
+                            <p class="detail-text"><b>Address: </b>{{data.address}}</p>
+                            <p class="detail-text"><b>City: </b>{{data.city}}, <b>State: </b>{{data.state}}, <b>Postal Code: </b>{{data.postal}}</p>
+                            {% if data.is_signed %}
+                            <p class="detail-text"><b>Signature:</b> You signed this agreement as <b>"{{data.client}}"</b> and agreed with the <a href="{% url 'termsPageFront' %}">Terms & Conditions.</a></p>
+                            {% else %}
+                            <p class="detail-text"><b>Signature: </b>You didn't signed this agreement. Please sign this agreement to get approval.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4>Action</h4>
+                            <div class="detail-container d-flex justify-content-between align-items-start">
+                                <div class="detail-text mt-4">
+                                    <b>Signed Status:</b>
+                                </div>
+                                <div class="status-icon mt-4">
+                                    {% if data.is_signed %}
+                                        <span class="icon green">&#10003;</span> <!-- Check sign in green -->
+                                    {% else %}
+                                        <span class="icon red">&#10005;</span> <!-- Cross sign in red -->
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="detail-container d-flex justify-content-between align-items-start">
+                                <div class="detail-text mt-4">
+                                    <b>Admin Approval Status:</b>
+                                </div>
+                                <div class="status-icon mt-4">
+                                    {% if data.is_approved %}
+                                        <span class="icon green">&#10003;</span> <!-- Check sign in green -->
+                                    {% else %}
+                                        <span class="icon red">&#10005;</span> <!-- Cross sign in red -->
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p class="text-muted mt-4">No action required. You can not edit or delete agreement. If you need any help please contact with admin.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+      
+      
+      
+    </div>
+  </div>
+
+  {% endblock content %}

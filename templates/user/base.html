@@ -1,0 +1,668 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en" class="dark-style  layout-menu-fixed   " dir="ltr" data-theme="theme-default">
+
+<head>
+      <!-- Meta Data -->
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+      <meta name="description" content="{{seo_settings.meta_description}}">
+    {% if request.is_secure %}
+      <link rel="canonical" href="https://{{ request.get_host }}">
+    {% else %}
+      <link rel="canonical" href="http://{{ request.get_host }}">
+    {% endif %}
+      <meta name="keywords" content="{{seo_settings.seo_keywords}}" />
+    {% if request.is_secure %}
+      <meta name="publisher" content="https://{{ request.get_host }}">
+    {% else %}
+      <meta name="publisher" content="http://{{ request.get_host }}">
+    {% endif %}
+      <meta name="copyright" content="{{header_footer.footer_copyright}}" />
+      <meta name="author" content="{{settings.author}}" />
+      <meta name="contact" content="{{settings.email_address}}" />
+  
+      <meta name="robots" content="index, follow" />
+      <meta name="googlebot" content="index, follow" />
+      <meta name="subjects" content="{{settings.name}}" />
+      <meta name="classification" content="{{settings.name}}" />
+  
+      <meta itemprop="name" content=" {{seo_settings.meta_title}} | {{seo_settings.meta_description}} ">
+      <meta itemprop="description" content="{{seo_settings.meta_description}}">
+      <meta itemprop="image" content="{% if request.is_secure %}https://{{ request.get_host }}{{settings.logo.url}}{% else %}http://{{ request.get_host }}{{settings.logo.url}}{% endif %}">
+      
+      
+      <meta property="og:title" content=" {{seo_settings.meta_title}} | {{seo_settings.meta_description}}  " />
+      <meta property="og:type" content="{{seo_settings.seo_keywords}}" />
+    {% if request.is_secure %}
+      <meta property="og:url" content="https://{{ request.get_host }}" />
+    {% else %}
+      <meta property="og:url" content="http://{{ request.get_host }}" />
+    {% endif %}
+      <meta property="og:image" content="{% if request.is_secure %}https://{{ request.get_host }}{{settings.logo.url}}{% else %}http://{{ request.get_host }}{{settings.logo.url}}{% endif %}" />
+      <meta property="og:site_name" content="{{settings.name}}" />
+      <meta property="og:description" content="{{seo_settings.meta_description}}" />
+    <!-- Your other meta tags go here -->
+
+
+  <title>{% block title %}{% endblock title %}</title>
+  <!-- Canonical SEO -->
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{{settings.favicon.url}}" />
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    
+
+  <!-- Include Styles -->
+  
+  <!-- BEGIN: Theme CSS-->
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.7.0/css/flag-icons.min.css" integrity="sha512-s/Nra58/et4CDKSnhUiPrce+8M5tdK1Ps0+9dKe4I9JH/g0QGzsPAdf1fLeBsMTMG1zWMBsnzxvPgTOAFUHwLQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- Core CSS -->
+<link rel="stylesheet" href="{% static 'crm/assets/css/core.css' %}" class="template-customizer-core-css" />
+<link rel="stylesheet" href="{% static 'crm/assets/css/theme-default.css' %}" class="template-customizer-theme-css" />
+<link rel="stylesheet" href="{% static 'crm/assets/css/demo.css' %}" />
+
+<link rel="stylesheet" href="{% static 'crm/assets/css/perfect-scrollbar.css' %}" />
+<link rel="stylesheet" href="{% static 'crm/assets/css/typeahead.css' %}" />
+
+<!-- Vendor Styles -->
+<link rel="stylesheet" href="{% static 'crm/assets/css/apex-charts.css' %}">
+
+<!-- Page Styles -->
+
+<!-- Include Scripts for customizer, helper, analytics, config -->
+<!-- laravel style -->
+<script src="{% static 'crm/assets/js/helpers.js' %}"></script>
+<!-- beautify ignore:start -->
+<!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+<!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+<script src="{% static 'crm/assets/js/template-customizer.js' %}"></script>
+
+<!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+<script src="{% static 'crm/assets/js/config.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script>
+  window.templateCustomizer = new TemplateCustomizer({
+    cssPath: '',
+    themesPath: '',
+    defaultShowDropdownOnHover: true, // true/false (for horizontal layout only)
+    displayCustomizer: true,
+    lang: 'en',
+    pathResolver: function(path) {
+      var resolvedPaths = {
+        // Core stylesheets
+        'core.css': '{% static "crm/assets/css/core.css" %}',
+        'core-dark.css': '{% static "crm/assets/css/core-dark.css" %}',
+
+        // Themes
+        'theme-default.css': '{% static "crm/assets/css/theme-default.css" %}',
+        'theme-default-dark.css': '{% static "crm/assets/css/theme-default-dark.css" %}',
+        'theme-bordered.css': '{% static "crm/assets/css/theme-bordered.css" %}',
+        'theme-bordered-dark.css': '{% static "crm/assets/css/theme-bordered-dark.css" %}',
+        'theme-semi-dark.css': '{% static "crm/assets/css/theme-semi-dark.css" %}',
+        'theme-semi-dark-dark.css': '{% static "crm/assets/css/theme-semi-dark-dark.css" %}',
+      };
+      return resolvedPaths[path] || path;
+    },
+    controls: ["rtl", "style", "layoutType", "showDropdownOnHover", "layoutNavbarFixed", "layoutFooterFixed", "themes"],
+  });
+</script>
+
+  <!-- beautify ignore:end -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<style>
+  div#om-b7llyw4poojoqbylgexd {
+    display: none !important;
+}
+  a.nav-item.nav-link.search-toggler.px-0 {
+    display: none;
+}
+.cart-badge {
+  position: absolute;
+  top: 4px;
+  right: 0px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 0px 5px;
+  font-size: 10px;
+}
+
+
+</style>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.0/css/dataTables.bootstrap5.min.css">
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.0/js/dataTables.bootstrap5.min.js"></script>
+<style>
+ body.dark-only .page-wrapper .page-body-wrapper .page-body .card:not(.email-body) .dataTables_wrapper .dataTables_paginate {
+   border: none !IMPORTANT;
+}
+body.dark-only .page-wrapper .page-body-wrapper .page-body .card:not(.email-body) .page-link {
+
+ background-color: hsla(0,0%,100%,.09) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+ border: none !important;
+ color: #2c323f !important;
+ background: transparent !important;
+}
+div#om-aaghicv0te6emsbv1efh {
+  display: none !important;
+}
+/* Style the modal scrollbar */
+::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #333; /* Dark background color of the track */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; /* Gray color of the scrollbar handle */
+    border-radius: 6px; /* Rounded corners on the handle */
+}
+
+/* On hover, style the handle */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Lighter gray color on hover */
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin; /* Adjust the width as needed */
+    scrollbar-color: #888 #f1f1f1; /* Thumb color and track color */
+}
+div#om-bmfrltdyrytgkiod0ppo {
+  display: none !important;
+}
+.bg-success {
+  background-color: #0a790a !important;
+}
+.bg-warning {
+  background-color: #cd9518 !important;
+}
+.bg-info {
+  background-color: #057f7f !important;
+}
+div#om-baxayiv9hm3vn7q77gwn {
+  display: none !important;
+}
+.Campaign {
+  display: none !important;
+}
+</style>
+</head>
+
+<body>
+  
+      <!-- Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
+      <!-- End Google Tag Manager (noscript) -->
+        
+    
+      <!-- Layout Content -->
+      <div class="layout-wrapper layout-content-navbar ">
+      <div class="layout-container">
+    
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+    
+      <!-- ! Hide app brand if navbar-full -->
+        <div class="app-brand demo">
+        <a href="{% url 'userDashboard' %}" class="app-brand-link">
+          <span class="app-brand-logo demo">
+            <img src="{{settings.logo_dark.url}}" width="165" height="50" alt="" srcset="">
+          </span>
+        </a>
+        
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+          <i class="bx bx-chevron-left bx-sm align-middle"></i>
+        </a>
+      </div>
+      
+      <div class="menu-inner-shadow"></div>
+    
+      <ul class="menu-inner py-1">
+        <li class="menu-item {% if request.path == '/user/dashboard' %}active open{% endif %}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+            <div>Dashboards</div>
+          </a>
+          <ul class="menu-sub">
+            <li class="menu-item active">
+              <a href="{% url 'userDashboard' %}" class="menu-link">
+                <div>Home</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="menu-header small text-uppercase">
+          <span class="menu-header-text">Projects &amp; Activity</span>
+        </li>
+        {% url 'userticketView' id=request.resolver_match.kwargs.id as ticket_view_url %}
+        <li class="menu-item  {% if request.path == '/user/dashboard/tickets' or request.path == '/user/dashboard/ticket/create/' or request.path == ticket_view_url %}active open{% endif %}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-paper-plane"></i>
+            <div>Tickets</div>
+          </a>
+          <ul class="menu-sub">
+            <li class="menu-item active">
+              <a href="{% url 'userTickets' %}" class="menu-link">
+                <div>All Tickets</div>
+              </a>
+            </li>
+            <li class="menu-item active">
+              <a href="{% url 'userTicketCreate' %}" class="menu-link">
+                <div>Create Ticket</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="menu-item  {% if request.path == '/user/products/' or request.path == '/user/cart/' or request.path == '/user/checkout/' or request.path == '/user/dashboard/orders' %}active open{% endif %}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-store"></i>
+            <div>Shop</div>
+          </a>
+          <ul class="menu-sub">
+            {% if settings.is_purchasing_enable %}
+            <li class="menu-item active">
+              <a href="{% url 'product_list' %}" class="menu-link">
+                <div>Products</div>
+              </a>
+            </li>
+            {% endif %}
+            <li class="menu-item active">
+              <a href="{% url 'userOrders' %}" class="menu-link">
+                <div>Orders</div>
+              </a>
+            </li>
+            {% if settings.is_purchasing_enable %}
+            <li class="menu-item active">
+              <a href="{% url 'view_cart' %}" class="menu-link">
+                <div>Cart</div>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </li>
+        {% url 'userProjectDetail' slug=request.resolver_match.kwargs.slug as userProjectDetailURL %}
+        <li class="menu-item {% if request.path == '/user/dashboard/projects' or request.path == userProjectDetailURL %}active open{% endif %}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-briefcase"></i>
+            <div>Projects</div>
+          </a>
+          <ul class="menu-sub">
+            <li class="menu-item active">
+              <a href="{% url 'userProjects' %}" class="menu-link">
+                <div>Project List</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="menu-item {% if request.path == '/user/dashboard/invoices' %}active open{% endif %}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-food-menu"></i>
+            <div>Invoice</div>
+          </a>
+          <ul class="menu-sub">
+            <li class="menu-item active">
+              <a href="{% url 'userInvoices' %}" class="menu-link">
+                <div>Invoice List</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="menu-item {% if request.path == '/user/dashboard/payments' %}active open{% endif %}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-money"></i>
+            <div>Payments</div>
+          </a>
+          <ul class="menu-sub">
+            <li class="menu-item active">
+              <a href="{% url 'userPayments' %}" class="menu-link">
+                <div>Payment List</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% if settings.is_enabled_for_user %}
+        {% url 'useropenAiContentGeneration' category=request.resolver_match.kwargs.category as aicategoryurl %}
+        <li class="menu-item {% if request.path == '/user/dashboard/ai-assistant/' or request.path == aicategoryurl or request.path == '/user/dashboard/ai-assistant/history/' %}active open{% endif %}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class='menu-icon bx bx-bot'></i>
+            <div>AI Assistant</div>
+          </a>
+            <ul class="menu-sub">
+                <li class="menu-item active">
+                  <a href="{% url 'useraiCategory' %}" class="menu-link">
+                    <div>All Templates</div>
+                  </a>
+                </li>
+                <li class="menu-item active">
+                  <a href="{% url 'useraiHistory' %}" class="menu-link">
+                    <div>History</div>
+                  </a>
+                </li>
+            </ul>
+        </li>
+        {% endif %}
+        <li class="menu-item {% if request.path == '/user/reports/invoice-report/' or request.path == '/user/reports/project-report/' or request.path == '/user/reports/payment-report/'%}active open{% endif %}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-line-chart"></i>
+            <div>Reports</div>
+          </a>
+          <ul class="menu-sub">
+            <li class="menu-item active">
+              <a href="{% url 'userInvoiceReport' %}" class="menu-link">
+                <div>Invoice Report</div>
+              </a>
+            </li>
+            <li class="menu-item active">
+              <a href="{% url 'userProjectReport' %}" class="menu-link">
+                <div>Projects Report</div>
+              </a>
+            </li>
+            <li class="menu-item active">
+              <a href="{% url 'userPaymentsReport' %}" class="menu-link">
+                <div>Payments Report</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="menu-item {% if request.path == '/user/dashboard/profile' or request.path == '/user/dashboard/profile/edit/' %}active open{% endif %}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-user"></i>
+            <div>Profile</div>
+          </a>
+          <ul class="menu-sub">
+            <li class="menu-item active">
+              <a href="{% url 'customUserProfile' %}" class="menu-link">
+                <div>Your profile</div>
+              </a>
+            </li>
+            <li class="menu-item active">
+              <a href="{% url 'profile_edit' %}" class="menu-link">
+                <div>Edit Profile</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class=" small text-uppercase">
+          <span class="menu-header-text"></span>
+        </li>
+        <li class=" small text-uppercase">
+          <span class="menu-header-text"></span>
+        </li>
+
+
+        <li >
+        </li>
+      </ul>  
+    
+    </aside>
+        
+    
+        <!-- Layout page -->
+        <div class="layout-page">
+    
+          
+          
+    
+          <!-- BEGIN: Navbar-->
+                <!-- Navbar -->
+    <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+        
+          <!--  Brand demo (display only for navbar-full and hide on below xl) -->
+          
+          <!-- ! Not required for layout-without-menu -->
+                <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0  d-xl-none ">
+            <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+              <i class="bx bx-menu bx-sm"></i>
+            </a>
+          </div>
+          
+          <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+    
+                    <!-- Search -->
+            <div class="navbar-nav align-items-center">
+              <div class="nav-item navbar-search-wrapper mb-0">
+                <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
+                  <i class="bx bx-search bx-sm"></i>
+                  <span class="d-none d-md-inline-block text-muted">Search (Ctrl+/)</span>
+                </a>
+              </div>
+            </div>
+            <!-- /Search -->
+            
+            <ul class="navbar-nav flex-row align-items-center ms-auto">
+              {% if settings.is_purchasing_enable %}
+            <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
+              <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                <i class="bx bx-cart bx-sm"></i>
+                {% if user_cart %}
+                <span class="badge bg-danger rounded-pill badge-notifications">{{user_cart.count}}</span>
+                {% endif %}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end py-0">
+                <li class="dropdown-menu-header border-bottom">
+                  <div class="dropdown-header d-flex align-items-center py-3">
+                    <h5 class="text-body mb-0 me-auto">Cart</h5>
+                  </div>
+                </li>
+
+                <li class="dropdown-notifications-list scrollable-container">
+                  <ul class="list-group list-group-flush">
+                    {% if user_cart %}
+                    {% for cart in user_cart %}
+                    <a href="">
+                    <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="avatar">
+                            {% if cart.product.image %}
+                              <img src="{{cart.product.image.url}}" alt class="w-px-40 h-auto" style="border-radius:5px;">
+                              {% else %}
+                              <img src="{% static 'crm/assets/img/placeholder.webp'%}" alt class="w-px-40" style="border-radius:5px;">
+                            {% endif %}
+                          </div>
+                        </div>
+                        <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                          <div>
+                            <h6 class="mb-0">{{cart.product.name}}</h6>
+                            <p class="mb-0">×{{cart.quantity}}</p>
+                          </div>
+                          <small class="">{{settings.currency_symbol}}{{cart.subtotal}}</small>
+                        </div>
+                        
+                        
+                      </div>
+                    </li>
+                  </a>
+                    {% endfor %}
+                    {% else %}
+                    <li  class="list-group-item list-group-item-action dropdown-notifications-item"><p>No Products in Cart</p></li>
+                    {% endif %}
+
+                  </ul>
+                </li>
+                <li class="dropdown-menu-footer border-top">
+                  <a href="{% url 'view_cart' %}" class="dropdown-item d-flex justify-content-center text-primary p-2 h-px-40">
+                    View all
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+            {% endif %}
+            
+
+              <!-- Style Switcher -->
+              <li class="nav-item me-2 me-xl-0">
+                <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
+                  <i class='bx bx-sm'></i>
+                </a>
+              </li>
+              <!--/ Style Switcher -->
+  
+    
+              <!-- User -->
+              <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                  <div class="avatar avatar-online">
+
+                    <img src="{{user_profile.getUserImage}}" alt class="w-px-40 h-auto rounded-circle">
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" href="{% url 'customUserProfile' %}">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="avatar avatar-online">
+
+                            <img src="{{user_profile.getUserImage}}" alt class="w-px-40 h-auto rounded-circle">
+
+                          </div>
+                        </div>
+                        <div class="flex-grow-1">
+                          <span class="fw-semibold d-block">{{user_profile.name}}</span>
+                          <small class="text-muted">{{request.user.role}}</small>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'customUserProfile' %}">
+                      <i class="bx bx-user me-2"></i>
+                      <span class="align-middle">My Profile</span>
+                    </a>
+                  </li>
+                                <li>
+                    <a class="dropdown-item" href="{% url 'userTickets' %}">
+                      <i class="bx bx-paper-plane me-2"></i>
+                      <span class="align-middle">Tickets</span>
+                    </a>
+                  </li>
+                                <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                                <li>
+                    <a class="dropdown-item" href="{% url 'logOut' %}">
+                      <i class='bx bx-log-in me-2'></i>
+                      <span class="align-middle">Log Out</span>
+                    </a>
+                  </li>
+                              </ul>
+              </li>
+              <!--/ User -->
+            </ul>
+          </div>
+    
+          <!-- Search Small Screens -->
+          <div class="navbar-search-wrapper search-input-wrapper  d-none">
+            <input type="text" class="form-control search-input container-xxl border-0" placeholder="Search..." aria-label="Search...">
+            <i class="bx bx-x bx-sm search-toggler cursor-pointer"></i>
+          </div>
+    
+            </nav>
+      <!-- / Navbar -->
+                <!-- END: Navbar-->
+    {% block content %}{% endblock content %}
+
+          <!-- Footer -->
+                    <!-- Footer-->
+<footer class="content-footer footer bg-footer-theme">
+  <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+    <div class="mb-2 mb-md-0">
+      <p class="mb-0">Copyright © <span id="currentYear"></span> {{settings.name}}. All rights reserved.</p>
+
+          <script>
+            // Get the current year
+            var currentYear = new Date().getFullYear();
+            
+            // Display the current year in the HTML
+            document.getElementById("currentYear").textContent = currentYear;
+          </script>
+    </div>
+  </div>
+</footer>
+<!--/ Footer-->
+                    <!-- / Footer -->
+          <div class="content-backdrop fade"></div>
+        </div>
+        <!--/ Content wrapper -->
+      </div>
+      <!-- / Layout page -->
+    </div>
+
+        <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+        <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+    <div class="drag-target"></div>
+  </div>
+  <!-- / Layout wrapper -->
+    <!--/ Layout Content -->
+  
+
+  <!-- Include Scripts -->
+  <!-- BEGIN: Vendor JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'crm/assets/js/popper.js' %}"></script>
+<script src="{% static 'crm/assets/js/bootstrap.js' %}"></script>
+<script src="{% static 'crm/assets/js/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'crm/assets/js/hammer.js' %}"></script>
+<script src="{% static 'crm/assets/js/typeahead.js' %}"></script>
+<script src="{% static 'crm/assets/js/menu.js' %}"></script>
+<script src="{% static 'crm/assets/js/apexcharts.js' %}"></script>
+<script src="{% static 'crm/assets/js/crmchart.js' %}"></script>
+
+<!-- END: Page Vendor JS -->
+<!-- BEGIN: Theme JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/dist/boxicons.js" integrity="sha512-Dm5UxqUSgNd93XG7eseoOrScyM1BVs65GrwmavP0D0DujOA8mjiBfyj71wmI2VQZKnnZQsSWWsxDKNiQIqk8sQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'crm/assets/js/main.js' %}"></script>
+<!-- END: Theme JS -->
+<!-- Pricing Modal JS -->
+<!-- END: Pricing Modal JS -->
+<!-- BEGIN: Page JS -->
+<script src="{% static 'crm/assets/js/dashboards-analytics.js' %}"></script>
+<!-- END: Page JS -->
+
+{% include "error/demo_mode.html" %}
+<!-- Select 2 JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+      // Initialize Select2 for the 'invoice' field
+      $('.select2').select2({
+          width: '100%',
+          // Additional options if needed
+      });
+  });
+  </script>
+</body>
+
+</html>
