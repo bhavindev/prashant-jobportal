@@ -166,17 +166,6 @@ else:
             }
     }
 
-# If DATABASE_URL is available (e.g., on Heroku), it takes precedence.
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600)
-    # For Heroku Postgres, ensure SSL is required if the URL doesn't specify it.
-    if DATABASES['default'].get('ENGINE') == 'django.db.backends.postgresql' and 'DYNO' in os.environ:
-        options = DATABASES['default'].get('OPTIONS', {})
-        options['sslmode'] = options.get('sslmode', 'require')
-        DATABASES['default']['OPTIONS'] = options
-# If DATABASE_URL is not set, the DATABASES configuration from the preceding
-# if/elif/else block (MySQL/PostgreSQL/SQLite) remains active.
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
