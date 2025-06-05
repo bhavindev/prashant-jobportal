@@ -15,17 +15,7 @@ def create_banner_section(sender, **kwargs):
 
     table_name = bannerSection._meta.db_table
 
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [table_name])
-        table_exists = cursor.fetchone()[0]
-        
-    if not table_exists:
+    if table_name not in connection.introspection.table_names():
         print(f"Table {table_name} does not exist. Skipping bannerSection creation.")
         return
 
@@ -84,30 +74,11 @@ def create_service_sections(sender, **kwargs):
     service_section_table = serviceSection._meta.db_table
     service_section_title_table = serviceSectionTitle._meta.db_table
     
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [service_section_table])
-        service_section_exists = cursor.fetchone()[0]
-
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [service_section_title_table])
-        service_section_title_exists = cursor.fetchone()[0]
-
-    if not service_section_exists:
+    if service_section_table not in connection.introspection.table_names():
         print(f"Table {service_section_table} does not exist. Skipping serviceSection creation.")
         return
     
-    if not service_section_title_exists:
+    if service_section_title_table not in connection.introspection.table_names():
         print(f"Table {service_section_title_table} does not exist. Skipping serviceSectionTitle creation.")
         return
 
@@ -193,19 +164,10 @@ def create_project_sections(sender, **kwargs):
         "projectSectionTitle": projectSectionTitle._meta.db_table
     }
 
-    with connection.cursor() as cursor:
-        for table_name in tables.values():
-            cursor.execute(f"""
-                SELECT EXISTS (
-                    SELECT 1 
-                    FROM information_schema.tables 
-                    WHERE table_name = %s
-                );
-            """, [table_name])
-            table_exists = cursor.fetchone()[0]
-            if not table_exists:
-                print(f"Table {table_name} does not exist. Skipping data creation.")
-                return
+    for table_key, table_name_val in tables.items():
+        if table_name_val not in connection.introspection.table_names():
+            print(f"Table {table_name_val} (for {table_key}) does not exist. Skipping project section creation.")
+            return
 
     try:
         default_language = Languages.objects.get(is_default=True)
