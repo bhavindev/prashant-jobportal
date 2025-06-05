@@ -6,6 +6,7 @@ apps/aboutpage/migrations/
 **/__pycache__/
 **/migrations
 assets
+db.sqlite3
 
 
 
