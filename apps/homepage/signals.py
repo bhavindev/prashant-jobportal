@@ -418,17 +418,7 @@ def create_home_page_seo(sender, **kwargs):
     # Check if the HomePageSEO table exists
     seo_table_name = HomePageSEO._meta.db_table
 
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = %s
-            );
-        """, [seo_table_name])
-        seo_table_exists = cursor.fetchone()[0]
-
-    if not seo_table_exists:
+    if seo_table_name not in connection.introspection.table_names():
         print(f"Table {seo_table_name} does not exist. Skipping HomePageSEO creation.")
         return
 
