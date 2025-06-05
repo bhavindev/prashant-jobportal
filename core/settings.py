@@ -27,7 +27,18 @@ SECRET_KEY = 'django-insecure-v3fu=+lkd&nirl96i@#5l*(xo0l+q%winlojg+gw4rn5d=3grt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv('DEBUG') == 'True' else False
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+allowed_hosts_env = os.getenv('ALLOWED_HOSTS')
+ALLOWED_HOSTS = allowed_hosts_env.split(',') if allowed_hosts_env else []
+
+# Add your Heroku app's domain
+ALLOWED_HOSTS.append('parshant-979aed1952de.herokuapp.com')
+
+# If in DEBUG mode, typically localhost is also allowed
+if DEBUG:
+    ALLOWED_HOSTS.extend(['localhost', '127.0.0.1'])
+
+# Remove duplicates by converting to a set and back to a list
+ALLOWED_HOSTS = list(set(ALLOWED_HOSTS))
 
 # Application definition
 
