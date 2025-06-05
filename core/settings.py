@@ -3,7 +3,7 @@ import dj_database_url
 import os
 import django_on_heroku
 
-django_on_heroku.settings(locals())
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -91,9 +91,6 @@ MIDDLEWARE = [
 if os.getenv('DEMO_MODE') == 'True':
     MIDDLEWARE.append('core.middleware.middleware.DemoModeMiddleware')
 
-if os.getenv("WHITENOISE_CONFIG") == "True":
-    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-    
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -196,7 +193,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = os.getenv('TIME_ZONE')
 
-print(f"TIME_ZONE is set to: {TIME_ZONE}")
+
 
 USE_I18N = True
 
@@ -230,17 +227,11 @@ CKEDITOR_CONFIGS = {
 }
 
 
-# white noise settings
-if os.getenv('WHITENOISE_CONFIG') == 'True':
-    STORAGES = {
-         "staticfiles": {
-              "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-         },
-    }
-    
-    
 RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
 ENABLE_ARABIC_SIGNALS = False
 ENABLE_BANGLA_SIGNALS = False
+
+# Configure Django for Heroku.
+django_on_heroku.settings(locals())
